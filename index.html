@@ -19,7 +19,7 @@
     --content-secondary: #a1a1aa;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body {
     background: #fff;
     font-family: 'Bricolage Grotesque', sans-serif;
@@ -29,6 +29,7 @@
   }
   img { display: block; }
   button { font: inherit; cursor: pointer; background: none; border: none; color: inherit; }
+  a { color: inherit; text-decoration: none; }
 
   section { position: relative; }
 
@@ -1087,6 +1088,9 @@
     .vm-chip { flex-shrink: 0; height: 36px; font-size: 14px; }
     .vm-card .thumb { width: 76px; height: 76px; border-radius: 16px; }
     .vm-card h4 { font-size: 17px; margin: 2px 0 6px; }
+    .vm-card .meta, .vm-card .price, .vm-card .book { font-size: 14px; }
+    .vm-detail-body .desc, .vm-detail-body .meta, .vm-detail-body .book { font-size: 14px; }
+    .vm-title { font-size: 20px; }
     .vm-zoom { top: 16px; right: 12px; bottom: auto; }
     .vm-detail { width: min(340px, calc(100vw - 24px)); }
   }
@@ -1208,8 +1212,13 @@
     font-family: 'Figtree', sans-serif; font-weight: 600; font-size: 14px;
     padding: 10px 16px; border-radius: 99px;
   }
-  .sv-tap { position: absolute; inset: 0; display: flex; z-index: 2; }
-  .sv-tap span { flex: 1; }
+  /* Instagram-style tap zones: left third = back, right two thirds = forward */
+  .sv-tap { position: absolute; inset: 0; display: flex; z-index: 2; touch-action: none; }
+  .sv-tap span:first-child { flex: 1; }
+  .sv-tap span:last-child { flex: 2; }
+  /* press-and-hold pauses and clears the chrome away from the image */
+  .sv-card .sv-bars, .sv-card .sv-head, .sv-card .sv-foot { transition: opacity 0.25s ease; }
+  .sv-card.held .sv-bars, .sv-card.held .sv-head, .sv-card.held .sv-foot { opacity: 0; }
   .sv-arrow {
     width: 44px; height: 44px;
     border-radius: 50%;
@@ -1342,7 +1351,22 @@
     /* --- shared section rhythm --- */
     .section-pad { padding: 56px 20px; gap: 24px; }
     .section-head h2 { font-size: clamp(30px, 8.5vw, 42px); }
-    .section-head p { font-size: 15px; }
+
+    /* --- mobile typography: 16px body floor, nothing under 12px, 1.45+ leading --- */
+    .section-head p { font-size: 16px; line-height: 1.5; }
+    .price-card .desc { font-size: 14px; line-height: 1.45; }
+    .price-card .price .from { font-size: 15px; }
+    .price-card .price .amount span { font-size: 19px; }
+    .ticket-card .meta span, .ticket-card .desc { font-size: 16px; line-height: 1.45; }
+    .rule-card p { font-size: 14px; line-height: 1.45; }
+    .facts span { font-size: 12px; letter-spacing: 1px; }
+    .facts b { font-size: 24px; }
+    .faq-a p { font-size: 16px; line-height: 1.55; }
+    .product-card .content h3 { font-size: 20px; }
+    .product-card .price { font-size: 16px; }
+    .info-col .eyebrow { font-size: 12.5px; letter-spacing: 2px; }
+    .info-col p { font-size: 16px; line-height: 1.5; }
+    .pill { font-size: 16px; padding: 14px 22px; }
 
     /* --- zones --- */
     .facts { gap: 18px; row-gap: 10px; }
@@ -1365,7 +1389,6 @@
     }
     .ticket-card .text { height: auto; padding-top: 14px; gap: 10px; }
     .ticket-card h3 { font-size: 21px; }
-    .ticket-card .meta span, .ticket-card .desc { font-size: 15px; }
 
     /* --- venue rules --- */
     .rule-card { width: auto; flex: 1 1 240px; max-width: 100%; padding: 20px 18px; }
@@ -1384,20 +1407,9 @@
   @media (max-width: 560px) {
     .hero-art { transform: scale(0.4); }
     .hero-headline .l2 { white-space: normal; }
-    /* one swipeable row keeps the hero from becoming three screens tall */
-    .pricing-row {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-    }
-    .pricing-row::-webkit-scrollbar { display: none; }
-    .price-card {
-      flex: 0 0 76vw;
-      scroll-snap-align: center;
-      border-top: none !important;
-    }
-    .price-card + .price-card { border-left: 1px solid var(--border) !important; }
+    /* stays a 2-up grid on phones — no horizontal scrolling */
+    .price-card { padding: 16px 14px; gap: 14px; }
+    .price-card .title-row h3 { font-size: 17px; }
     .ticket-card { width: 88vw; }
     .rule-card { flex-basis: 100%; }
     .gal-set img { height: 140px; }
@@ -2052,32 +2064,32 @@
     <div class="rule-card">
       <span class="ic"><img src="assets/rules-no-food.svg" alt="" loading="lazy" decoding="async"></span>
       <b>No outside food</b>
-      <p>Food trucks and kitchens are<br>inside the venue.</p>
+      <p>Food trucks and kitchens are inside the venue.</p>
     </div>
     <div class="rule-card">
       <span class="ic"><img src="assets/rules-no-pets.svg" alt="" loading="lazy" decoding="async"></span>
       <b>No pets</b>
-      <p>Animals are not allowed on the<br>premises.</p>
+      <p>Animals are not allowed on the premises.</p>
     </div>
     <div class="rule-card">
       <span class="ic"><img src="assets/rules-no-cameras.svg" alt="" loading="lazy" decoding="async"></span>
       <b>No pro cameras</b>
-      <p>No professional cameras or<br>video recorders.</p>
+      <p>No professional cameras or video recorders.</p>
     </div>
     <div class="rule-card">
       <span class="ic"><img src="assets/rules-smoke-free.svg" alt="" loading="lazy" decoding="async"></span>
       <b>Smoke free</b>
-      <p>Including e&#8209;cigarettes.<br>Designated areas only.</p>
+      <p>Including e&#8209;cigarettes. Designated areas only.</p>
     </div>
     <div class="rule-card">
       <span class="ic"><img src="assets/rules-no-reentry.svg" alt="" loading="lazy" decoding="async"></span>
       <b>No re&#8209;entry</b>
-      <p>Leaving the venue ends your<br>visit.</p>
+      <p>Leaving the venue ends your visit.</p>
     </div>
     <div class="rule-card">
       <span class="ic"><img src="assets/rules-non-refundable.svg" alt="" loading="lazy" decoding="async"></span>
       <b>Non refundable</b>
-      <p>Tickets cannot be refunded once<br>bought.</p>
+      <p>Tickets cannot be refunded once bought.</p>
     </div>
     <div class="rule-card">
       <span class="ic"><img src="assets/rules-parking.svg" alt="" loading="lazy" decoding="async"></span>
@@ -2087,12 +2099,12 @@
     <div class="rule-card">
       <span class="ic"><img src="assets/rules-open-air.svg" alt="" loading="lazy" decoding="async"></span>
       <b>Open air</b>
-      <p>The venue is outdoors from end<br>to end.</p>
+      <p>The venue is outdoors from end to end.</p>
     </div>
     <div class="rule-card">
       <span class="ic"><img src="assets/rules-live-music.svg" alt="" loading="lazy" decoding="async"></span>
       <b>Live music</b>
-      <p>Performances run nightly in<br>every zone.</p>
+      <p>Performances run nightly in every zone.</p>
     </div>
   </div>
 </section>
@@ -2549,8 +2561,35 @@
         gsap.fromTo(card, { scale: 0.96, opacity: 0.6 }, { scale: 1, opacity: 1, duration: 0.35, ease: 'power2.out' });
       }
     }
-    function next() { if (si + 1 < zones[zi].slides.length) show(zi, si + 1); else show(zi + 1, 0); }
+    // like Instagram: the last slide of the last zone closes the viewer
+    function next() {
+      if (si + 1 < zones[zi].slides.length) show(zi, si + 1);
+      else if (zi + 1 < zones.length) show(zi + 1, 0);
+      else close();
+    }
     function prev() { if (si > 0) show(zi, si - 1); else show(zi - 1, -1); }
+    function nextZone() { if (zi + 1 < zones.length) show(zi + 1, 0); else close(); }
+    function prevZone() { show(zi - 1, 0); }
+
+    // press-and-hold pauses the story; release resumes
+    function holdOn() {
+      card.classList.add('held');
+      if (barTween) barTween.pause();
+      if (!vid.paused) vid.pause();
+      cancelAnimationFrame(raf);
+    }
+    function holdOff() {
+      if (!card.classList.contains('held')) return;
+      card.classList.remove('held');
+      if (barTween) barTween.resume();
+      if (vid.style.display !== 'none') {
+        var p = vid.play(); if (p && p.catch) p.catch(function () {});
+        (function trackBar() {
+          if (vid.duration) fillBar(si, vid.currentTime / vid.duration);
+          raf = requestAnimationFrame(trackBar);
+        })();
+      }
+    }
 
     function open(i) {
       viewer.classList.add('open');
@@ -2570,11 +2609,71 @@
       el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i); } });
     });
     viewer.querySelector('.sv-close').addEventListener('click', close);
-    viewer.querySelector('.sv-arrow.prev').addEventListener('click', prev);
-    viewer.querySelector('.sv-arrow.next').addEventListener('click', next);
-    viewer.querySelectorAll('.sv-tap span').forEach(function (zone) {
-      zone.addEventListener('click', function () { zone.dataset.dir === '1' ? next() : prev(); });
-    });
+    viewer.querySelector('.sv-arrow.prev').addEventListener('click', prevZone);
+    viewer.querySelector('.sv-arrow.next').addEventListener('click', nextZone);
+    // keep the card's own transition for the dismiss-drag snap-back
+    card.style.transition = 'transform 0.28s cubic-bezier(0.22,1,0.36,1), opacity 0.28s';
+    /* Instagram-style gestures on the tap layer:
+       tap left third = back, right two thirds = forward, hold = pause,
+       horizontal swipe = change zone, swipe down = dismiss */
+    (function () {
+      var tap = viewer.querySelector('.sv-tap');
+      var down = false, sx = 0, sy = 0, t0 = 0, moved = false, holdTimer = null;
+      var HOLD_MS = 240, SWIPE_X = 55, SWIPE_Y = 90;
+
+      tap.addEventListener('pointerdown', function (e) {
+        down = true; moved = false;
+        sx = e.clientX; sy = e.clientY; t0 = performance.now();
+        try { tap.setPointerCapture && tap.setPointerCapture(e.pointerId); } catch (err) {}
+        holdTimer = setTimeout(holdOn, HOLD_MS);
+      });
+
+      tap.addEventListener('pointermove', function (e) {
+        if (!down) return;
+        var dx = e.clientX - sx, dy = e.clientY - sy;
+        if (!moved && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
+          moved = true;
+          clearTimeout(holdTimer);
+          holdOff();
+        }
+        // live drag feedback while swiping the card down to dismiss
+        if (moved && dy > 0 && Math.abs(dy) > Math.abs(dx)) {
+          card.style.transform = 'translateY(' + Math.min(dy, 200) + 'px) scale(' + (1 - Math.min(dy, 200) / 1400) + ')';
+          card.style.opacity = String(1 - Math.min(dy, 200) / 320);
+        }
+      });
+
+      function release(e) {
+        if (!down) return;
+        down = false;
+        clearTimeout(holdTimer);
+        var dx = (e.clientX || 0) - sx, dy = (e.clientY || 0) - sy;
+        var held = card.classList.contains('held');
+        card.style.transform = '';
+        card.style.opacity = '';
+
+        if (moved) {
+          if (dy > SWIPE_Y && Math.abs(dy) > Math.abs(dx)) { close(); return; }
+          if (Math.abs(dx) > SWIPE_X) { dx < 0 ? nextZone() : prevZone(); return; }
+          holdOff();
+          return;
+        }
+        if (held) { holdOff(); return; }
+        if (performance.now() - t0 < HOLD_MS + 120) {
+          // tap: left third goes back, the rest goes forward
+          var r = tap.getBoundingClientRect();
+          (e.clientX - r.left) < r.width / 3 ? prev() : next();
+        } else {
+          holdOff();
+        }
+      }
+      tap.addEventListener('pointerup', release);
+      tap.addEventListener('pointercancel', function () {
+        down = false; clearTimeout(holdTimer);
+        card.style.transform = ''; card.style.opacity = '';
+        holdOff();
+      });
+    })();
     viewer.addEventListener('click', function (e) { if (e.target === viewer) close(); });
     viewer.querySelector('.sv-cta').addEventListener('click', function () {
       close();
