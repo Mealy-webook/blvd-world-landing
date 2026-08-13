@@ -87,6 +87,16 @@
   }
   .hero > * { position: relative; z-index: 3; }
   .hero > .tear { position: absolute; z-index: 6; }
+  /* fade the landmark collage into the info strip's navy so the band reads as one */
+  .hero::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 200px;
+    background: linear-gradient(to bottom, rgba(33, 40, 89, 0) 0%, rgba(33, 40, 89, 0.75) 62%, #212859 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
   .hero-stars {
     position: absolute; z-index: 0;
     left: calc(50% - 960px - 8.54px); top: -35px;
@@ -168,6 +178,63 @@
     width: 1.5px; height: 34px;
     background: linear-gradient(to bottom, rgba(207, 228, 255, 0.8), rgba(207, 228, 255, 0));
   }
+
+  /* ============ info strip (hours / season / location) ============ */
+  .info-strip {
+    position: relative;
+    /* continues the hero's final gradient stop so the navy reads as one band */
+    background: #212859;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 56px max(calc(50vw - 700px), 32px) 96px;
+    overflow: hidden;
+  }
+  .info-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    padding: 0 24px;
+  }
+  .info-col + .info-col { border-left: 1px solid rgba(255, 255, 255, 0.12); }
+  .info-col .ic {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    display: flex; align-items: center; justify-content: center;
+    color: #f5b921;
+    margin-bottom: 6px;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s;
+  }
+  .info-col .ic svg { width: 22px; height: 22px; }
+  .info-col:hover .ic { transform: translateY(-3px); background: rgba(245, 185, 33, 0.14); }
+  .info-col .eyebrow {
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+    color: #93a4c8;
+  }
+  .info-col b {
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.15;
+    color: #fff;
+  }
+  .info-col p {
+    font-size: 17px;
+    color: #9fb0d8;
+  }
+  .open-map-link {
+    font: inherit;
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color 0.25s;
+  }
+  .open-map-link:hover { color: var(--pink); }
 
   /* ============ carousel controls ============ */
   .controls {
@@ -732,6 +799,18 @@
     transition: transform 0.25s;
   }
   .vm-card:hover { transform: translateX(4px); }
+  /* selected place: highlighted in the list and on the map */
+  .vm-card.sel {
+    outline: 1.5px solid var(--pink);
+    outline-offset: 6px;
+    border-radius: 12px;
+  }
+  .vm-pin.sel {
+    background: var(--pink);
+    transform: translate(-50%, -50%) scale(calc(var(--pinscale, 1) * 1.18));
+    z-index: 3;
+  }
+  .vm-pin.sel img { filter: brightness(0) invert(1); }
   .vm-card:not(:last-child) { padding-bottom: 16px; border-bottom: 1px solid #e4e4e7; }
   .vm-card .thumb {
     width: 103px; height: 103px;
@@ -1108,6 +1187,8 @@
   }
   .dock-item .p img { width: 10px; height: 10px; filter: brightness(0) invert(1); }
   .dock-item.active .p { background: var(--pink); }
+  /* dock hidden for now — delete this one rule to bring it back */
+  #dock { display: none !important; }
 
   /* custom cursor (enabled via .has-cursor on <html> for fine pointers) */
   html.has-cursor, html.has-cursor * { cursor: none !important; }
@@ -1160,6 +1241,9 @@
     .section-head h2 { font-size: 42px; }
     .faq-section h2 { font-size: 42px; line-height: 1.15; }
     .cards-row .product-card { flex: 0 0 72%; }
+    .info-strip { grid-template-columns: 1fr; gap: 34px; padding-bottom: 84px; }
+    .info-col + .info-col { border-left: none; border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 30px; }
+    .info-col b { font-size: 27px; }
     .stories-row {
       flex-wrap: nowrap;
       justify-content: flex-start;
@@ -1313,6 +1397,44 @@
   <div class="scroll-cue">
     <span>SCROLL</span>
     <div class="line"></div>
+  </div>
+
+</section>
+
+<!-- ================= INFO STRIP ================= -->
+<section class="info-strip">
+  <div class="info-col">
+    <span class="ic" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path>
+      </svg>
+    </span>
+    <span class="eyebrow">Visiting hours</span>
+    <b>4:00 PM &ndash; 1:00 AM</b>
+    <p>Every day, right through the season</p>
+  </div>
+  <div class="info-col">
+    <span class="ic" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3.5" y="5.5" width="17" height="15" rx="2.5"></rect>
+        <path d="M3.5 10h17M8 3.5v4M16 3.5v4"></path>
+        <path d="M7.5 14h3M13.5 14h3M7.5 17.5h3M13.5 17.5h3"></path>
+      </svg>
+    </span>
+    <span class="eyebrow">The season</span>
+    <b>11 October &ndash; 2 May</b>
+    <p>Riyadh Season, every night in between</p>
+  </div>
+  <div class="info-col">
+    <span class="ic" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 21.5s7-6.1 7-11.2A7 7 0 0 0 5 10.3c0 5.1 7 11.2 7 11.2Z"></path>
+        <circle cx="12" cy="10" r="2.6"></circle>
+      </svg>
+    </span>
+    <span class="eyebrow">Where it is</span>
+    <b>Boulevard City, Riyadh</b>
+    <p><button class="open-map-link">Open the park map</button></p>
   </div>
 
   <div class="tear tear-bottom">
@@ -2205,7 +2327,7 @@
   (function () {
     var vm = document.getElementById('view-map');
     // openers: the "Explore zones on map" CTA and the map image in the Zones section
-    var openers = document.querySelectorAll('#open-map, .zones-map');
+    var openers = document.querySelectorAll('#open-map, .zones-map, .open-map-link');
     if (!vm || !openers.length) return;
     // attach to <html> so the fit-to-width body zoom doesn't shrink the overlay
     document.documentElement.appendChild(vm);
@@ -2469,7 +2591,21 @@
         gsap.fromTo(detail, { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.6)' });
       }
     }
-    function hideDetail() { detail.hidden = true; }
+    // keep the map pin and its side-menu card selected together
+    function clearSelection() {
+      vm.querySelectorAll('.vm-card.sel, .vm-pin.sel').forEach(function (el) { el.classList.remove('sel'); });
+    }
+    function selectPoi(poiKey, sourceEl) {
+      clearSelection();
+      if (poiKey) {
+        vm.querySelectorAll('[data-poi="' + poiKey + '"]').forEach(function (el) { el.classList.add('sel'); });
+        var card = vmList.querySelector('.vm-card[data-poi="' + poiKey + '"]');
+        if (card) card.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'nearest' });
+      } else if (sourceEl) {
+        sourceEl.classList.add('sel');
+      }
+    }
+    function hideDetail() { detail.hidden = true; clearSelection(); }
     detail.querySelector('.vm-detail-close').addEventListener('click', hideDetail);
 
     // bottom-sheet handle (small screens): collapse/expand the list
@@ -2487,6 +2623,7 @@
         // anchor to the matching map pin when the click came from the list
         var anchor = poiEl.classList.contains('vm-pin') ? poiEl : vm.querySelector('.vm-pin[data-poi="' + poiEl.dataset.poi + '"]') || poiEl;
         showDetail({ img: p.img, typeLabel: LABELS[p.type], name: p.name, desc: p.desc }, anchor);
+        selectPoi(poiEl.dataset.poi);
         return;
       }
       var card = e.target.closest && e.target.closest('.vm-card');
@@ -2497,6 +2634,7 @@
           name: card.querySelector('h4').textContent,
           desc: 'Open nightly inside BLVD World. Book your slot in seconds.'
         }, card);
+        selectPoi(null, card);
       }
     });
 
@@ -2611,6 +2749,7 @@
       });
     }
     revealGroup('section:not(.hero) .section-head', null, { y: 34 });
+    revealGroup('.info-strip', '.info-col', { y: 30, stagger: 0.12 });
     revealGroup('.stories-row', '.story', { y: 30, scale: 0.6, ease: 'back.out(1.5)', stagger: 0.08 });
     revealGroup('#rides .rail', '.ticket-card', { y: 90, rotation: 2.5, stagger: 0.12, duration: 1 });
     revealGroup('#experiences .cards-row', '.product-card', {});
