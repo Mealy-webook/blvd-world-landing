@@ -1,0 +1,2718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLVD World — Explore New Worlds</title>
+<link rel="icon" href="assets/hero-logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Figtree:wght@400;500;600&family=Inter:wght@900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #ff2c79;
+    --ink: #18181b;
+    --sub: #56565d;
+    --border: #e4e4e7;
+    --navy-text: #020e4c;
+    --sub-inverse: #9fb0d8;
+    --content-secondary: #a1a1aa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #fff;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: "opsz" 14, "wdth" 100;
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+  img { display: block; }
+  button { font: inherit; cursor: pointer; background: none; border: none; color: inherit; }
+
+  section { position: relative; }
+
+  .navy-bg { background: linear-gradient(180deg, #03003c 0%, #001d5f 55%, #212859 100%); }
+
+  .section-pad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 31.2px;
+    padding: 72px max(calc(50vw - 700px), 32px);
+  }
+
+  .section-head { text-align: center; padding-bottom: 4.56px; }
+  .section-head h2 {
+    font-weight: 700;
+    font-size: 56px;
+    line-height: normal;
+    color: var(--ink);
+  }
+  .section-head p {
+    font-weight: 400;
+    font-size: 18px;
+    color: var(--sub);
+    margin-top: 4px;
+  }
+  .on-navy .section-head h2 { color: #fff; }
+  .on-navy .section-head p { color: var(--sub-inverse); }
+
+  /* ============ torn paper edges ============ */
+  .tear { position: absolute; left: 0; width: 100%; pointer-events: none; z-index: 6; }
+  .tear .bar { position: absolute; left: 0; width: 100%; height: 2px; background: #fff; }
+  /* navy section bottom: white paper rises into navy */
+  .tear-bottom { bottom: 0; height: 80px; overflow: hidden; }
+  .tear-bottom img { position: absolute; width: 100%; height: 135.83%; top: -17.92%; left: 0; }
+  .tear-bottom .bar { bottom: -1px; }
+  /* navy section top: white paper of previous section rips into navy */
+  .tear-top { top: -50px; height: 112px; overflow: hidden; }
+  .tear-top img { position: absolute; width: 103.07%; height: 100%; left: -1.53%; top: 0; transform: rotate(180deg); }
+  .tear-top .bar { top: -1px; }
+  /* white section top after navy: white paper rises into navy above */
+  .tear-top-white { top: -49.57px; height: 80px; overflow: hidden; }
+  .tear-top-white img { position: absolute; width: 100%; height: 135.83%; top: -17.92%; left: 0; }
+  .tear-top-white .bar { bottom: -1px; }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 1100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    padding: 80px 32px;
+    overflow: hidden;
+  }
+  .hero > * { position: relative; z-index: 3; }
+  .hero > .tear { position: absolute; z-index: 6; }
+  .hero-stars {
+    position: absolute; z-index: 0;
+    left: calc(50% - 960px - 8.54px); top: -35px;
+    width: 1937px; height: 837px;
+    pointer-events: none;
+  }
+  .hero-decor { position: absolute; pointer-events: none; z-index: 1; }
+  .hero-decor img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-decor.crop { overflow: hidden; }
+  .hero-decor.crop img { position: absolute; max-width: none; }
+
+  .hero-logo { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .hero-logo .mark { width: 100.7px; height: 99.6px; }
+  .hero-logo .word { width: 104px; height: 17.3px; }
+
+  .hero-headline {
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    line-height: normal;
+  }
+  .hero-headline .l1 { font-size: 70px; }
+  .hero-headline .l2 { font-size: 100px; white-space: nowrap; }
+
+  .pricing-row {
+    display: flex;
+    align-items: flex-start;
+    width: 1120px;
+    max-width: 100%;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.45);
+  }
+  .price-card {
+    flex: 1 0 0;
+    min-width: 1px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    text-align: left;
+  }
+  .price-card + .price-card { border-left: 1px solid var(--border); }
+  .price-card .tile {
+    width: 52px; height: 52px;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .price-card .tile img { width: 24px; height: 24px; }
+  .price-card .tile img.tilted { transform: rotate(-30deg); }
+  .price-card .body { display: flex; flex-direction: column; gap: 8px; }
+  .price-card .title-row { display: flex; align-items: center; gap: 4px; }
+  .price-card .title-row h3 {
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--navy-text);
+    white-space: nowrap;
+  }
+  .price-card .title-row img { width: 5.5px; height: 9.5px; margin-left: 6px; }
+  .price-card .desc {
+    font-family: 'Figtree', sans-serif;
+    font-size: 14px;
+    color: var(--content-secondary);
+  }
+  .price-card .price {
+    display: flex; align-items: baseline; gap: 4px;
+    font-family: 'Figtree', sans-serif;
+  }
+  .price-card .price .from { font-size: 14px; line-height: 20px; color: var(--content-secondary); }
+  .price-card .price .amount { display: flex; align-items: center; gap: 4px; }
+  .price-card .price .amount img { width: 13px; height: 13px; }
+  .price-card .price .amount span { font-weight: 500; font-size: 18px; line-height: 24px; color: var(--navy-text); }
+
+  .scroll-cue { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .scroll-cue span { font-weight: 700; font-size: 22px; color: #fff; letter-spacing: 0.04em; }
+  .scroll-cue .line {
+    width: 1.5px; height: 34px;
+    background: linear-gradient(to bottom, rgba(207, 228, 255, 0.8), rgba(207, 228, 255, 0));
+  }
+
+  /* ============ carousel controls ============ */
+  .controls {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 32px;
+    align-items: center;
+    width: 100%;
+    max-width: 1400px;
+    padding-top: 32px;
+  }
+  .controls .btns { display: flex; gap: 12px; }
+  .ctrl-btn {
+    width: 56px; height: 56px;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    border: 1px solid var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.2s, background 0.2s;
+  }
+  .ctrl-btn img { width: 7px; height: 12px; }
+  .ctrl-btn.prev img { transform: scaleX(-1); }
+  .ctrl-btn.dim { opacity: 0.6; }
+  .ctrl-btn:hover { background: rgba(0, 0, 0, 0.05); }
+  .on-navy .ctrl-btn { border-color: #fff; }
+  .on-navy .ctrl-btn:hover { background: rgba(255, 255, 255, 0.08); }
+  .progress {
+    height: 2px;
+    border-radius: 9999px;
+    background: #d4d4d8;
+    overflow: hidden;
+  }
+  .on-navy .progress { background: rgba(253, 247, 237, 0.2); }
+  .progress .fill {
+    height: 100%;
+    border-radius: 9999px;
+    background: #0b0b0e;
+    width: 18%;
+    transition: width 0.25s ease;
+  }
+  .on-navy .progress .fill { background: #fff; }
+
+  /* ============ ZONES ============ */
+  .stories-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+  }
+  .story { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .story .ring {
+    border: 6px solid var(--pink);
+    border-radius: 9999px;
+    padding: 12px;
+    background: #fff;
+  }
+  .story .avatar {
+    width: 128px; height: 128px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+  }
+  .story .avatar img {
+    position: absolute;
+    width: 120%; height: 160%;
+    left: -10%; top: -2%;
+    object-fit: cover;
+  }
+  .story .label { font-weight: 500; font-size: 20px; color: #000; }
+  .stories-row .ctrl-btn { flex-shrink: 0; }
+
+  .zones-map {
+    width: 1024px;
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.35));
+    cursor: pointer;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), filter 0.4s;
+  }
+  .zones-map:hover {
+    transform: scale(1.015);
+    filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.45));
+  }
+
+  .facts {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    list-style: none;
+  }
+  .facts li { display: flex; align-items: center; gap: 36px; }
+  .facts li + li::before {
+    content: "";
+    width: 1px; height: 18px;
+    background: #d4d4d8;
+  }
+  .facts .fact { display: flex; align-items: center; gap: 8px; }
+  .facts b {
+    font-weight: 800;
+    font-size: 25px;
+    line-height: 25px;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+  }
+  .facts span {
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--sub);
+  }
+
+  .zones-buttons { display: flex; gap: 24px; }
+  .pill {
+    font-family: 'Figtree', sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 24px;
+    padding: 14px 20px;
+    border-radius: 9999px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .pill.cta { background: var(--pink); color: #fff; }
+  .pill.cta:hover { box-shadow: 0 6px 18px rgba(255, 44, 121, 0.35); }
+  .pill.ghost { background: #fff; color: var(--ink); border: 1px solid #000; }
+
+  /* ============ RIDES (ticket cards) ============ */
+  .rail-wrap {
+    width: 100%;
+    max-width: 1400px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+  }
+  .rail-wrap::-webkit-scrollbar { display: none; }
+  .rail {
+    display: flex;
+    gap: 24px;
+    width: max-content;
+    padding-bottom: 2px;
+  }
+  .ticket-card {
+    width: 456px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.25));
+  }
+  .ticket-card .cap { width: 456px; height: 40px; display: block; }
+  .ticket-card .cap.top { transform: scaleY(-1); }
+  .ticket-card .card-body {
+    position: relative;
+    background: #fff;
+    padding: 16px;
+    height: 487px;
+  }
+  .ticket-card .photo {
+    position: absolute;
+    left: 16px; top: -24px;
+    width: 424px; height: 283px;
+  }
+  .ticket-card .text {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 12px;
+    height: 455px;
+  }
+  .ticket-card h3 {
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.27px;
+    line-height: 0.9;
+    color: #000;
+  }
+  .ticket-card .meta { display: flex; align-items: center; gap: 8px; }
+  .ticket-card .meta .ic {
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ticket-card .meta span { font-size: 18px; color: var(--sub); }
+  .ticket-card .desc { font-size: 18px; color: var(--sub); }
+
+  /* ============ product cards (experiences / restaurants) ============ */
+  .cards-row {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+    max-width: 1400px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .cards-row::-webkit-scrollbar { display: none; }
+  .product-card {
+    flex: 0 0 calc((100% - 72px) / 4);
+    min-width: 0;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .product-card .media {
+    position: relative;
+    width: 100%;
+    border-radius: 24px;
+    overflow: hidden;
+  }
+  .product-card .media.square { aspect-ratio: 1 / 1; }
+  .product-card .media.wide { aspect-ratio: 240 / 160; }
+  .product-card .media > img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  .fav-btn {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 40px; height: 40px;
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .fav-btn:hover { background: rgba(0, 0, 0, 0.55); }
+  .on-navy .fav-btn { background: rgba(0, 0, 0, 0.7); }
+  .fav-btn img { width: 17px; height: 16px; }
+  .product-card .content { padding: 0 4px; display: flex; flex-direction: column; gap: 4px; }
+  .product-card .content h3 {
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--ink);
+    height: 36px;
+    display: flex; align-items: center;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .on-navy .product-card .content h3 { color: #fff; }
+  .product-card .price {
+    display: flex; align-items: center; gap: 2px;
+    font-family: 'Figtree', sans-serif;
+    font-weight: 600; font-size: 17px; line-height: 24px;
+    color: var(--ink);
+  }
+  .on-navy .product-card .price { color: #e4e4e7; }
+  .product-card .price img { width: 11px; height: 12px; }
+
+  /* ============ VENUE RULES ============ */
+  .rules-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    max-width: 1400px;
+  }
+  .rule-card {
+    width: 260.8px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+  }
+  .rule-card .ic {
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.92;
+  }
+  .rule-card .ic img { max-width: 26px; max-height: 26px; }
+  .rule-card b { font-weight: 700; font-size: 24px; color: var(--ink); }
+  .rule-card p { font-weight: 400; font-size: 12px; color: var(--sub); }
+
+  /* ============ FAQ ============ */
+  .faq-section h2 {
+    font-weight: 700;
+    font-size: 64.3px;
+    line-height: 72.96px;
+    letter-spacing: -1.52px;
+    color: #fff;
+    text-align: center;
+  }
+  .faq-list {
+    width: 740px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .faq-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .faq-q {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    text-align: left;
+  }
+  .faq-q span {
+    flex: 1;
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 22.95px;
+    letter-spacing: -0.17px;
+    color: #e4e4e7;
+  }
+  .faq-ic { position: relative; width: 18px; height: 18px; flex-shrink: 0; transition: transform 0.25s ease; }
+  .faq-ic::before, .faq-ic::after {
+    content: "";
+    position: absolute;
+    background: var(--pink);
+    border-radius: 2px;
+  }
+  .faq-ic::before { left: 0; right: 0; top: 8px; height: 2px; }
+  .faq-ic::after { top: 0; bottom: 0; left: 8px; width: 2px; transition: opacity 0.2s; }
+  .faq-item.open .faq-ic { transform: rotate(90deg); }
+  .faq-item.open .faq-ic::after { opacity: 0; }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .faq-a p {
+    padding: 0 20px 18px;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--sub-inverse);
+  }
+
+  /* ============ delight layer ============ */
+  #scroll-progress {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, #ff2c79, #ff7ab0);
+    transform: scaleX(0); transform-origin: 0 50%;
+    z-index: 99; pointer-events: none;
+  }
+
+  .tw {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0.12;
+    z-index: 1;
+    pointer-events: none;
+    animation: twinkle 3.2s ease-in-out infinite;
+  }
+  @keyframes twinkle { 50% { opacity: 0.9; transform: scale(1.5); } }
+
+  .scroll-cue .line { animation: cueDrip 1.9s ease-in-out infinite; }
+  @keyframes cueDrip {
+    0% { transform: scaleY(0); transform-origin: top; }
+    45% { transform: scaleY(1); transform-origin: top; }
+    55% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  .price-card { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+  .price-card:hover { transform: translateY(-6px); }
+  .price-card .tile { transition: background 0.3s, border-color 0.3s; }
+  .price-card:hover .tile { background: var(--navy-text); border-color: var(--navy-text); }
+  .price-card:hover .tile img { filter: brightness(0) invert(1); }
+  .price-card .title-row img { transition: transform 0.3s; }
+  .price-card:hover .title-row img { transform: translateX(4px); }
+
+  .story .ring { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s; }
+  .story:hover .ring { transform: scale(1.06); box-shadow: 0 10px 30px rgba(255, 44, 121, 0.35); }
+  .story .avatar img { transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+  .story:hover .avatar img { transform: scale(1.09); }
+
+  .pill { position: relative; overflow: hidden; }
+  .pill.cta::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+    transform: translateX(-130%);
+  }
+  .pill.cta:hover::after { animation: shine 0.9s ease; }
+  @keyframes shine { to { transform: translateX(130%); } }
+
+  .ticket-card { transition: filter 0.4s; }
+  .ticket-card:hover { filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.35)); }
+
+  .product-card .media > img { transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+  .product-card:hover .media > img { transform: scale(1.06); }
+  .fav-btn { transition: background 0.25s; }
+  .fav-btn.faved { background: var(--pink) !important; }
+
+  .rule-card { transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s; }
+  .rule-card:hover { border-color: var(--pink); transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08); }
+  .rule-card:hover .ic img { animation: wiggle 0.5s ease; }
+  @keyframes wiggle { 25% { transform: rotate(-8deg); } 75% { transform: rotate(8deg); } }
+
+  .faq-item { transition: background 0.3s, border-color 0.3s; }
+  .faq-item:hover { background: rgba(255, 255, 255, 0.09); border-color: rgba(255, 255, 255, 0.12); }
+
+  /* gallery marquee */
+  .gallery-sec {
+    position: relative;
+    background: #fff;
+    padding: 72px 0;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 31.2px;
+    overflow: hidden;
+  }
+  .gal-row { width: 100%; overflow: hidden; }
+  .gal-track {
+    display: flex;
+    width: max-content;
+    animation: galScroll 45s linear infinite;
+  }
+  .gal-row.rev .gal-track { animation-direction: reverse; }
+  .gal-row:hover .gal-track { animation-play-state: paused; }
+  .gal-set { display: flex; gap: 24px; padding-right: 24px; }
+  .gal-set img {
+    height: 260px; width: auto;
+    border-radius: 24px;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .gal-set img:hover { transform: scale(1.045); }
+  @keyframes galScroll { to { transform: translateX(-50%); } }
+
+  [data-rail] { cursor: grab; }
+  [data-rail].dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+
+  /* overlays attached to <html> don't inherit body's font — set it explicitly */
+  #view-map, #story-viewer, #loader {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: "opsz" 14, "wdth" 100;
+  }
+
+  /* map explorer (Figma section#view-map — attached to <html>, unaffected by body zoom) */
+  #view-map {
+    position: fixed; inset: 0;
+    z-index: 150;
+    display: none;
+    background: linear-gradient(180deg, #03003c 0%, #001d5f 55%, #212859 100%);
+    overflow: hidden;
+  }
+  #view-map.open { display: block; }
+  /* map page uses native cursors (the custom dot/ring is hidden over it):
+     hand on the map itself, pointer on every interactive control */
+  html.has-cursor #view-map, html.has-cursor #view-map * { cursor: default !important; }
+  .vm-map-wrap { position: absolute; inset: 0; }
+  #view-map .vm-map-wrap,
+  html.has-cursor #view-map .vm-map-wrap,
+  html.has-cursor #view-map .vm-map-wrap * { cursor: grab !important; }
+  #view-map .vm-map-wrap.dragging,
+  html.has-cursor #view-map .vm-map-wrap.dragging,
+  html.has-cursor #view-map .vm-map-wrap.dragging * { cursor: grabbing !important; }
+  #view-map button, #view-map .vm-card, #view-map .vm-dot, #view-map .vm-pin,
+  html.has-cursor #view-map button,
+  html.has-cursor #view-map button *,
+  html.has-cursor #view-map .vm-card,
+  html.has-cursor #view-map .vm-card *,
+  html.has-cursor #view-map .vm-dot,
+  html.has-cursor #view-map .vm-pin,
+  html.has-cursor #view-map .vm-pin * { cursor: pointer !important; }
+  #view-map .vm-search,
+  html.has-cursor #view-map .vm-search { cursor: text !important; }
+  .vm-stage {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    padding-left: min(28vw, 540px);
+    will-change: transform;
+  }
+  .vm-map {
+    width: min(67vw, 1292px);
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.35));
+    user-select: none;
+    pointer-events: none;
+  }
+  .vm-left {
+    position: absolute; inset: 0;
+    display: flex; align-items: center;
+    pointer-events: none;
+  }
+  .vm-panel {
+    pointer-events: auto;
+    margin-left: clamp(16px, 6.25vw, 120px);
+    width: min(460px, calc(100vw - 32px));
+    height: min(1040px, calc(100vh - 48px));
+    background: #fff;
+    border-radius: 24px;
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 24px;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.45);
+  }
+  .vm-head { display: flex; align-items: center; gap: 16px; }
+  .vm-iconbtn {
+    width: 40px; height: 40px; flex-shrink: 0;
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.05);
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .vm-iconbtn:hover { background: rgba(0, 0, 0, 0.12); }
+  .vm-iconbtn img { width: 16px; height: 16px; }
+  .vm-title {
+    flex: 1;
+    text-align: center;
+    font-family: 'Figtree', sans-serif;
+    font-weight: 700; font-size: 26px; line-height: 32px;
+    letter-spacing: -0.13px;
+    color: #18181b;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .vm-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .vm-chip {
+    display: flex; align-items: center;
+    height: 40px; padding: 0 12px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    font-family: 'Figtree', sans-serif;
+    font-weight: 600; font-size: 15px; line-height: 22px;
+    letter-spacing: 0.19px;
+    color: #18181b;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .vm-chip:hover { background: rgba(0, 0, 0, 0.05); }
+  .vm-chip.sel { background: rgba(255, 44, 121, 0.1); border-color: var(--pink); }
+  .vm-chip img { width: 16px; height: 16px; }
+  .vm-chip .ic-ticket { transform: rotate(-30deg); }
+  .vm-chip span { padding: 0 4px; }
+  .vm-list {
+    display: flex; flex-direction: column; gap: 16px;
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .vm-search {
+    display: none;
+    flex: 1; min-width: 0;
+    height: 40px;
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.05);
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    padding: 0 16px;
+    font-family: 'Figtree', sans-serif;
+    font-weight: 500; font-size: 15px;
+    color: #18181b;
+    outline: none;
+  }
+  .vm-search:focus { border-color: var(--pink); background: #fff; }
+  .vm-head.searching .vm-title { display: none; }
+  .vm-head.searching .vm-search { display: block; }
+  .vm-search-btn.active { background: rgba(255, 44, 121, 0.12); border-color: var(--pink); }
+  .vm-empty { text-align: center; padding: 32px 0; color: #56565d; }
+  .vm-empty b { display: block; font-weight: 600; font-size: 18px; color: #18181b; margin-bottom: 4px; }
+  .vm-empty p { font-family: 'Figtree', sans-serif; font-size: 14px; }
+  .vm-list::-webkit-scrollbar { display: none; }
+  .vm-card {
+    display: flex; align-items: center; gap: 16px;
+    cursor: pointer;
+    transition: transform 0.25s;
+  }
+  .vm-card:hover { transform: translateX(4px); }
+  .vm-card:not(:last-child) { padding-bottom: 16px; border-bottom: 1px solid #e4e4e7; }
+  .vm-card .thumb {
+    width: 103px; height: 103px;
+    border-radius: 24px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .vm-card .body { min-width: 0; }
+  .vm-card .meta {
+    display: flex; align-items: center; gap: 4px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 14px; line-height: 20px;
+    color: #56565d;
+  }
+  .vm-card .meta .star { width: 9px; height: 9px; }
+  .vm-card h4 {
+    font-weight: 600; font-size: 20px;
+    color: #18181b;
+    margin: 4px 0 8px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .vm-card .book {
+    display: flex; align-items: center; gap: 4px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 14px; line-height: 20px;
+    color: #a1a1aa;
+  }
+  .vm-card .book img { width: 12px; height: 12px; }
+  .vm-zoom {
+    position: absolute; right: 24px; bottom: 24px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .vm-zoom button {
+    width: 40px; height: 40px;
+    border-radius: 9999px;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    transition: transform 0.15s;
+  }
+  .vm-zoom button:hover { transform: scale(1.08); }
+  .vm-zoom img, .vm-chip img, .vm-iconbtn img, .vm-card .book img { object-fit: contain; }
+  .vm-zoom img { width: 16px; height: 16px; }
+
+  /* map zone markers, POI pins, tooltips, zone note, detail card */
+  .vm-map-holder { position: relative; }
+  .vm-markers { position: absolute; inset: 0; }
+  .vm-dot, .vm-pin {
+    position: absolute;
+    transform: translate(-50%, -50%) scale(var(--pinscale, 1));
+    transform-origin: center bottom;
+  }
+  .vm-dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--pink);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  }
+  .vm-dot::before {
+    content: "";
+    position: absolute; inset: -3px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 44, 121, 0.7);
+    animation: dotPulse 1.8s ease-out infinite;
+  }
+  @keyframes dotPulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+  .vm-pin {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--pink);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vm-pin img { width: 15px; height: 15px; object-fit: contain; }
+  .vm-dot::after, .vm-pin::after {
+    content: attr(data-name);
+    position: absolute;
+    bottom: calc(100% + 9px); left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #fff;
+    color: #18181b;
+    font-family: 'Figtree', sans-serif;
+    font-weight: 600; font-size: 13px; line-height: 1;
+    padding: 8px 12px;
+    border-radius: 9999px;
+    white-space: nowrap;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .vm-dot:hover::after, .vm-pin:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .vm-dot, .vm-pin { animation: pinIn 0.4s ease both; }
+  @keyframes pinIn { from { opacity: 0; } }
+  /* active-zone tag: a removable chip at the head of the filter bar */
+  .vm-zone-chip {
+    background: var(--pink) !important;
+    border-color: var(--pink) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    gap: 2px;
+  }
+  .vm-zone-chip .x {
+    display: flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px;
+    margin-left: 2px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    font-size: 10px;
+  }
+  .vm-zone-chip:hover .x { background: rgba(255, 255, 255, 0.45); }
+  .vm-zone-chip .count { opacity: 0.75; font-weight: 600; }
+  .vm-grab { display: none; }
+  .vm-detail {
+    position: absolute;
+    right: 84px; bottom: 24px;
+    width: 340px; max-width: calc(100vw - 24px);
+    background: #fff;
+    border-radius: 20px;
+    padding: 16px;
+    display: flex; gap: 14px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  }
+  .vm-detail[hidden] { display: none; }
+  .vm-detail-close {
+    position: absolute; top: 10px; right: 10px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.06);
+    font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vm-detail-img {
+    width: 88px; height: 88px;
+    border-radius: 16px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .vm-detail-body { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .vm-detail-body .meta {
+    display: flex; align-items: center; gap: 4px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px; color: #56565d;
+  }
+  .vm-detail-body .meta .star { width: 9px; height: 9px; }
+  .vm-detail-body h4 { font-weight: 600; font-size: 18px; color: #18181b; }
+  .vm-detail-body .desc {
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px; line-height: 1.45;
+    color: #56565d;
+  }
+  .vm-detail-body .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+  .vm-detail-body .book {
+    display: flex; align-items: center; gap: 4px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px; color: #a1a1aa;
+  }
+  .vm-detail-body .book img { width: 11px; height: 11px; object-fit: contain; }
+  .vm-detail-cta {
+    background: var(--pink);
+    color: #fff;
+    font-family: 'Figtree', sans-serif;
+    font-weight: 600; font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 9999px;
+  }
+
+  /* ---- map page: responsive (bottom-sheet panel on small screens) ---- */
+  @media (max-width: 900px) {
+    .vm-stage { padding-left: 0; padding-bottom: 46vh; }
+    .vm-map { width: 150vw; }
+    .vm-left { align-items: flex-end; }
+    .vm-panel {
+      margin: 0;
+      width: 100%;
+      height: min(52vh, 560px);
+      border-radius: 24px 24px 0 0;
+      padding: 12px 16px 16px;
+      gap: 14px;
+    }
+    .vm-grab {
+      display: block;
+      width: 44px; height: 4px;
+      border-radius: 99px;
+      background: #d4d4d8;
+      align-self: center;
+      flex-shrink: 0;
+    }
+    .vm-panel.collapsed { height: auto; }
+    .vm-panel.collapsed .vm-list { display: none; }
+    .vm-title { font-size: 20px; line-height: 26px; }
+    .vm-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .vm-chips::-webkit-scrollbar { display: none; }
+    .vm-chip { flex-shrink: 0; height: 36px; font-size: 14px; }
+    .vm-card .thumb { width: 76px; height: 76px; border-radius: 16px; }
+    .vm-card h4 { font-size: 17px; margin: 2px 0 6px; }
+    .vm-zoom { top: 16px; right: 12px; bottom: auto; }
+    .vm-detail { width: min(340px, calc(100vw - 24px)); }
+  }
+  @media (max-width: 480px) {
+    .vm-panel { height: min(58vh, 520px); }
+    .vm-stage { padding-bottom: 52vh; }
+    .vm-map { width: 190vw; }
+    .vm-detail-img { width: 68px; height: 68px; }
+  }
+
+  /* preloader */
+  #loader {
+    position: fixed; inset: 0;
+    z-index: 300;
+    background: linear-gradient(180deg, #03003c 0%, #001d5f 55%, #212859 100%);
+    display: flex; align-items: center; justify-content: center;
+    overflow: visible;
+  }
+  #loader.ld-done { transition: transform 0.85s cubic-bezier(0.76, 0, 0.24, 1); transform: translateY(-104%); }
+  .ld-inner { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .ld-mark { width: 84px; height: 84px; animation: ldSpin 2.4s ease-in-out infinite; }
+  @keyframes ldSpin {
+    50% { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+  .ld-word { width: 110px; }
+  .ld-track {
+    width: 220px; height: 2px;
+    margin-top: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .ld-fill {
+    width: 100%; height: 100%;
+    background: var(--pink);
+    transform: scaleX(0); transform-origin: 0 50%;
+  }
+  .ld-count {
+    font-weight: 700; font-size: 14px;
+    letter-spacing: 1.5px;
+    color: #9fb0d8;
+    font-variant-numeric: tabular-nums;
+  }
+  .ld-tear {
+    position: absolute;
+    bottom: -58px; left: -1.5%;
+    width: 103%; height: 60px;
+    transform: rotate(180deg);
+    pointer-events: none;
+  }
+
+  /* story viewer (appended to <html> so body zoom doesn't shrink it) */
+  .story { cursor: pointer; }
+  #story-viewer {
+    position: fixed; inset: 0;
+    z-index: 200;
+    display: none;
+    align-items: center; justify-content: center;
+    gap: 20px;
+    background: rgba(2, 0, 40, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  #story-viewer.open { display: flex; }
+  .sv-card {
+    position: relative;
+    width: min(420px, 92vw);
+    aspect-ratio: 1085 / 1450;
+    max-height: 88vh;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    background: #0a0840;
+  }
+  .sv-img, .sv-vid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .sv-vid { display: none; background: #0a0840; }
+  .sv-bars { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; gap: 4px; z-index: 3; }
+  .sv-bars i {
+    flex: 1; height: 3px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.3);
+    overflow: hidden; position: relative; display: block;
+  }
+  .sv-bars i b {
+    position: absolute; inset: 0; display: block;
+    background: #fff;
+    transform: scaleX(0); transform-origin: 0 50%;
+  }
+  .sv-head {
+    position: absolute; top: 24px; left: 14px; right: 14px;
+    display: flex; align-items: center; gap: 10px;
+    z-index: 3; color: #fff;
+  }
+  .sv-ava { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--pink); object-fit: cover; }
+  .sv-name { font-weight: 700; font-size: 15px; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
+  .sv-close {
+    margin-left: auto;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff; font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sv-foot {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 56px 16px 16px;
+    background: linear-gradient(transparent, rgba(2, 0, 40, 0.85));
+    z-index: 2; color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sv-tag { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.85; }
+  .sv-cta {
+    background: var(--pink); color: #fff;
+    font-family: 'Figtree', sans-serif; font-weight: 600; font-size: 14px;
+    padding: 10px 16px; border-radius: 99px;
+  }
+  .sv-tap { position: absolute; inset: 0; display: flex; z-index: 2; }
+  .sv-tap span { flex: 1; }
+  .sv-arrow {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.25s;
+    flex-shrink: 0;
+  }
+  .sv-arrow:hover { background: rgba(255, 255, 255, 0.12); }
+  .sv-arrow img { width: 8px; height: 13px; filter: brightness(0) invert(1); }
+  .sv-arrow.prev img { transform: scaleX(-1); }
+  @media (max-width: 600px) { .sv-arrow { display: none; } }
+
+  /* floating quick-actions dock */
+  #dock {
+    position: fixed;
+    left: 50%; bottom: 24px;
+    transform: translate(-50%, 150%);
+    display: flex; align-items: center; gap: 4px;
+    padding: 10px;
+    background: linear-gradient(180deg, rgba(26, 22, 88, 0.97), rgba(8, 6, 48, 0.98));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 9999px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+  }
+  #dock.show { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+  .dock-logo { width: 30px; height: 30px; margin: 0 10px 0 8px; }
+  .dock-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px;
+    border-radius: 9999px;
+    color: #fff;
+    transition: background 0.25s;
+  }
+  .dock-item:hover { background: rgba(255, 255, 255, 0.1); }
+  .dock-item.active { background: rgba(255, 255, 255, 0.14); }
+  .dock-item .ic { width: 20px; height: 20px; filter: brightness(0) invert(1); }
+  .dock-item .ic.tilted { transform: rotate(-30deg); }
+  .dock-item .t { font-weight: 700; font-size: 16px; white-space: nowrap; }
+  .dock-item .p {
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.14);
+    font-family: 'Figtree', sans-serif;
+    font-weight: 600; font-size: 13px;
+    color: #fff;
+  }
+  .dock-item .p img { width: 10px; height: 10px; filter: brightness(0) invert(1); }
+  .dock-item.active .p { background: var(--pink); }
+
+  /* custom cursor (enabled via .has-cursor on <html> for fine pointers) */
+  html.has-cursor, html.has-cursor * { cursor: none !important; }
+  #cursor-dot, #cursor-ring {
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 999;
+    border-radius: 50%;
+  }
+  #cursor-dot {
+    width: 8px; height: 8px;
+    margin: -4px 0 0 -4px;
+    background: var(--pink);
+  }
+  #cursor-ring {
+    width: 40px; height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 1.5px solid rgba(255, 44, 121, 0.7);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.25s, border-color 0.25s;
+  }
+  #cursor-ring span {
+    font-family: 'Figtree', sans-serif;
+    font-size: 7px; font-weight: 600;
+    letter-spacing: 1.5px;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  #cursor-ring.is-hover { background: rgba(255, 44, 121, 0.12); border-color: var(--pink); }
+  #cursor-ring.is-drag { background: rgba(255, 44, 121, 0.92); border-color: transparent; }
+  #cursor-ring.is-drag span { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ============ responsive ============ */
+  /* 900px-1920px viewports scale the whole 1920 design down via body zoom (see script) */
+  @media (max-width: 900px) {
+    .hero-headline .l1 { font-size: 48px; }
+    .hero-headline .l2 { font-size: 64px; }
+    .pricing-row { flex-wrap: wrap; }
+    .price-card { flex: 1 1 40%; }
+    .price-card + .price-card { border-left: none; }
+    .section-head h2 { font-size: 42px; }
+    .faq-section h2 { font-size: 42px; line-height: 1.15; }
+    .cards-row .product-card { flex: 0 0 72%; }
+    .stories-row {
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .stories-row::-webkit-scrollbar { display: none; }
+    .stories-row .ctrl-btn { display: none; }
+    .facts { flex-wrap: wrap; }
+    #dock { max-width: calc(100vw - 24px); padding: 8px 10px; }
+    .dock-item { padding: 8px 10px; gap: 6px; }
+    .dock-item .t { display: none; }
+    .dock-logo { margin-right: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true">
+  <div class="ld-inner">
+    <img class="ld-mark" src="assets/hero-logo-mark.svg" alt="">
+    <img class="ld-word" src="assets/hero-logo-wordmark.svg" alt="">
+    <div class="ld-track"><div class="ld-fill"></div></div>
+    <div class="ld-count">0%</div>
+  </div>
+  <img class="ld-tear" src="assets/hero-torn-paper.png" alt="">
+</div>
+
+<div id="scroll-progress"></div>
+
+<nav id="dock" aria-label="Quick tickets">
+  <img class="dock-logo" src="assets/hero-logo-mark.svg" alt="">
+  <button class="dock-item" data-target="#zones">
+    <img class="ic tilted" src="assets/hero-icon-ticket.svg" alt="">
+    <span class="t">Entry ticket</span>
+    <span class="p"><img src="assets/hero-icon-riyal.svg" alt="SAR">35</span>
+  </button>
+  <button class="dock-item" data-target="#rides">
+    <img class="ic" src="assets/hero-icon-rocket.svg" alt="">
+    <span class="t">Rides Package</span>
+    <span class="p"><img src="assets/hero-icon-riyal.svg" alt="SAR">70</span>
+  </button>
+  <button class="dock-item" data-target="#experiences">
+    <img class="ic tilted" src="assets/hero-icon-ticket.svg" alt="">
+    <span class="t">Experiences</span>
+    <span class="p"><img src="assets/hero-icon-riyal.svg" alt="SAR">99</span>
+  </button>
+  <button class="dock-item" data-target="#restaurants">
+    <img class="ic" src="assets/hero-icon-dining.svg" alt="">
+    <span class="t">Restaurants</span>
+    <span class="p"><img src="assets/hero-icon-riyal.svg" alt="SAR">100</span>
+  </button>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero navy-bg" id="street">
+  <img class="hero-stars" src="assets/hero-stars.svg" alt="">
+
+  <!-- left landmark collage -->
+  <div class="hero-decor" style="left: calc(50% - 960px - 344.1px); top: 275.7px; width: 920px; height: 920px;">
+    <img src="assets/hero-left-landmark-1.png" alt="">
+  </div>
+  <div class="hero-decor crop" style="left: calc(50% - 960px - 33.35px); top: 159.4px; width: 1014px; height: 943px;">
+    <img src="assets/hero-left-landmark-2.png" alt="" style="width: 100%; height: 107.59%; top: 0; left: 0;">
+  </div>
+  <div class="hero-decor crop" style="left: calc(50% - 960px - 632px); top: 264px; width: 1205px; height: 837px;">
+    <img src="assets/hero-left-landmark-3.png" alt="" style="width: 100%; height: 143.88%; top: 0; left: 0.03%;">
+  </div>
+
+  <!-- right landmark collage -->
+  <div class="hero-decor" style="left: calc(50% - 960px + 1448.9px); top: 333.5px; width: 782.5px; height: 782.5px;">
+    <img src="assets/hero-right-landmark-1.png" alt="">
+  </div>
+  <div class="hero-decor crop" style="left: calc(50% - 960px + 1143.95px); top: 159px; width: 485px; height: 907.4px; transform: scaleX(-1);">
+    <img src="assets/hero-right-landmark-2.png" alt="" style="width: 187.12%; height: 100%; left: -87.12%; top: 0;">
+  </div>
+  <div class="hero-decor crop" style="left: calc(50% - 960px + 1324px); top: 418px; width: 1105px; height: 683px;">
+    <img src="assets/hero-right-landmark-3.png" alt="" style="width: 100%; height: 161.74%; top: 0; left: 0;">
+  </div>
+
+  <div class="hero-logo">
+    <img class="mark" src="assets/hero-logo-mark.svg" alt="BLVD World logo">
+    <img class="word" src="assets/hero-logo-wordmark.svg" alt="blvdworld">
+  </div>
+
+  <div class="hero-headline">
+    <div class="l1">Explore</div>
+    <div class="l2">NEW WORLDS</div>
+  </div>
+
+  <div class="pricing-row">
+    <div class="price-card">
+      <div class="tile"><img class="tilted" src="assets/hero-icon-ticket.svg" alt=""></div>
+      <div class="body">
+        <div class="title-row">
+          <h3>Entry ticket</h3>
+          <img src="assets/hero-icon-chevron.svg" alt="">
+        </div>
+        <p class="desc">Access to 20 spectacular country zones.</p>
+      </div>
+      <div class="price">
+        <span class="from">From</span>
+        <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>35</span></span>
+      </div>
+    </div>
+    <div class="price-card">
+      <div class="tile"><img src="assets/hero-icon-rocket.svg" alt=""></div>
+      <div class="body">
+        <div class="title-row">
+          <h3>Rides Package</h3>
+          <img src="assets/hero-icon-chevron.svg" alt="">
+        </div>
+        <p class="desc">Includes General Zone Entry + Rides access.</p>
+      </div>
+      <div class="price">
+        <span class="from">From</span>
+        <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>70</span></span>
+      </div>
+    </div>
+    <div class="price-card">
+      <div class="tile"><img class="tilted" src="assets/hero-icon-ticket.svg" alt=""></div>
+      <div class="body">
+        <div class="title-row">
+          <h3>Experiences</h3>
+          <img src="assets/hero-icon-chevron.svg" alt="">
+        </div>
+        <p class="desc">Includes General Zone Entry + Premium pavilion access</p>
+      </div>
+      <div class="price">
+        <span class="from">From</span>
+        <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>99</span></span>
+      </div>
+    </div>
+    <div class="price-card">
+      <div class="tile"><img src="assets/hero-icon-dining.svg" alt=""></div>
+      <div class="body">
+        <div class="title-row">
+          <h3>Restaurants</h3>
+          <img src="assets/hero-icon-chevron.svg" alt="">
+        </div>
+        <p class="desc">Includes General Zone Entry + Premium dining access</p>
+      </div>
+      <div class="price">
+        <span class="from">From</span>
+        <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>100</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>SCROLL</span>
+    <div class="line"></div>
+  </div>
+
+  <div class="tear tear-bottom">
+    <img src="assets/hero-torn-paper.png" alt="">
+    <div class="bar"></div>
+  </div>
+</section>
+
+<!-- ================= ZONES ================= -->
+<section class="section-pad" id="zones">
+  <div class="section-head">
+    <h2>Zones</h2>
+    <p>Explore exciting new zones along with refreshed favorites that offer a deeper journey into global cultures.</p>
+  </div>
+
+  <div class="stories-row">
+    <button class="ctrl-btn prev dim" aria-label="Previous zones"><img src="assets/zones-arrow-chevron.svg" alt=""></button>
+    <div class="story">
+      <div class="ring"><div class="avatar"><img src="assets/zones-story-saudi-arabia.png" alt="Saudia Arabia zone"></div></div>
+      <span class="label">Saudia Arabia</span>
+    </div>
+    <div class="story">
+      <div class="ring"><div class="avatar"><img src="assets/zones-story-egypt.png" alt="Egypt zone"></div></div>
+      <span class="label">Egypt</span>
+    </div>
+    <div class="story">
+      <div class="ring"><div class="avatar"><img src="assets/zones-story-turkey.png" alt="Turkey zone"></div></div>
+      <span class="label">Turkey</span>
+    </div>
+    <div class="story">
+      <div class="ring"><div class="avatar"><img src="assets/zones-story-japan.png" alt="Japan zone"></div></div>
+      <span class="label">Japan</span>
+    </div>
+    <div class="story">
+      <div class="ring"><div class="avatar"><img src="assets/zones-story-paris.png" alt="Paris zone"></div></div>
+      <span class="label">Paris</span>
+    </div>
+    <div class="story">
+      <div class="ring"><div class="avatar"><img src="assets/zones-story-kuwait.png" alt="Kuwait zone"></div></div>
+      <span class="label">Kuwait</span>
+    </div>
+    <button class="ctrl-btn next" aria-label="Next zones"><img src="assets/zones-arrow-chevron.svg" alt=""></button>
+  </div>
+
+  <img class="zones-map" src="assets/zones-map.png" alt="BLVD World park map — open the interactive map" role="button" tabindex="0" title="Open the interactive map">
+
+  <ul class="facts" id="ab-facts">
+    <li><div class="fact"><b>24</b><span>zones</span></div></li>
+    <li><div class="fact"><b>14</b><span>rides</span></div></li>
+    <li><div class="fact"><b>4</b><span>restaurants</span></div></li>
+    <li><div class="fact"><b>151</b><span>showtimes a night</span></div></li>
+  </ul>
+
+  <div class="zones-buttons">
+    <button class="pill cta" id="open-map">Explore zones on map</button>
+    <button class="pill ghost">Live show schedule</button>
+  </div>
+</section>
+
+<!-- ================= RIDES ================= -->
+<section class="section-pad navy-bg on-navy" id="rides">
+  <div class="tear tear-top">
+    <img src="assets/rides-tear-edge.png" alt="">
+    <div class="bar"></div>
+  </div>
+
+  <div class="section-head">
+    <h2>Explore rides</h2>
+    <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
+  </div>
+
+  <div class="rail-wrap" data-rail>
+    <div class="rail">
+      <article class="ticket-card">
+        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="">
+        <div class="card-body">
+          <img class="photo" src="assets/rides-photo-1.png" alt="Wave Swinger ride">
+          <div class="text">
+            <h3>Wave Swinger</h3>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17"></span>
+              <span>Thrill: Max</span>
+            </div>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20"></span>
+              <span>Height: 130-195cm</span>
+            </div>
+            <p class="desc">Meet the beast that&rsquo;s changing the thrill game. King Claw has arrived and it&rsquo;s every bit as monstrous as you imagined (in the best possible way).</p>
+          </div>
+        </div>
+        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="">
+      </article>
+      <article class="ticket-card">
+        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="">
+        <div class="card-body">
+          <img class="photo" src="assets/rides-photo-2.png" alt="Sky Loop ride">
+          <div class="text">
+            <h3>Wave Swinger</h3>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17"></span>
+              <span>Thrill: Max</span>
+            </div>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20"></span>
+              <span>Height: 130-195cm</span>
+            </div>
+            <p class="desc">Meet the beast that&rsquo;s changing the thrill game. King Claw has arrived and it&rsquo;s every bit as monstrous as you imagined (in the best possible way).</p>
+          </div>
+        </div>
+        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="">
+      </article>
+      <article class="ticket-card">
+        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="">
+        <div class="card-body">
+          <img class="photo" src="assets/rides-photo-3.png" alt="Log flume ride">
+          <div class="text">
+            <h3>Wave Swinger</h3>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17"></span>
+              <span>Thrill: Max</span>
+            </div>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20"></span>
+              <span>Height: 130-195cm</span>
+            </div>
+            <p class="desc">Meet the beast that&rsquo;s changing the thrill game. King Claw has arrived and it&rsquo;s every bit as monstrous as you imagined (in the best possible way).</p>
+          </div>
+        </div>
+        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="">
+      </article>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="btns">
+      <button class="ctrl-btn prev dim" data-prev aria-label="Previous rides"><img src="assets/rides-icon-arrow-right.svg" alt=""></button>
+      <button class="ctrl-btn next" data-next aria-label="Next rides"><img src="assets/rides-icon-arrow-right.svg" alt=""></button>
+    </div>
+    <div class="progress"><div class="fill" style="width: 18%;"></div></div>
+  </div>
+
+  <div class="tear tear-bottom">
+    <img src="assets/rides-tear-edge.png" alt="">
+    <div class="bar"></div>
+  </div>
+</section>
+
+<!-- ================= EXPERIENCES ================= -->
+<section class="section-pad" id="experiences">
+  <div class="section-head">
+    <h2>Experiences</h2>
+    <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
+  </div>
+
+  <div class="cards-row" data-rail>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-lost-museum.png" alt="The lost muesem">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt=""></button>
+      </div>
+      <div class="content">
+        <h3>The lost muesem</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-escape-room.png" alt="Escape room">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt=""></button>
+      </div>
+      <div class="content">
+        <h3>Escape room</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt=""></button>
+      </div>
+      <div class="content">
+        <h3>The tomb of pharoh</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-pyramids-mystery.png" alt="Pyramid's mystery">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt=""></button>
+      </div>
+      <div class="content">
+        <h3>Pyramid&rsquo;s mystery</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-lost-museum.png" alt="The lost muesem">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt=""></button>
+      </div>
+      <div class="content">
+        <h3>The lost muesem</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt=""></button>
+      </div>
+      <div class="content">
+        <h3>The tomb of pharoh</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR"><span>210.75</span></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="controls">
+    <div class="btns">
+      <button class="ctrl-btn prev dim" aria-label="Previous experiences"><img src="assets/exp-arrow.svg" alt=""></button>
+      <button class="ctrl-btn next" aria-label="Next experiences"><img src="assets/exp-arrow-next.svg" alt=""></button>
+    </div>
+    <div class="progress"><div class="fill" style="width: 50%;"></div></div>
+  </div>
+</section>
+
+<!-- ================= RESTAURANTS ================= -->
+<section class="section-pad navy-bg on-navy" id="restaurants">
+  <div class="tear tear-top">
+    <img src="assets/rest-page-tear.png" alt="">
+    <div class="bar"></div>
+  </div>
+
+  <div class="section-head">
+    <h2>Restaurants</h2>
+    <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
+  </div>
+
+  <div class="cards-row" data-rail>
+    <article class="product-card">
+      <div class="media wide">
+        <img src="assets/rest-tant.png" alt="Tant restaurent">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt=""></button>
+      </div>
+      <div class="content">
+        <h3>Tant restaurent</h3>
+        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media wide">
+        <img src="assets/rest-tant.png" alt="Tant restaurent">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt=""></button>
+      </div>
+      <div class="content">
+        <h3>Tant restaurent</h3>
+        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media wide">
+        <img src="assets/rest-tant.png" alt="Tant restaurent">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt=""></button>
+      </div>
+      <div class="content">
+        <h3>Tant restaurent</h3>
+        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media wide">
+        <img src="assets/rest-tant.png" alt="Tant restaurent">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt=""></button>
+      </div>
+      <div class="content">
+        <h3>Tant restaurent</h3>
+        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media wide">
+        <img src="assets/rest-tant.png" alt="Tant restaurent">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt=""></button>
+      </div>
+      <div class="content">
+        <h3>Tant restaurent</h3>
+        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media wide">
+        <img src="assets/rest-tant.png" alt="Tant restaurent">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt=""></button>
+      </div>
+      <div class="content">
+        <h3>Tant restaurent</h3>
+        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR"><span>210.75</span></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="controls">
+    <div class="btns">
+      <button class="ctrl-btn prev dim" aria-label="Previous restaurants"><img src="assets/rest-arrow-prev.svg" alt=""></button>
+      <button class="ctrl-btn next" aria-label="Next restaurants"><img src="assets/rest-arrow-next.svg" alt=""></button>
+    </div>
+    <div class="progress"><div class="fill" style="width: 17%;"></div></div>
+  </div>
+</section>
+
+<!-- ================= GALLERY ================= -->
+<section class="gallery-sec" id="gallery">
+  <div class="tear tear-top-white">
+    <img src="assets/rules-page-tear.png" alt="">
+    <div class="bar"></div>
+  </div>
+
+  <div class="section-head">
+    <h2>Gallery</h2>
+    <p>Moments from around the worlds &mdash; captured every night at BLVD World.</p>
+  </div>
+
+  <div class="gal-row">
+    <div class="gal-track">
+      <div class="gal-set">
+        <img src="assets/rides-photo-1.png" alt="Wave Swinger at night">
+        <img src="assets/exp-lost-museum.png" alt="The lost museum experience">
+        <img src="assets/rest-tant.png" alt="Tant restaurant facade">
+        <img src="assets/zones-story-japan.png" alt="Japan zone">
+        <img src="assets/rides-photo-2.png" alt="Sky Loop sign">
+        <img src="assets/exp-tomb-pharaoh.png" alt="Tomb of the pharaoh">
+      </div>
+      <div class="gal-set" aria-hidden="true">
+        <img src="assets/rides-photo-1.png" alt="">
+        <img src="assets/exp-lost-museum.png" alt="">
+        <img src="assets/rest-tant.png" alt="">
+        <img src="assets/zones-story-japan.png" alt="">
+        <img src="assets/rides-photo-2.png" alt="">
+        <img src="assets/exp-tomb-pharaoh.png" alt="">
+      </div>
+    </div>
+  </div>
+  <div class="gal-row rev">
+    <div class="gal-track">
+      <div class="gal-set">
+        <img src="assets/zones-story-paris.png" alt="Paris zone">
+        <img src="assets/rides-photo-3.png" alt="Log flume ride">
+        <img src="assets/exp-escape-room.png" alt="Escape room">
+        <img src="assets/zones-story-egypt.png" alt="Egypt zone">
+        <img src="assets/exp-pyramids-mystery.png" alt="Pyramid's mystery">
+        <img src="assets/zones-story-kuwait.png" alt="Kuwait zone">
+      </div>
+      <div class="gal-set" aria-hidden="true">
+        <img src="assets/zones-story-paris.png" alt="">
+        <img src="assets/rides-photo-3.png" alt="">
+        <img src="assets/exp-escape-room.png" alt="">
+        <img src="assets/zones-story-egypt.png" alt="">
+        <img src="assets/exp-pyramids-mystery.png" alt="">
+        <img src="assets/zones-story-kuwait.png" alt="">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= VENUE RULES ================= -->
+<section class="section-pad" id="rules">
+  <div class="section-head">
+    <h2>Venue rules</h2>
+  </div>
+
+  <div class="rules-grid">
+    <div class="rule-card">
+      <span class="ic"><img src="assets/rules-no-food.svg" alt=""></span>
+      <b>No outside food</b>
+      <p>Food trucks and kitchens are<br>inside the venue.</p>
+    </div>
+    <div class="rule-card">
+      <span class="ic"><img src="assets/rules-no-pets.svg" alt=""></span>
+      <b>No pets</b>
+      <p>Animals are not allowed on the<br>premises.</p>
+    </div>
+    <div class="rule-card">
+      <span class="ic"><img src="assets/rules-no-cameras.svg" alt=""></span>
+      <b>No pro cameras</b>
+      <p>No professional cameras or<br>video recorders.</p>
+    </div>
+    <div class="rule-card">
+      <span class="ic"><img src="assets/rules-smoke-free.svg" alt=""></span>
+      <b>Smoke free</b>
+      <p>Including e&#8209;cigarettes.<br>Designated areas only.</p>
+    </div>
+    <div class="rule-card">
+      <span class="ic"><img src="assets/rules-no-reentry.svg" alt=""></span>
+      <b>No re&#8209;entry</b>
+      <p>Leaving the venue ends your<br>visit.</p>
+    </div>
+    <div class="rule-card">
+      <span class="ic"><img src="assets/rules-non-refundable.svg" alt=""></span>
+      <b>Non refundable</b>
+      <p>Tickets cannot be refunded once<br>bought.</p>
+    </div>
+    <div class="rule-card">
+      <span class="ic"><img src="assets/rules-parking.svg" alt=""></span>
+      <b>Parking</b>
+      <p>Parking is available at the gates.</p>
+    </div>
+    <div class="rule-card">
+      <span class="ic"><img src="assets/rules-open-air.svg" alt=""></span>
+      <b>Open air</b>
+      <p>The venue is outdoors from end<br>to end.</p>
+    </div>
+    <div class="rule-card">
+      <span class="ic"><img src="assets/rules-live-music.svg" alt=""></span>
+      <b>Live music</b>
+      <p>Performances run nightly in<br>every zone.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="section-pad navy-bg on-navy faq-section" id="faq">
+  <div class="tear tear-top">
+    <img src="assets/faq-page-tear.png" alt="">
+    <div class="bar"></div>
+  </div>
+
+  <h2>Frequently asked questions</h2>
+
+  <div class="faq-list" id="faq-list">
+    <div class="faq-item">
+      <button class="faq-q">
+        <span>Where is BLVD World?</span>
+        <i class="faq-ic"></i>
+      </button>
+      <div class="faq-a"><p>BLVD World is part of Riyadh Season, located in Riyadh, Saudi Arabia, right next to Boulevard City.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        <span>What does the entry ticket include?</span>
+        <i class="faq-ic"></i>
+      </button>
+      <div class="faq-a"><p>General admission to all country zones, live shows and street performances. Rides, experiences and premium dining are available as add-ons.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        <span>What are the opening hours?</span>
+        <i class="faq-ic"></i>
+      </button>
+      <div class="faq-a"><p>Gates open daily from 4:00 PM until 2:00 AM. Hours may vary during public holidays and special events.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        <span>Is it suitable for children?</span>
+        <i class="faq-ic"></i>
+      </button>
+      <div class="faq-a"><p>Yes — zones and shows are family friendly, and every ride lists its height requirements for younger visitors.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        <span>Can I change or refund a booking?</span>
+        <i class="faq-ic"></i>
+      </button>
+      <div class="faq-a"><p>Tickets are non-refundable once purchased, but you can reschedule your visit date up to 24 hours in advance through your account.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MAP EXPLORER (Figma: section#view-map) ================= -->
+<section id="view-map" aria-hidden="true">
+  <div class="vm-map-wrap">
+    <div class="vm-stage">
+      <div class="vm-map-holder">
+        <img class="vm-map" src="assets/zones-map.png" alt="BLVD World park map" draggable="false">
+        <div class="vm-markers"></div>
+      </div>
+    </div>
+  </div>
+  <div class="vm-left">
+    <aside class="vm-panel">
+      <button class="vm-grab" aria-label="Expand or collapse the list"></button>
+      <div class="vm-head">
+        <button class="vm-iconbtn vm-back" aria-label="Close map"><img src="assets/map-ic-back.svg" alt=""></button>
+        <h3 class="vm-title">Discover BLVD World</h3>
+        <input class="vm-search" type="text" placeholder="Search rides, dining, experiences&hellip;" aria-label="Search places">
+        <button class="vm-iconbtn vm-search-btn" aria-label="Search"><img src="assets/map-ic-search.svg" alt=""></button>
+      </div>
+      <div class="vm-chips">
+        <button class="vm-chip" data-filter="ride"><img src="assets/map-ic-rides.svg" alt=""><span>Rides &amp; Attractions</span></button>
+        <button class="vm-chip" data-filter="dining"><img src="assets/map-ic-dining.svg" alt=""><span>Dining</span></button>
+        <button class="vm-chip" data-filter="shopping"><img src="assets/map-ic-shopping.svg" alt=""><span>Shopping</span></button>
+        <button class="vm-chip" data-filter="experience"><img class="ic-ticket" src="assets/map-ic-ticket.svg" alt=""><span>Experience</span></button>
+        <button class="vm-chip" data-filter="facilities"><img src="assets/map-ic-facilities.svg" alt=""><span>Facilities</span></button>
+      </div>
+      <div class="vm-list">
+        <div class="vm-card" data-type="experience">
+          <img class="thumb" src="assets/exp-lost-museum.png" alt="">
+          <div class="body">
+            <div class="meta"><span>Experience</span><span>&middot;</span><img class="star" src="assets/map-ic-star.svg" alt="Rating"><span>5</span></div>
+            <h4>The lost muesem</h4>
+            <div class="book"><img src="assets/map-ic-booking.svg" alt="">Instant booking</div>
+          </div>
+        </div>
+        <div class="vm-card" data-type="experience">
+          <img class="thumb" src="assets/exp-escape-room.png" alt="">
+          <div class="body">
+            <div class="meta"><span>Experience</span><span>&middot;</span><img class="star" src="assets/map-ic-star.svg" alt="Rating"><span>5</span></div>
+            <h4>Escape room</h4>
+            <div class="book"><img src="assets/map-ic-booking.svg" alt="">Instant booking</div>
+          </div>
+        </div>
+        <div class="vm-card" data-type="experience">
+          <img class="thumb" src="assets/exp-tomb-pharaoh.png" alt="">
+          <div class="body">
+            <div class="meta"><span>Experience</span><span>&middot;</span><img class="star" src="assets/map-ic-star.svg" alt="Rating"><span>5</span></div>
+            <h4>The tomb of pharoh</h4>
+            <div class="book"><img src="assets/map-ic-booking.svg" alt="">Instant booking</div>
+          </div>
+        </div>
+        <div class="vm-card" data-type="experience">
+          <img class="thumb" src="assets/exp-pyramids-mystery.png" alt="">
+          <div class="body">
+            <div class="meta"><span>Experience</span><span>&middot;</span><img class="star" src="assets/map-ic-star.svg" alt="Rating"><span>5</span></div>
+            <h4>Pyramid&rsquo;s mystery</h4>
+            <div class="book"><img src="assets/map-ic-booking.svg" alt="">Instant booking</div>
+          </div>
+        </div>
+        <div class="vm-card" data-type="ride">
+          <img class="thumb" src="assets/rides-photo-1.png" alt="">
+          <div class="body">
+            <div class="meta"><span>Ride</span><span>&middot;</span><img class="star" src="assets/map-ic-star.svg" alt="Rating"><span>5</span></div>
+            <h4>Wave Swinger</h4>
+            <div class="book"><img src="assets/map-ic-booking.svg" alt="">Instant booking</div>
+          </div>
+        </div>
+        <div class="vm-card" data-type="ride">
+          <img class="thumb" src="assets/rides-photo-2.png" alt="">
+          <div class="body">
+            <div class="meta"><span>Ride</span><span>&middot;</span><img class="star" src="assets/map-ic-star.svg" alt="Rating"><span>5</span></div>
+            <h4>Sky Loop</h4>
+            <div class="book"><img src="assets/map-ic-booking.svg" alt="">Instant booking</div>
+          </div>
+        </div>
+        <div class="vm-card" data-type="dining">
+          <img class="thumb" src="assets/rest-tant.png" alt="">
+          <div class="body">
+            <div class="meta"><span>Dining</span><span>&middot;</span><img class="star" src="assets/map-ic-star.svg" alt="Rating"><span>5</span></div>
+            <h4>Tant restaurent</h4>
+            <div class="book"><img src="assets/map-ic-booking.svg" alt="">Instant booking</div>
+          </div>
+        </div>
+        <div class="vm-empty" hidden>
+          <b>No places found</b>
+          <p>Try a different search or clear the filters.</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+  <div class="vm-zoom">
+    <button class="vm-zoom-in" aria-label="Zoom in"><img src="assets/map-ic-plus.svg" alt=""></button>
+    <button class="vm-zoom-out" aria-label="Zoom out"><img src="assets/map-ic-minus.svg" alt=""></button>
+  </div>
+  <div class="vm-detail" hidden>
+    <button class="vm-detail-close" aria-label="Close details">&#10005;</button>
+    <img class="vm-detail-img" src="" alt="">
+    <div class="vm-detail-body">
+      <div class="meta"><span class="type"></span><span>&middot;</span><img class="star" src="assets/map-ic-star.svg" alt="Rating"><span>5</span></div>
+      <h4></h4>
+      <p class="desc"></p>
+      <div class="row">
+        <span class="book"><img src="assets/map-ic-booking.svg" alt="">Instant booking</span>
+        <button class="vm-detail-cta">Book now</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  // Fit-to-width: scale the 1920px design down proportionally on narrower windows
+  // (like Figma's fit view). Below 900px real width the responsive layout takes over.
+  function fitScale() {
+    var w = window.innerWidth;
+    document.body.style.zoom = (w >= 900 && w < 1920) ? (w / 1920) : '';
+    if (window.ScrollTrigger) ScrollTrigger.refresh();
+  }
+  window.addEventListener('resize', fitScale);
+  fitScale();
+
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
+  function zoomFactor() { return parseFloat(document.body.style.zoom) || 1; }
+
+  // ---------- preloader ----------
+  (function () {
+    var loader = document.getElementById('loader');
+    if (!loader) return;
+    // escape the body zoom so the panel always covers the real viewport
+    document.documentElement.appendChild(loader);
+    if (REDUCED) { loader.remove(); return; }
+
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+    document.documentElement.style.overflow = 'hidden';
+
+    var fill = loader.querySelector('.ld-fill');
+    var count = loader.querySelector('.ld-count');
+    var imgs = Array.prototype.filter.call(document.images, function (im) { return !im.complete; });
+    var total = document.images.length || 1;
+    var loadedCount = total - imgs.length;
+    imgs.forEach(function (im) {
+      im.addEventListener('load', function () { loadedCount++; }, { once: true });
+      im.addEventListener('error', function () { loadedCount++; }, { once: true });
+    });
+
+    var MIN_TIME = 2200, MAX_TIME = 6000, start = performance.now(), finished = false;
+
+    function done() {
+      if (finished) return;
+      finished = true;
+      function reveal() {
+        document.documentElement.style.overflow = '';
+        if (window.playHeroIntro) window.playHeroIntro();
+      }
+      if (window.gsap) {
+        gsap.timeline()
+          .to('.ld-inner', { opacity: 0, y: -30, duration: 0.4, ease: 'power2.in' })
+          .to(loader, { yPercent: -104, duration: 0.95, ease: 'power4.inOut' }, '-=0.05')
+          .add(reveal, '-=0.6')
+          .set(loader, { display: 'none' });
+      } else {
+        loader.classList.add('ld-done');
+        reveal();
+        setTimeout(function () { loader.style.display = 'none'; }, 900);
+      }
+    }
+
+    (function tick() {
+      if (finished) return;
+      var elapsed = performance.now() - start;
+      var timeP = Math.min(elapsed / MIN_TIME, 1);
+      var loadP = elapsed > MAX_TIME ? 1 : loadedCount / total;
+      var p = Math.min(timeP, loadP);
+      var pct = Math.round(p * 100);
+      fill.style.transform = 'scaleX(' + p + ')';
+      count.textContent = pct + '%';
+      if (p >= 1) { setTimeout(done, 150); return; }
+      requestAnimationFrame(tick);
+    })();
+  })();
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(function (item) {
+    item.querySelector('.faq-q').addEventListener('click', function () {
+      var answer = item.querySelector('.faq-a');
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(function (other) {
+        other.classList.remove('open');
+        other.querySelector('.faq-a').style.maxHeight = '0px';
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // Carousels: prev/next buttons, live progress fill, drag-to-scroll
+  document.querySelectorAll('[data-rail]').forEach(function (rail) {
+    var sec = rail.closest('section');
+    var prev = sec.querySelector('.controls .prev');
+    var next = sec.querySelector('.controls .next');
+    var fill = sec.querySelector('.progress .fill');
+
+    function step() {
+      var card = rail.querySelector('.ticket-card, .product-card');
+      return card ? card.getBoundingClientRect().width / zoomFactor() + 24 : 480;
+    }
+    function update() {
+      var max = rail.scrollWidth - rail.clientWidth;
+      var pct = max > 0 ? ((rail.scrollLeft + rail.clientWidth) / rail.scrollWidth) * 100 : 100;
+      if (fill) fill.style.width = pct + '%';
+      if (prev) prev.classList.toggle('dim', rail.scrollLeft <= 4);
+      if (next) next.classList.toggle('dim', rail.scrollLeft >= max - 4);
+    }
+    if (prev) prev.addEventListener('click', function () { rail.scrollBy({ left: -step(), behavior: 'smooth' }); });
+    if (next) next.addEventListener('click', function () { rail.scrollBy({ left: step(), behavior: 'smooth' }); });
+    rail.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('load', update);
+    update();
+
+    // drag-to-scroll
+    var down = false, moved = false, startX = 0, startL = 0;
+    rail.addEventListener('pointerdown', function (e) {
+      down = true; moved = false;
+      startX = e.clientX; startL = rail.scrollLeft;
+      rail.classList.add('dragging');
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = (e.clientX - startX) / zoomFactor();
+      if (Math.abs(dx) > 5) moved = true;
+      rail.scrollLeft = startL - dx;
+    });
+    window.addEventListener('pointerup', function () {
+      down = false;
+      rail.classList.remove('dragging');
+    });
+    rail.addEventListener('click', function (e) {
+      if (moved) { e.preventDefault(); e.stopPropagation(); }
+    }, true);
+  });
+
+  // Floating quick-actions dock: appears once the hero is scrolled past
+  (function () {
+    var dock = document.getElementById('dock');
+    var hero = document.querySelector('.hero');
+    if (!dock || !hero) return;
+    var spy = Array.prototype.map.call(dock.querySelectorAll('.dock-item'), function (btn) {
+      return { btn: btn, sec: document.querySelector(btn.dataset.target) };
+    });
+    function dockToggle() {
+      dock.classList.toggle('show', hero.getBoundingClientRect().bottom < 0);
+      var mid = window.innerHeight / 2, active = null;
+      spy.forEach(function (t) {
+        if (!t.sec) return;
+        var r = t.sec.getBoundingClientRect();
+        if (r.top <= mid && r.bottom > mid) active = t;
+      });
+      spy.forEach(function (t) { t.btn.classList.toggle('active', t === active); });
+    }
+    window.addEventListener('scroll', dockToggle, { passive: true });
+    dockToggle();
+    dock.querySelectorAll('.dock-item').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = document.querySelector(btn.dataset.target);
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  })();
+
+  // Story viewer: multi-slide stories per zone (images + videos), auto-advance
+  (function () {
+    // Extra slides per zone. type: 'image' | 'video'. Generated per-zone media
+    // (Higgsfield) slots in here once the connector is re-authorized.
+    var EXTRA_SLIDES = {
+      'Saudia Arabia': [{ type: 'image', src: 'assets/rides-photo-1.png' }],
+      'Egypt': [
+        { type: 'image', src: 'assets/exp-tomb-pharaoh.png' },
+        { type: 'image', src: 'assets/exp-pyramids-mystery.png' },
+        { type: 'image', src: 'assets/rest-tant.png' }
+      ],
+      'Turkey': [{ type: 'image', src: 'assets/rides-photo-2.png' }],
+      'Japan': [{ type: 'image', src: 'assets/rides-photo-3.png' }],
+      'Paris': [{ type: 'image', src: 'assets/zones-map.png' }],
+      'Kuwait': [{ type: 'image', src: 'assets/zones-map.png' }]
+    };
+    var zones = Array.prototype.map.call(document.querySelectorAll('.stories-row .story'), function (el) {
+      var poster = el.querySelector('.avatar img').getAttribute('src');
+      var label = el.querySelector('.label').textContent;
+      return { name: label, avatar: poster, slides: [{ type: 'image', src: poster }].concat(EXTRA_SLIDES[label] || []) };
+    });
+    if (!zones.length) return;
+
+    var viewer = document.createElement('div');
+    viewer.id = 'story-viewer';
+    viewer.innerHTML =
+      '<button class="sv-arrow prev" aria-label="Previous story"><img src="assets/zones-arrow-chevron.svg" alt=""></button>' +
+      '<div class="sv-card">' +
+        '<img class="sv-img" alt="">' +
+        '<video class="sv-vid" muted playsinline preload="auto"></video>' +
+        '<div class="sv-bars"></div>' +
+        '<div class="sv-head"><img class="sv-ava" alt=""><span class="sv-name"></span><button class="sv-close" aria-label="Close">&#10005;</button></div>' +
+        '<div class="sv-tap"><span data-dir="-1"></span><span data-dir="1"></span></div>' +
+        '<div class="sv-foot"><span class="sv-tag">Now in BLVD World</span><button class="sv-cta">Explore zone</button></div>' +
+      '</div>' +
+      '<button class="sv-arrow next" aria-label="Next story"><img src="assets/zones-arrow-chevron.svg" alt=""></button>';
+    // attach to <html> so the fit-to-width body zoom doesn't shrink the overlay
+    document.documentElement.appendChild(viewer);
+
+    var img = viewer.querySelector('.sv-img');
+    var vid = viewer.querySelector('.sv-vid');
+    var ava = viewer.querySelector('.sv-ava');
+    var name = viewer.querySelector('.sv-name');
+    var barsWrap = viewer.querySelector('.sv-bars');
+    var card = viewer.querySelector('.sv-card');
+    var zi = 0, si = 0, timer = null, barTween = null, raf = null;
+    var IMG_DUR = 5, VID_CAP = 30000;
+
+    function bars() { return barsWrap.querySelectorAll('b'); }
+    function fillBar(k, pct) { var b = bars()[k]; if (b) b.style.transform = 'scaleX(' + pct + ')'; }
+    function stopTimers() {
+      if (barTween) barTween.kill();
+      clearTimeout(timer);
+      cancelAnimationFrame(raf);
+      vid.onended = null;
+      vid.pause();
+    }
+
+    function show(z, s) {
+      zi = (z + zones.length) % zones.length;
+      var zone = zones[zi];
+      if (s < 0) s = zone.slides.length - 1;
+      si = s;
+      var slide = zone.slides[si];
+      stopTimers();
+
+      ava.src = zone.avatar;
+      name.textContent = zone.name;
+      if (barsWrap.children.length !== zone.slides.length) {
+        barsWrap.innerHTML = zone.slides.map(function () { return '<i><b></b></i>'; }).join('');
+      }
+      var bs = bars();
+      for (var k = 0; k < bs.length; k++) fillBar(k, k < si ? 1 : 0);
+
+      var isVideo = slide.type === 'video';
+      img.style.display = isVideo ? 'none' : 'block';
+      vid.style.display = isVideo ? 'block' : 'none';
+
+      if (isVideo) {
+        vid.src = slide.src;
+        vid.currentTime = 0;
+        var played = vid.play();
+        if (played && played.catch) played.catch(function () {});
+        vid.onended = next;
+        (function trackBar() {
+          if (vid.duration) fillBar(si, vid.currentTime / vid.duration);
+          raf = requestAnimationFrame(trackBar);
+        })();
+        timer = setTimeout(next, VID_CAP);
+      } else {
+        img.src = slide.src;
+        if (window.gsap && !REDUCED) {
+          var obj = { p: 0 };
+          barTween = gsap.to(obj, {
+            p: 1, duration: IMG_DUR, ease: 'none',
+            onUpdate: function () { fillBar(si, obj.p); },
+            onComplete: next
+          });
+        } else {
+          fillBar(si, 1);
+          timer = setTimeout(next, IMG_DUR * 1000);
+        }
+      }
+      if (window.gsap && !REDUCED) {
+        gsap.fromTo(card, { scale: 0.96, opacity: 0.6 }, { scale: 1, opacity: 1, duration: 0.35, ease: 'power2.out' });
+      }
+    }
+    function next() { if (si + 1 < zones[zi].slides.length) show(zi, si + 1); else show(zi + 1, 0); }
+    function prev() { if (si > 0) show(zi, si - 1); else show(zi - 1, -1); }
+
+    function open(i) {
+      viewer.classList.add('open');
+      document.documentElement.style.overflow = 'hidden';
+      show(i, 0);
+    }
+    function close() {
+      viewer.classList.remove('open');
+      document.documentElement.style.overflow = '';
+      stopTimers();
+    }
+
+    document.querySelectorAll('.stories-row .story').forEach(function (el, i) {
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      el.addEventListener('click', function () { open(i); });
+      el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i); } });
+    });
+    viewer.querySelector('.sv-close').addEventListener('click', close);
+    viewer.querySelector('.sv-arrow.prev').addEventListener('click', prev);
+    viewer.querySelector('.sv-arrow.next').addEventListener('click', next);
+    viewer.querySelectorAll('.sv-tap span').forEach(function (zone) {
+      zone.addEventListener('click', function () { zone.dataset.dir === '1' ? next() : prev(); });
+    });
+    viewer.addEventListener('click', function (e) { if (e.target === viewer) close(); });
+    viewer.querySelector('.sv-cta').addEventListener('click', function () {
+      close();
+      var zonesSec = document.querySelector('#zones');
+      if (zonesSec) zonesSec.scrollIntoView({ behavior: 'smooth' });
+    });
+    window.addEventListener('keydown', function (e) {
+      if (!viewer.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft') prev();
+    });
+  })();
+
+  // Map explorer: opens from the "Explore zones on map" CTA
+  (function () {
+    var vm = document.getElementById('view-map');
+    // openers: the "Explore zones on map" CTA and the map image in the Zones section
+    var openers = document.querySelectorAll('#open-map, .zones-map');
+    if (!vm || !openers.length) return;
+    // attach to <html> so the fit-to-width body zoom doesn't shrink the overlay
+    document.documentElement.appendChild(vm);
+
+    var stage = vm.querySelector('.vm-stage');
+    var mapWrap = vm.querySelector('.vm-map-wrap');
+    var panel = vm.querySelector('.vm-panel');
+    var scale = 1, tx = 0, ty = 0;
+
+    function applyMap(animate) {
+      stage.style.setProperty('--pinscale', 1 / scale);
+      if (window.gsap) {
+        gsap.to(stage, { x: tx, y: ty, scale: scale, duration: animate ? 0.45 : 0.08, ease: 'power2.out', overwrite: true });
+      } else {
+        stage.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+      }
+    }
+
+    function openMap() {
+      scale = 1; tx = 0; ty = 0;
+      if (zoneActive) exitZone(false); else renderDots();
+      hideDetail();
+      vm.classList.add('open');
+      document.documentElement.style.overflow = 'hidden';
+      if (window.gsap && !REDUCED) {
+        gsap.set(stage, { x: 0, y: 0, scale: 1 });
+        gsap.fromTo(vm, { opacity: 0 }, { opacity: 1, duration: 0.35 });
+        gsap.fromTo(panel, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.15 });
+        gsap.fromTo(vm.querySelectorAll('.vm-card'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', stagger: 0.05, delay: 0.3 });
+        gsap.fromTo(stage, { scale: 0.88, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: 'power3.out' });
+      }
+    }
+    function closeMap() {
+      document.documentElement.style.overflow = '';
+      if (window.gsap && !REDUCED) {
+        gsap.to(vm, { opacity: 0, duration: 0.3, onComplete: function () { vm.classList.remove('open'); gsap.set(vm, { opacity: 1 }); } });
+      } else {
+        vm.classList.remove('open');
+      }
+    }
+
+    openers.forEach(function (el) {
+      el.addEventListener('click', openMap);
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openMap(); }
+      });
+    });
+    vm.querySelector('.vm-back').addEventListener('click', function () {
+      if (zoneActive) exitZone(); else closeMap();
+    });
+    window.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape' || !vm.classList.contains('open')) return;
+      if (head.classList.contains('searching')) exitSearch();
+      else if (zoneActive) exitZone();
+      else closeMap();
+    });
+
+    // zoom controls (the detail card is anchored to a pin, so drop it when the map moves)
+    vm.querySelector('.vm-zoom-in').addEventListener('click', function () {
+      scale = Math.min(scale * 1.3, 2.6); hideDetail(); applyMap(true);
+    });
+    vm.querySelector('.vm-zoom-out').addEventListener('click', function () {
+      scale = Math.max(scale / 1.3, 0.6); hideDetail(); applyMap(true);
+    });
+    window.addEventListener('resize', function () {
+      if (vm.classList.contains('open')) { hideDetail(); applyMap(false); }
+    });
+
+    // drag to pan (overlay lives outside the body zoom, so pointer px == layout px)
+    var down = false, sx = 0, sy = 0, ox = 0, oy = 0;
+    mapWrap.addEventListener('pointerdown', function (e) {
+      if (e.target.closest('.vm-dot, .vm-pin')) return;
+      down = true; sx = e.clientX; sy = e.clientY; ox = tx; oy = ty;
+      mapWrap.classList.add('dragging');
+      hideDetail();
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      tx = ox + (e.clientX - sx);
+      ty = oy + (e.clientY - sy);
+      applyMap(false);
+    });
+    window.addEventListener('pointerup', function () {
+      down = false;
+      mapWrap.classList.remove('dragging');
+    });
+
+    // ---- zones & POIs on the map ----
+    var ICONS = { ride: 'map-ic-rides.svg', experience: 'map-ic-ticket.svg', dining: 'map-ic-dining.svg', shopping: 'map-ic-shopping.svg', facilities: 'map-ic-facilities.svg' };
+    var LABELS = { ride: 'Ride', experience: 'Experience', dining: 'Dining', shopping: 'Shopping', facilities: 'Facilities' };
+    var ZONES = {
+      saudi: { name: 'Saudia Arabia', x: 17, y: 68, pois: [
+        { type: 'ride', name: 'Wave Swinger', img: 'assets/rides-photo-1.png', dx: 3, dy: -6, desc: 'Classic spinning swing ride over the Najd rooftops.' },
+        { type: 'shopping', name: 'Najd Heritage Souq', img: 'assets/zones-story-saudi-arabia.png', dx: -4, dy: 4, desc: 'Handcrafts, oud and dates in a traditional souq.' },
+        { type: 'dining', name: 'Saudi Coffee House', img: 'assets/zones-story-saudi-arabia.png', dx: 6, dy: 5, desc: 'Gahwa, karak and sweets served on majlis seating.' },
+        { type: 'facilities', name: 'Info & First Aid', img: 'assets/zones-story-saudi-arabia.png', dx: -6, dy: -4, desc: 'Guest services, lockers and a first aid point.' }
+      ] },
+      egypt: { name: 'Egypt', x: 82, y: 25, pois: [
+        { type: 'experience', name: 'The tomb of pharoh', img: 'assets/exp-tomb-pharaoh.png', dx: -4, dy: 6, desc: 'Walk the golden halls of the pharaoh’s resting place.' },
+        { type: 'experience', name: 'Pyramid’s mystery', img: 'assets/exp-pyramids-mystery.png', dx: 4, dy: -5, desc: 'Solve the riddle of the great pyramid before sunrise.' },
+        { type: 'dining', name: 'Tant restaurent', img: 'assets/rest-tant.png', dx: 6, dy: 4, desc: 'Egyptian classics served under temple columns.' },
+        { type: 'shopping', name: 'Bazaar of Giza', img: 'assets/zones-story-egypt.png', dx: -6, dy: -3, desc: 'Papyrus, scarabs and lanterns from local artisans.' }
+      ] },
+      turkey: { name: 'Turkey', x: 7, y: 36, pois: [
+        { type: 'ride', name: 'Sky Loop', img: 'assets/rides-photo-2.png', dx: 4, dy: -5, desc: 'The zone’s signature loop coaster over the Bosphorus.' },
+        { type: 'shopping', name: 'Grand Bazaar', img: 'assets/zones-story-turkey.png', dx: 5, dy: 4, desc: 'Ceramics, lamps and Turkish delight stalls.' },
+        { type: 'dining', name: 'Istanbul Kebab House', img: 'assets/zones-story-turkey.png', dx: -3, dy: 6, desc: 'Charcoal kebabs and baklava by the tower.' }
+      ] },
+      japan: { name: 'Japan', x: 26, y: 11, pois: [
+        { type: 'ride', name: 'Fuji River Rapids', img: 'assets/rides-photo-3.png', dx: 4, dy: 5, desc: 'A splashing flume ride beneath Mount Fuji.' },
+        { type: 'shopping', name: 'Tokyo Market', img: 'assets/zones-story-japan.png', dx: -5, dy: 3, desc: 'Anime goods, kimonos and Japanese snacks.' },
+        { type: 'dining', name: 'Ramen Street', img: 'assets/zones-story-japan.png', dx: 6, dy: -2, desc: 'Steaming ramen bowls under paper lanterns.' }
+      ] },
+      paris: { name: 'Paris', x: 32, y: 40, pois: [
+        { type: 'experience', name: 'Escape room', img: 'assets/exp-escape-room.png', dx: 4, dy: -5, desc: 'A 60-minute mystery beneath the streets of Paris.' },
+        { type: 'dining', name: 'Café de Paris', img: 'assets/zones-story-paris.png', dx: -4, dy: 4, desc: 'Croissants and crepes with an Eiffel view.' },
+        { type: 'shopping', name: 'Champs Boutique', img: 'assets/zones-story-paris.png', dx: 6, dy: 3, desc: 'Parisian fashion and perfume finds.' }
+      ] },
+      kuwait: { name: 'Kuwait', x: 88, y: 40, pois: [
+        { type: 'experience', name: 'The lost muesem', img: 'assets/exp-lost-museum.png', dx: -4, dy: -5, desc: 'Uncover forgotten relics inside the lost museum.' },
+        { type: 'shopping', name: 'Souq Mubarakiya', img: 'assets/zones-story-kuwait.png', dx: 4, dy: 4, desc: 'Spices, gold and heritage wares.' },
+        { type: 'facilities', name: 'Rest Area', img: 'assets/zones-story-kuwait.png', dx: 7, dy: -2, desc: 'Shaded seating, prayer rooms and restrooms.' }
+      ] }
+    };
+    var markers = vm.querySelector('.vm-markers');
+    var vmList = vm.querySelector('.vm-list');
+    var detail = vm.querySelector('.vm-detail');
+    var zoneActive = null;
+    var originalCards = Array.prototype.slice.call(vm.querySelectorAll('.vm-card'));
+    function isMobile() { return window.matchMedia('(max-width: 900px)').matches; }
+
+    function renderDots() {
+      var html = '';
+      Object.keys(ZONES).forEach(function (k, i) {
+        var z = ZONES[k];
+        html += '<button class="vm-dot" data-zone="' + k + '" data-name="' + z.name + '" aria-label="Explore ' + z.name + ' zone" style="left:' + z.x + '%;top:' + z.y + '%;animation-delay:' + (0.3 + i * 0.07) + 's"></button>';
+      });
+      markers.innerHTML = html;
+    }
+    function renderPins(zoneKey) {
+      var z = ZONES[zoneKey];
+      var html = '';
+      z.pois.forEach(function (p, i) {
+        html += '<button class="vm-pin" data-poi="' + zoneKey + ':' + i + '" data-name="' + p.name + '" aria-label="' + p.name + '" style="left:' + (z.x + p.dx) + '%;top:' + (z.y + p.dy) + '%;animation-delay:' + (0.25 + i * 0.08) + 's"><img src="assets/' + ICONS[p.type] + '" alt=""></button>';
+      });
+      markers.innerHTML = html;
+    }
+
+    function zoomToZone(z) {
+      var stageW = stage.clientWidth, stageH = stage.clientHeight;
+      var img = vm.querySelector('.vm-map');
+      var holder = vm.querySelector('.vm-map-holder');
+      var px = holder.offsetLeft + img.offsetWidth * z.x / 100 - stageW / 2;
+      var py = holder.offsetTop + img.offsetHeight * z.y / 100 - stageH / 2;
+      var s = 2;
+      scale = s;
+      if (isMobile()) {
+        // centre the zone in the map area above the bottom sheet
+        tx = -px * s;
+        ty = -py * s - stageH * 0.1;
+      } else {
+        tx = panel.getBoundingClientRect().right / 2 - px * s;
+        ty = -py * s;
+      }
+      applyMap(true);
+    }
+
+    function buildZoneList(zoneKey) {
+      var z = ZONES[zoneKey];
+      originalCards.forEach(function (c) { if (c.parentNode) c.parentNode.removeChild(c); });
+      vmList.querySelectorAll('.vm-card[data-poi]').forEach(function (c) { c.remove(); });
+      var html = '';
+      z.pois.forEach(function (p, i) {
+        html += '<div class="vm-card" data-type="' + p.type + '" data-poi="' + zoneKey + ':' + i + '">' +
+          '<img class="thumb" src="' + p.img + '" alt="">' +
+          '<div class="body">' +
+            '<div class="meta"><span>' + LABELS[p.type] + '</span><span>&middot;</span><img class="star" src="assets/map-ic-star.svg" alt="Rating"><span>5</span></div>' +
+            '<h4>' + p.name + '</h4>' +
+            '<div class="book"><img src="assets/map-ic-booking.svg" alt="">Instant booking</div>' +
+          '</div></div>';
+      });
+      emptyState.insertAdjacentHTML('beforebegin', html);
+      setZoneChip(z);
+      applyFilters(true);
+    }
+
+    // active zone shown as a removable tag at the head of the filter bar
+    function setZoneChip(z) {
+      clearZoneChip();
+      var chipsBar = vm.querySelector('.vm-chips');
+      var chip = document.createElement('button');
+      chip.className = 'vm-chip vm-zone-chip';
+      chip.setAttribute('aria-label', 'Clear the ' + z.name + ' zone filter');
+      chip.innerHTML = '<span>' + z.name + '</span><span class="count">' + z.pois.length + '</span><span class="x">&#10005;</span>';
+      chip.addEventListener('click', function (e) { e.stopPropagation(); exitZone(); });
+      chipsBar.insertBefore(chip, chipsBar.firstChild);
+      if (window.gsap && !REDUCED) {
+        gsap.fromTo(chip, { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(2)' });
+      }
+    }
+    function clearZoneChip() {
+      var old = vm.querySelector('.vm-zone-chip');
+      if (old) old.remove();
+    }
+
+    function enterZone(zoneKey) {
+      zoneActive = zoneKey;
+      hideDetail();
+      renderPins(zoneKey);
+      zoomToZone(ZONES[zoneKey]);
+      buildZoneList(zoneKey);
+    }
+    function exitZone(animate) {
+      zoneActive = null;
+      hideDetail();
+      clearZoneChip();
+      vmList.querySelectorAll('.vm-card[data-poi]').forEach(function (c) { c.remove(); });
+      originalCards.forEach(function (c) { vmList.insertBefore(c, emptyState); });
+      renderDots();
+      scale = 1; tx = 0; ty = 0;
+      if (animate === false && window.gsap) { stage.style.setProperty('--pinscale', 1); gsap.set(stage, { x: 0, y: 0, scale: 1 }); }
+      else applyMap(true);
+      applyFilters(false);
+    }
+
+    // place the detail card next to whatever was clicked (pin or list card)
+    function placeDetail(anchor) {
+      detail.style.right = 'auto';
+      detail.style.bottom = 'auto';
+      var vw = window.innerWidth, vh = window.innerHeight;
+      var d = detail.getBoundingClientRect();
+      var w = d.width, h = d.height, left, top;
+      if (anchor) {
+        var a = anchor.getBoundingClientRect();
+        left = a.left + a.width / 2 - w / 2;
+        top = a.top - h - 14;
+        if (top < 12) top = a.bottom + 14;
+      } else {
+        left = vw - w - 84;
+        top = vh - h - 24;
+      }
+      var minLeft = 12, maxLeft = vw - w - 12, maxTop = vh - h - 12;
+      var pr = panel.getBoundingClientRect();
+      if (isMobile()) {
+        maxTop = Math.min(maxTop, pr.top - h - 12);
+      } else if (left < pr.right + 12 && top < pr.bottom && top + h > pr.top) {
+        minLeft = pr.right + 12;
+      }
+      detail.style.left = Math.max(minLeft, Math.min(left, Math.max(minLeft, maxLeft))) + 'px';
+      detail.style.top = Math.max(12, Math.min(top, Math.max(12, maxTop))) + 'px';
+    }
+
+    function showDetail(data, anchor) {
+      detail.querySelector('.vm-detail-img').src = data.img;
+      detail.querySelector('.type').textContent = data.typeLabel;
+      detail.querySelector('h4').textContent = data.name;
+      detail.querySelector('.desc').textContent = data.desc;
+      detail.hidden = false;
+      placeDetail(anchor);
+      if (window.gsap && !REDUCED) {
+        gsap.fromTo(detail, { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.6)' });
+      }
+    }
+    function hideDetail() { detail.hidden = true; }
+    detail.querySelector('.vm-detail-close').addEventListener('click', hideDetail);
+
+    // bottom-sheet handle (small screens): collapse/expand the list
+    vm.querySelector('.vm-grab').addEventListener('click', function () {
+      panel.classList.toggle('collapsed');
+    });
+
+    vm.addEventListener('click', function (e) {
+      var dot = e.target.closest && e.target.closest('.vm-dot');
+      if (dot) { enterZone(dot.dataset.zone); return; }
+      var poiEl = e.target.closest && e.target.closest('[data-poi]');
+      if (poiEl) {
+        var parts = poiEl.dataset.poi.split(':');
+        var p = ZONES[parts[0]].pois[parseInt(parts[1], 10)];
+        // anchor to the matching map pin when the click came from the list
+        var anchor = poiEl.classList.contains('vm-pin') ? poiEl : vm.querySelector('.vm-pin[data-poi="' + poiEl.dataset.poi + '"]') || poiEl;
+        showDetail({ img: p.img, typeLabel: LABELS[p.type], name: p.name, desc: p.desc }, anchor);
+        return;
+      }
+      var card = e.target.closest && e.target.closest('.vm-card');
+      if (card) {
+        showDetail({
+          img: card.querySelector('.thumb').src,
+          typeLabel: card.querySelector('.meta span').textContent,
+          name: card.querySelector('h4').textContent,
+          desc: 'Open nightly inside BLVD World. Book your slot in seconds.'
+        }, card);
+      }
+    });
+
+    // search + chip filters (combined: card must match selected types AND the query)
+    var head = vm.querySelector('.vm-head');
+    var searchBtn = vm.querySelector('.vm-search-btn');
+    var searchInput = vm.querySelector('.vm-search');
+    var emptyState = vm.querySelector('.vm-empty');
+    var chips = vm.querySelectorAll('.vm-chip');
+    var cards = vm.querySelectorAll('.vm-card');
+
+    function applyFilters(animate) {
+      var active = Array.prototype.filter.call(chips, function (c) { return c.classList.contains('sel'); })
+        .map(function (c) { return c.dataset.filter; });
+      var q = searchInput.value.trim().toLowerCase();
+      var shown = [];
+      vm.querySelectorAll('.vm-card').forEach(function (card) {
+        var okType = !active.length || active.indexOf(card.dataset.type) !== -1;
+        var okText = !q ||
+          card.querySelector('h4').textContent.toLowerCase().indexOf(q) !== -1 ||
+          card.dataset.type.indexOf(q) !== -1;
+        var show = okType && okText;
+        card.style.display = show ? 'flex' : 'none';
+        if (show) shown.push(card);
+      });
+      emptyState.hidden = shown.length > 0;
+      if (animate && shown.length && window.gsap && !REDUCED) {
+        gsap.fromTo(shown, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out', stagger: 0.04 });
+      }
+    }
+
+    chips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        chip.classList.toggle('sel');
+        applyFilters(true);
+      });
+    });
+
+    function openSearch() {
+      head.classList.add('searching');
+      searchBtn.classList.add('active');
+      searchInput.focus();
+    }
+    function exitSearch() {
+      head.classList.remove('searching');
+      searchBtn.classList.remove('active');
+      if (searchInput.value) { searchInput.value = ''; applyFilters(true); }
+    }
+    searchBtn.addEventListener('click', function () {
+      head.classList.contains('searching') ? exitSearch() : openSearch();
+    });
+    searchInput.addEventListener('input', function () { applyFilters(false); });
+  })();
+
+  // Favorite hearts
+  document.querySelectorAll('.fav-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      btn.classList.toggle('faved');
+      if (window.gsap && !REDUCED) {
+        gsap.fromTo(btn, { scale: 0.7 }, { scale: 1, duration: 0.5, ease: 'back.out(3)' });
+      }
+    });
+  });
+
+  // Twinkling stars in the hero sky
+  if (!REDUCED) {
+    var heroEl = document.querySelector('.hero');
+    for (var i = 0; i < 26; i++) {
+      var s = document.createElement('span');
+      s.className = 'tw';
+      s.style.left = (Math.random() * 100).toFixed(2) + '%';
+      s.style.top = (Math.random() * 58).toFixed(2) + '%';
+      s.style.width = s.style.height = (Math.random() * 2.5 + 1.5).toFixed(1) + 'px';
+      s.style.animationDelay = (Math.random() * 3).toFixed(2) + 's';
+      heroEl.appendChild(s);
+    }
+  }
+
+  // ---------- GSAP layer ----------
+  if (window.gsap && window.ScrollTrigger && !REDUCED) {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // page scroll progress bar
+    gsap.to('#scroll-progress', {
+      scaleX: 1, ease: 'none',
+      scrollTrigger: { start: 0, end: 'max', scrub: 0.3 }
+    });
+
+    // hero entrance (paused: the preloader plays it as it tears away)
+    var intro = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+    window.playHeroIntro = function () { intro.play(); };
+    intro
+      .from('.hero-decor', { opacity: 0, y: 90, duration: 1.2, stagger: 0.07, ease: 'power2.out' }, 0)
+      .from('.hero-stars', { opacity: 0, duration: 1.6 }, 0)
+      .from('.hero-logo .mark', { scale: 0, rotation: -120, duration: 0.9, ease: 'back.out(1.6)' }, 0.25)
+      .from('.hero-logo .word', { opacity: 0, y: 12, duration: 0.5 }, '-=0.35')
+      .from('.hero-headline .l1', { opacity: 0, y: 40, duration: 0.7 }, '-=0.25')
+      .from('.hero-headline .l2', { opacity: 0, y: 60, duration: 0.8 }, '-=0.5')
+      .from('.pricing-row', { opacity: 0, y: 60, duration: 0.9 }, '-=0.55')
+      .from('.price-card', { opacity: 0, y: 26, duration: 0.55, stagger: 0.08, clearProps: 'all' }, '-=0.75')
+      .from('.scroll-cue', { opacity: 0, duration: 0.6 }, '-=0.3');
+
+    // scroll-triggered reveals
+    function revealGroup(containerSel, childSel, vars) {
+      gsap.utils.toArray(containerSel).forEach(function (c) {
+        var items = childSel ? c.querySelectorAll(childSel) : [c];
+        gsap.from(items, Object.assign({
+          opacity: 0, y: 46, duration: 0.9, ease: 'power3.out', stagger: 0.09, clearProps: 'all',
+          scrollTrigger: { trigger: c, start: 'top 85%' }
+        }, vars || {}));
+      });
+    }
+    revealGroup('section:not(.hero) .section-head', null, { y: 34 });
+    revealGroup('.stories-row', '.story', { y: 30, scale: 0.6, ease: 'back.out(1.5)', stagger: 0.08 });
+    revealGroup('#rides .rail', '.ticket-card', { y: 90, rotation: 2.5, stagger: 0.12, duration: 1 });
+    revealGroup('#experiences .cards-row', '.product-card', {});
+    revealGroup('#restaurants .cards-row', '.product-card', {});
+    revealGroup('.rules-grid', '.rule-card', { y: 36, scale: 0.94, stagger: 0.06 });
+    revealGroup('.faq-section h2', null, { y: 34 });
+    revealGroup('.faq-list', '.faq-item', { y: 26, stagger: 0.08 });
+    revealGroup('.zones-buttons', null, {});
+    revealGroup('.controls', null, { y: 20 });
+
+    // zones map: scrubbed rise-and-scale reveal
+    gsap.from('.zones-map', {
+      opacity: 0, scale: 0.94, y: 70, ease: 'none',
+      scrollTrigger: { trigger: '.zones-map', start: 'top 92%', end: 'top 45%', scrub: true }
+    });
+
+    // facts count-up
+    gsap.utils.toArray('.facts b').forEach(function (el) {
+      var end = parseInt(el.textContent, 10);
+      var obj = { v: 0 };
+      ScrollTrigger.create({
+        trigger: el, start: 'top 90%', once: true,
+        onEnter: function () {
+          gsap.to(obj, {
+            v: end, duration: 1.6, ease: 'power2.out',
+            onUpdate: function () { el.textContent = Math.round(obj.v); }
+          });
+        }
+      });
+    });
+
+    if (FINE_POINTER) {
+      // 3D tilt on cards
+      gsap.utils.toArray('.product-card .media, .ticket-card').forEach(function (el) {
+        var rx = gsap.quickTo(el, 'rotationX', { duration: 0.5, ease: 'power2.out' });
+        var ry = gsap.quickTo(el, 'rotationY', { duration: 0.5, ease: 'power2.out' });
+        var yTo = gsap.quickTo(el, 'y', { duration: 0.4, ease: 'power2.out' });
+        el.addEventListener('mouseenter', function () {
+          gsap.set(el, { transformPerspective: 700 });
+          yTo(-8);
+        });
+        el.addEventListener('mousemove', function (e) {
+          var r = el.getBoundingClientRect();
+          ry(((e.clientX - r.left) / r.width - 0.5) * 7);
+          rx(-((e.clientY - r.top) / r.height - 0.5) * 7);
+        });
+        el.addEventListener('mouseleave', function () { rx(0); ry(0); yTo(0); });
+      });
+
+      // magnetic buttons
+      gsap.utils.toArray('.pill, .ctrl-btn').forEach(function (btn) {
+        var xTo = gsap.quickTo(btn, 'x', { duration: 0.4, ease: 'power3.out' });
+        var yTo = gsap.quickTo(btn, 'y', { duration: 0.4, ease: 'power3.out' });
+        btn.addEventListener('mousemove', function (e) {
+          var r = btn.getBoundingClientRect();
+          xTo((e.clientX - (r.left + r.width / 2)) * 0.22);
+          yTo((e.clientY - (r.top + r.height / 2)) * 0.3);
+        });
+        btn.addEventListener('mouseleave', function () { xTo(0); yTo(0); });
+      });
+    }
+
+    window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+  }
+
+  // ---------- custom cursor ----------
+  if (window.gsap && FINE_POINTER && !REDUCED) {
+    document.documentElement.classList.add('has-cursor');
+    var cDot = document.createElement('div');
+    cDot.id = 'cursor-dot';
+    var cRing = document.createElement('div');
+    cRing.id = 'cursor-ring';
+    cRing.innerHTML = '<span>DRAG</span>';
+    document.body.appendChild(cDot);
+    document.body.appendChild(cRing);
+    gsap.set([cDot, cRing], { x: -100, y: -100 });
+
+    var dotX = gsap.quickTo(cDot, 'x', { duration: 0.12, ease: 'power2.out' });
+    var dotY = gsap.quickTo(cDot, 'y', { duration: 0.12, ease: 'power2.out' });
+    var ringX = gsap.quickTo(cRing, 'x', { duration: 0.45, ease: 'power3.out' });
+    var ringY = gsap.quickTo(cRing, 'y', { duration: 0.45, ease: 'power3.out' });
+
+    window.addEventListener('mousemove', function (e) {
+      var z = zoomFactor();
+      dotX(e.clientX / z); dotY(e.clientY / z);
+      ringX(e.clientX / z); ringY(e.clientY / z);
+      var t = e.target;
+      var overMap = t.closest && t.closest('#view-map');
+      gsap.to([cDot, cRing], { autoAlpha: overMap ? 0 : 1, duration: 0.2, overwrite: 'auto' });
+      if (overMap) return;
+      var inter = t.closest && t.closest('a, button, .price-card, .story, .faq-q, .zones-map');
+      var drag = !inter && t.closest && t.closest('[data-rail]');
+      cRing.classList.toggle('is-hover', !!inter);
+      cRing.classList.toggle('is-drag', !!drag);
+      gsap.to(cRing, { scale: inter ? 1.5 : (drag ? 2 : 1), duration: 0.3, ease: 'power2.out' });
+    });
+    window.addEventListener('mousedown', function () { gsap.to(cDot, { scale: 0.6, duration: 0.2 }); });
+    window.addEventListener('mouseup', function () { gsap.to(cDot, { scale: 1, duration: 0.3, ease: 'back.out(2)' }); });
+    document.documentElement.addEventListener('mouseleave', function () { gsap.to([cDot, cRing], { opacity: 0, duration: 0.2 }); });
+    document.documentElement.addEventListener('mouseenter', function () { gsap.to([cDot, cRing], { opacity: 1, duration: 0.2 }); });
+  }
+</script>
+
+</body>
+</html>
