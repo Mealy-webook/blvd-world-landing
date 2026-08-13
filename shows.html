@@ -31,34 +31,6 @@
   button, a { font: inherit; color: inherit; cursor: pointer; background: none; border: none; }
   a { text-decoration: none; }
 
-  /* ---------- top bar ---------- */
-  .bar {
-    position: sticky; top: 0; z-index: 30;
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px clamp(16px, 5vw, 48px);
-    background: rgba(3, 0, 60, 0.9);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  }
-  .bar .back {
-    width: 40px; height: 40px; flex-shrink: 0;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 17px;
-    transition: background 0.2s;
-  }
-  .bar .back:hover { background: rgba(255, 255, 255, 0.14); }
-  .bar .mark { width: 26px; height: 26px; }
-  .bar .name { font-weight: 700; font-size: 16px; color: #fff; letter-spacing: -0.1px; }
-  .bar .spacer { flex: 1; }
-  .bar .cta {
-    background: var(--pink); color: #fff;
-    font-family: 'Figtree', sans-serif; font-weight: 600; font-size: 15px;
-    padding: 10px 18px; border-radius: 9999px; white-space: nowrap;
-  }
-
   /* ---------- header ---------- */
   .head {
     position: relative;
@@ -92,7 +64,7 @@
 
   /* ---------- controls ---------- */
   .controls {
-    position: sticky; top: 65px; z-index: 20;
+    position: sticky; top: 0; z-index: 20;
     background: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -123,6 +95,21 @@
   .chip.on { background: rgba(0, 0, 0, 0.1); border-color: var(--ink); }
   .chip.on::after { content: "\2715"; font-size: 11px; }
   .count { font-family: 'Figtree', sans-serif; font-size: 13px; color: var(--muted); white-space: nowrap; }
+
+  /* weekday picker — day names only, today selected on load */
+  .day {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 7px;
+    height: 40px; padding: 0 16px;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-family: 'Figtree', sans-serif;
+    font-weight: 600; font-size: 15px;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .day:hover { border-color: #a1a1aa; }
+  .day.on { background: var(--ink); border-color: var(--ink); color: #fff; }
 
   /* ---------- schedule ---------- */
   .wrap { max-width: 1080px; margin: 0 auto; padding: 28px clamp(16px, 5vw, 48px) 90px; }
@@ -192,6 +179,15 @@
     transition: border-color 0.2s, transform 0.2s;
   }
   .tl-show + .tl-show { margin-top: 8px; }
+  .tl-show .thumb {
+    width: 56px; height: 56px; flex-shrink: 0;
+    border-radius: 14px; object-fit: cover;
+  }
+  .tl-show .thumb.tile {
+    background: var(--ink); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+  }
   .tl-show:hover { border-color: var(--pink); transform: translateY(-1px); }
   .tl-show .body { flex: 1; min-width: 0; }
   .tl-show b { font-weight: 600; font-size: 16px; }
@@ -206,8 +202,7 @@
   }
 
   @media (max-width: 620px) {
-    .bar .name { display: none; }
-    .controls { top: 65px; padding: 12px 16px; }
+    .controls { top: 0; padding: 12px 16px; }
     .ctrl-row { flex-wrap: wrap; }
     .count { width: 100%; }
     .row { grid-template-columns: 1fr auto; gap: 8px 12px; padding: 12px 14px; }
@@ -221,10 +216,15 @@
     .tag { font-size: 11.5px; }
     .note { font-size: 15px; }
     .seg button, .chip { font-size: 15px; }
-    .slot { grid-template-columns: 74px 1fr; gap: 12px; }
+    .slot { grid-template-columns: 58px 1fr; gap: 10px; }
     .slot .time { font-size: 16px; }
-    .slot .line::before { left: -12px; }
-    .slot .line::after { left: -16px; }
+    .slot .line::before { left: -10px; }
+    .slot .line::after { left: -14px; }
+    /* thumbnail + text + tag will not fit on one line, so the tag wraps under */
+    .tl-show { flex-wrap: wrap; padding: 10px 12px; gap: 10px; }
+    .tl-show .thumb { width: 44px; height: 44px; border-radius: 12px; }
+    .tl-show .body { flex: 1 1 120px; }
+    .tl-show .tag { order: 3; margin-left: 54px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -233,13 +233,6 @@
 </head>
 <body>
 
-<nav class="bar">
-  <a class="back" href="index.html" aria-label="Back to BLVD World">&#8592;</a>
-  <img class="mark" src="assets/hero-logo-mark.svg" alt="">
-  <span class="name">BLVD World</span>
-  <span class="spacer"></span>
-  <a class="cta" href="index.html#zones">Explore zones</a>
-</nav>
 
 <header class="head">
   <div class="kicker">Ramadan at BLVD World</div>
@@ -253,20 +246,12 @@
 
 <div class="controls">
   <div class="ctrl-row">
-    <div class="seg" id="days">
-      <button data-day="satTue" class="on">Sat &ndash; Tue</button>
-      <button data-day="wedThu">Wed &amp; Thu</button>
-      <button data-day="fri">Friday</button>
-    </div>
-    <div class="seg" id="views">
-      <button data-view="zone" class="on">By zone</button>
-      <button data-view="time">By time</button>
-    </div>
+    <div class="scroller" id="days"></div>
   </div>
+  <div class="ctrl-row"><span class="count" id="count"></span></div>
   <div class="ctrl-row">
     <div class="scroller" id="zoneChips"></div>
   </div>
-  <div class="ctrl-row"><span class="count" id="count"></span></div>
 </div>
 
 <main class="wrap">
@@ -279,7 +264,7 @@
      s = start, e = end (evening times; anything from 12:00 onward is after midnight),
      d = duration in minutes, v = venue: roaming | stage | dance */
   var ZONES = [
-    { name: 'Saudi Arabia', short: 'KSA', byDay: {
+    { name: 'Saudi Arabia', short: 'KSA', img: 'assets/zones-story-saudi-arabia.png', byDay: {
       satTue: [
         { n: 'Welcoming Roamers', d: 10, s: '08:30', e: '08:40', v: 'roaming' },
         { n: 'Storyteller', d: 15, s: '09:00', e: '09:15', v: 'stage' },
@@ -316,7 +301,7 @@
         { n: 'Mesaharati', d: 15, s: '01:00', e: '01:15', v: 'roaming' }
       ]
     } },
-    { name: 'France', short: 'FR', shows: [
+    { name: 'France', short: 'FR', img: 'assets/zones-story-paris.png', shows: [
       { n: 'Eiffel Gentlemen', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
       { n: 'Parisian Tourists', d: 15, s: '09:45', e: '10:00', v: 'roaming' },
       { n: 'French Mime', d: 15, s: '10:15', e: '10:30', v: 'roaming' },
@@ -325,7 +310,7 @@
       { n: 'Parisian Tourists', d: 15, s: '12:00', e: '12:15', v: 'roaming' },
       { n: 'Eiffel Gentlemen', d: 15, s: '12:30', e: '12:45', v: 'roaming' }
     ] },
-    { name: 'Turkey', short: 'TR', shows: [
+    { name: 'Turkey', short: 'TR', img: 'assets/zones-story-turkey.png', shows: [
       { n: 'Turkish Rovers', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
       { n: 'Turkish Folkloric Dance', d: 15, s: '08:45', e: '09:00', v: 'roaming' },
       { n: 'Turkish Folkloric Dance', d: 15, s: '09:00', e: '09:15', v: 'roaming' },
@@ -347,7 +332,7 @@
       { n: 'Greeting', d: 10, s: '12:00', e: '12:10', v: 'roaming' },
       { n: 'Greeting', d: 15, s: '12:30', e: '12:40', v: 'stage' }
     ] },
-    { name: 'Japan', short: 'JP', shows: [
+    { name: 'Japan', short: 'JP', img: 'assets/zones-story-japan.png', shows: [
       { n: 'Full Parade', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
       { n: 'Samurai & Geisha', d: 15, s: '09:30', e: '09:45', v: 'roaming' },
       { n: 'Samurai & Geisha', d: 15, s: '10:30', e: '10:45', v: 'roaming' },
@@ -449,7 +434,7 @@
       { n: 'Mainland Greek', d: 15, s: '12:00', e: '12:15', v: 'roaming' },
       { n: 'Empire Warriors', d: 15, s: '12:30', e: '12:45', v: 'roaming' }
     ] },
-    { name: 'Egypt', short: 'EG', shows: [
+    { name: 'Egypt', short: 'EG', img: 'assets/zones-story-egypt.png', shows: [
       { n: 'Full Parade', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
       { n: 'Egyptian Servants', d: 15, s: '09:05', e: '09:20', v: 'roaming' },
       { n: 'Greeting Parade', d: 15, s: '09:25', e: '09:40', v: 'roaming' },
@@ -493,7 +478,40 @@
   ];
 
   var VENUE_LABEL = { roaming: 'Roaming', stage: 'Stage', dance: 'Dance show' };
-  var day = 'satTue', view = 'zone', picked = [];
+  var picked = ['Saudi Arabia'];   // Saudi zone is selected on load
+
+  /* The schedule runs on three programmes: Sat–Tue, Wed–Thu and Friday.
+     The picker shows the actual weekdays; each maps to its programme. */
+  var WEEK = [
+    { dow: 'Saturday', v: 'satTue' }, { dow: 'Sunday', v: 'satTue' },
+    { dow: 'Monday', v: 'satTue' }, { dow: 'Tuesday', v: 'satTue' },
+    { dow: 'Wednesday', v: 'wedThu' }, { dow: 'Thursday', v: 'wedThu' },
+    { dow: 'Friday', v: 'fri' }
+  ];
+  var today = new Date();
+  var todayIdx = (today.getDay() + 1) % 7;               // 0 = Saturday
+  var weekStart = new Date(today.getTime() - todayIdx * 86400000);
+  var day = WEEK[todayIdx].v;
+
+  var daysEl = document.getElementById('days');
+  daysEl.innerHTML = WEEK.map(function (d, i) {
+    // today starts selected; no extra badge
+    return '<button class="day' + (i === todayIdx ? ' on' : '') + '" data-v="' + d.v + '" data-i="' + i + '">' +
+      d.dow + '</button>';
+  }).join('');
+  // keep the selected day visible when the row overflows
+  (function () {
+    var sel = daysEl.querySelector('.day.on');
+    if (sel) daysEl.scrollLeft = Math.max(0, sel.offsetLeft - daysEl.clientWidth / 2 + sel.offsetWidth / 2);
+  })();
+  daysEl.addEventListener('click', function (e) {
+    var b = e.target.closest('.day');
+    if (!b) return;
+    daysEl.querySelectorAll('.day').forEach(function (x) { x.classList.remove('on'); });
+    b.classList.add('on');
+    day = b.dataset.v;
+    render();
+  });
 
   function showsFor(z) { return z.byDay ? z.byDay[day] : z.shows; }
 
@@ -512,7 +530,8 @@
   /* --- zone chips --- */
   var chipsEl = document.getElementById('zoneChips');
   chipsEl.innerHTML = ZONES.map(function (z) {
-    return '<button class="chip" data-z="' + z.name + '">' + z.name + '</button>';
+    var on = picked.indexOf(z.name) > -1 ? ' on' : '';
+    return '<button class="chip' + on + '" data-z="' + z.name + '">' + z.name + '</button>';
   }).join('');
   chipsEl.addEventListener('click', function (e) {
     var c = e.target.closest('.chip');
@@ -535,8 +554,6 @@
       render();
     });
   }
-  segHandler('days', function (d) { day = d.day; });
-  segHandler('views', function (d) { view = d.view; });
 
   var out = document.getElementById('out');
   var countEl = document.getElementById('count');
@@ -551,28 +568,10 @@
       return;
     }
 
-    if (view === 'zone') {
-      out.innerHTML = zones.map(function (z) {
-        var list = showsFor(z);
-        return '<section class="zone-card">' +
-          '<div class="zone-head"><span class="flag">' + z.short + '</span>' +
-            '<h2>' + z.name + '</h2><span class="n">' + list.length + ' shows</span></div>' +
-          '<div class="rows">' + list.map(function (s) {
-            var a = fmt(s.s), b = fmt(s.e);
-            return '<div class="row">' +
-              '<div class="when">' + a.t + ' &ndash; ' + b.t + '<small>' + a.mer + ' &middot; ' + s.d + ' min</small></div>' +
-              '<div class="what"><b>' + s.n + '</b></div>' +
-              '<span class="tag ' + s.v + '">' + VENUE_LABEL[s.v] + '</span>' +
-            '</div>';
-          }).join('') + '</div></section>';
-      }).join('');
-      return;
-    }
-
     /* by time: flatten every zone's shows and group by start time */
     var all = [];
     zones.forEach(function (z) {
-      showsFor(z).forEach(function (s) { all.push({ z: z.name, s: s }); });
+      showsFor(z).forEach(function (s) { all.push({ z: z.name, short: z.short, img: z.img, s: s }); });
     });
     all.sort(function (a, b) { return sortKey(a.s.s) - sortKey(b.s.s); });
 
@@ -587,7 +586,10 @@
       return '<section class="slot">' +
         '<div class="time">' + f.t + '<small>' + f.mer + '</small></div>' +
         '<div class="line">' + groups[t].map(function (i) {
-          return '<article class="tl-show"><div class="body"><b>' + i.s.n + '</b>' +
+          var thumb = i.img
+            ? '<img class="thumb" src="' + i.img + '" alt="" loading="lazy" decoding="async">'
+            : '<span class="thumb tile">' + i.short + '</span>';
+          return '<article class="tl-show">' + thumb + '<div class="body"><b>' + i.s.n + '</b>' +
             '<span>' + i.z + ' &middot; ' + i.s.d + ' min</span></div>' +
             '<span class="tag ' + i.s.v + '">' + VENUE_LABEL[i.s.v] + '</span></article>';
         }).join('') + '</div></section>';
