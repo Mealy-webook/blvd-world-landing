@@ -103,7 +103,15 @@
     width: 1937px; height: 837px;
     pointer-events: none;
   }
-  .hero-decor { position: absolute; pointer-events: none; z-index: 1; }
+  .hero-decor {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    /* own compositor layer: the intro animates these large PNGs */
+    will-change: transform, opacity;
+    transform: translateZ(0);
+  }
+  .hero.intro-done .hero-decor { will-change: auto; }
   .hero-decor img { width: 100%; height: 100%; object-fit: cover; }
   .hero-decor.crop { overflow: hidden; }
   .hero-decor.crop img { position: absolute; max-width: none; }
@@ -1094,6 +1102,10 @@
     overflow: visible;
   }
   #loader.ld-done { transition: transform 0.85s cubic-bezier(0.76, 0, 0.24, 1); transform: translateY(-104%); }
+  #loader.ld-done .ld-inner { opacity: 0; transform: translateY(-24px); transition: opacity 0.3s ease-in, transform 0.35s ease-in; }
+  #loader { will-change: transform; }
+  .ld-fill { will-change: transform; }
+  .gal-track { will-change: transform; }
   .ld-inner { display: flex; flex-direction: column; align-items: center; gap: 16px; }
   .ld-mark { width: 84px; height: 84px; animation: ldSpin 2.4s ease-in-out infinite; }
   @keyframes ldSpin {
@@ -1516,33 +1528,33 @@
   <div class="stories-row">
     <button class="ctrl-btn prev dim" aria-label="Previous zones"><img src="assets/zones-arrow-chevron.svg" alt=""></button>
     <div class="story">
-      <div class="ring"><div class="avatar"><img src="assets/zones-story-saudi-arabia.png" alt="Saudia Arabia zone"></div></div>
+      <div class="ring"><div class="avatar"><img src="assets/zones-story-saudi-arabia.png" alt="Saudia Arabia zone" loading="lazy" decoding="async"></div></div>
       <span class="label">Saudia Arabia</span>
     </div>
     <div class="story">
-      <div class="ring"><div class="avatar"><img src="assets/zones-story-egypt.png" alt="Egypt zone"></div></div>
+      <div class="ring"><div class="avatar"><img src="assets/zones-story-egypt.png" alt="Egypt zone" loading="lazy" decoding="async"></div></div>
       <span class="label">Egypt</span>
     </div>
     <div class="story">
-      <div class="ring"><div class="avatar"><img src="assets/zones-story-turkey.png" alt="Turkey zone"></div></div>
+      <div class="ring"><div class="avatar"><img src="assets/zones-story-turkey.png" alt="Turkey zone" loading="lazy" decoding="async"></div></div>
       <span class="label">Turkey</span>
     </div>
     <div class="story">
-      <div class="ring"><div class="avatar"><img src="assets/zones-story-japan.png" alt="Japan zone"></div></div>
+      <div class="ring"><div class="avatar"><img src="assets/zones-story-japan.png" alt="Japan zone" loading="lazy" decoding="async"></div></div>
       <span class="label">Japan</span>
     </div>
     <div class="story">
-      <div class="ring"><div class="avatar"><img src="assets/zones-story-paris.png" alt="Paris zone"></div></div>
+      <div class="ring"><div class="avatar"><img src="assets/zones-story-paris.png" alt="Paris zone" loading="lazy" decoding="async"></div></div>
       <span class="label">Paris</span>
     </div>
     <div class="story">
-      <div class="ring"><div class="avatar"><img src="assets/zones-story-kuwait.png" alt="Kuwait zone"></div></div>
+      <div class="ring"><div class="avatar"><img src="assets/zones-story-kuwait.png" alt="Kuwait zone" loading="lazy" decoding="async"></div></div>
       <span class="label">Kuwait</span>
     </div>
     <button class="ctrl-btn next" aria-label="Next zones"><img src="assets/zones-arrow-chevron.svg" alt=""></button>
   </div>
 
-  <img class="zones-map" src="assets/zones-map.png" alt="BLVD World park map — open the interactive map" role="button" tabindex="0" title="Open the interactive map">
+  <img class="zones-map" src="assets/zones-map.png" alt="BLVD World park map — open the interactive map" role="button" tabindex="0" title="Open the interactive map" loading="lazy" decoding="async">
 
   <ul class="facts" id="ab-facts">
     <li><div class="fact"><b>24</b><span>zones</span></div></li>
@@ -1560,7 +1572,7 @@
 <!-- ================= RIDES ================= -->
 <section class="section-pad navy-bg on-navy" id="rides">
   <div class="tear tear-top">
-    <img src="assets/rides-tear-edge.png" alt="">
+    <img src="assets/rides-tear-edge.png" alt="" loading="lazy" decoding="async">
     <div class="bar"></div>
   </div>
 
@@ -1572,75 +1584,75 @@
   <div class="rail-wrap" data-rail>
     <div class="rail">
       <article class="ticket-card">
-        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="">
+        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
         <div class="card-body">
-          <img class="photo" src="assets/rides-photo-1.png" alt="Wave Swinger ride">
+          <img class="photo" src="assets/rides-photo-1.png" alt="Wave Swinger ride" loading="lazy" decoding="async">
           <div class="text">
             <h3>Wave Swinger</h3>
             <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17"></span>
+              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
               <span>Thrill: Max</span>
             </div>
             <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20"></span>
+              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
               <span>Height: 130-195cm</span>
             </div>
             <p class="desc">Meet the beast that&rsquo;s changing the thrill game. King Claw has arrived and it&rsquo;s every bit as monstrous as you imagined (in the best possible way).</p>
           </div>
         </div>
-        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="">
+        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
       </article>
       <article class="ticket-card">
-        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="">
+        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
         <div class="card-body">
-          <img class="photo" src="assets/rides-photo-2.png" alt="Sky Loop ride">
+          <img class="photo" src="assets/rides-photo-2.png" alt="Sky Loop ride" loading="lazy" decoding="async">
           <div class="text">
             <h3>Wave Swinger</h3>
             <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17"></span>
+              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
               <span>Thrill: Max</span>
             </div>
             <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20"></span>
+              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
               <span>Height: 130-195cm</span>
             </div>
             <p class="desc">Meet the beast that&rsquo;s changing the thrill game. King Claw has arrived and it&rsquo;s every bit as monstrous as you imagined (in the best possible way).</p>
           </div>
         </div>
-        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="">
+        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
       </article>
       <article class="ticket-card">
-        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="">
+        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
         <div class="card-body">
-          <img class="photo" src="assets/rides-photo-3.png" alt="Log flume ride">
+          <img class="photo" src="assets/rides-photo-3.png" alt="Log flume ride" loading="lazy" decoding="async">
           <div class="text">
             <h3>Wave Swinger</h3>
             <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17"></span>
+              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
               <span>Thrill: Max</span>
             </div>
             <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20"></span>
+              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
               <span>Height: 130-195cm</span>
             </div>
             <p class="desc">Meet the beast that&rsquo;s changing the thrill game. King Claw has arrived and it&rsquo;s every bit as monstrous as you imagined (in the best possible way).</p>
           </div>
         </div>
-        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="">
+        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
       </article>
     </div>
   </div>
 
   <div class="controls">
     <div class="btns">
-      <button class="ctrl-btn prev dim" data-prev aria-label="Previous rides"><img src="assets/rides-icon-arrow-right.svg" alt=""></button>
-      <button class="ctrl-btn next" data-next aria-label="Next rides"><img src="assets/rides-icon-arrow-right.svg" alt=""></button>
+      <button class="ctrl-btn prev dim" data-prev aria-label="Previous rides"><img src="assets/rides-icon-arrow-right.svg" alt="" loading="lazy" decoding="async"></button>
+      <button class="ctrl-btn next" data-next aria-label="Next rides"><img src="assets/rides-icon-arrow-right.svg" alt="" loading="lazy" decoding="async"></button>
     </div>
     <div class="progress"><div class="fill" style="width: 18%;"></div></div>
   </div>
 
   <div class="tear tear-bottom">
-    <img src="assets/rides-tear-edge.png" alt="">
+    <img src="assets/rides-tear-edge.png" alt="" loading="lazy" decoding="async">
     <div class="bar"></div>
   </div>
 </section>
@@ -1655,70 +1667,70 @@
   <div class="cards-row" data-rail>
     <article class="product-card">
       <div class="media square">
-        <img src="assets/exp-lost-museum.png" alt="The lost muesem">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt=""></button>
+        <img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
       </div>
       <div class="content">
         <h3>The lost muesem</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR"><span>210.75</span></div>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
       </div>
     </article>
     <article class="product-card">
       <div class="media square">
-        <img src="assets/exp-escape-room.png" alt="Escape room">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt=""></button>
+        <img src="assets/exp-escape-room.png" alt="Escape room" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
       </div>
       <div class="content">
         <h3>Escape room</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR"><span>210.75</span></div>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
       </div>
     </article>
     <article class="product-card">
       <div class="media square">
-        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt=""></button>
+        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
       </div>
       <div class="content">
         <h3>The tomb of pharoh</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR"><span>210.75</span></div>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
       </div>
     </article>
     <article class="product-card">
       <div class="media square">
-        <img src="assets/exp-pyramids-mystery.png" alt="Pyramid's mystery">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt=""></button>
+        <img src="assets/exp-pyramids-mystery.png" alt="Pyramid's mystery" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
       </div>
       <div class="content">
         <h3>Pyramid&rsquo;s mystery</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR"><span>210.75</span></div>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
       </div>
     </article>
     <article class="product-card">
       <div class="media square">
-        <img src="assets/exp-lost-museum.png" alt="The lost muesem">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt=""></button>
+        <img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
       </div>
       <div class="content">
         <h3>The lost muesem</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR"><span>210.75</span></div>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
       </div>
     </article>
     <article class="product-card">
       <div class="media square">
-        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt=""></button>
+        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
       </div>
       <div class="content">
         <h3>The tomb of pharoh</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR"><span>210.75</span></div>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
       </div>
     </article>
   </div>
 
   <div class="controls">
     <div class="btns">
-      <button class="ctrl-btn prev dim" aria-label="Previous experiences"><img src="assets/exp-arrow.svg" alt=""></button>
-      <button class="ctrl-btn next" aria-label="Next experiences"><img src="assets/exp-arrow-next.svg" alt=""></button>
+      <button class="ctrl-btn prev dim" aria-label="Previous experiences"><img src="assets/exp-arrow.svg" alt="" loading="lazy" decoding="async"></button>
+      <button class="ctrl-btn next" aria-label="Next experiences"><img src="assets/exp-arrow-next.svg" alt="" loading="lazy" decoding="async"></button>
     </div>
     <div class="progress"><div class="fill" style="width: 50%;"></div></div>
   </div>
@@ -1727,7 +1739,7 @@
 <!-- ================= RESTAURANTS ================= -->
 <section class="section-pad navy-bg on-navy" id="restaurants">
   <div class="tear tear-top">
-    <img src="assets/rest-page-tear.png" alt="">
+    <img src="assets/rest-page-tear.png" alt="" loading="lazy" decoding="async">
     <div class="bar"></div>
   </div>
 
@@ -1739,70 +1751,70 @@
   <div class="cards-row" data-rail>
     <article class="product-card">
       <div class="media wide">
-        <img src="assets/rest-tant.png" alt="Tant restaurent">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt=""></button>
+        <img src="assets/rest-tant.png" alt="Tant restaurent" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt="" loading="lazy" decoding="async"></button>
       </div>
       <div class="content">
         <h3>Tant restaurent</h3>
-        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR"><span>210.75</span></div>
+        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
       </div>
     </article>
     <article class="product-card">
       <div class="media wide">
-        <img src="assets/rest-tant.png" alt="Tant restaurent">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt=""></button>
+        <img src="assets/rest-tant.png" alt="Tant restaurent" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt="" loading="lazy" decoding="async"></button>
       </div>
       <div class="content">
         <h3>Tant restaurent</h3>
-        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR"><span>210.75</span></div>
+        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
       </div>
     </article>
     <article class="product-card">
       <div class="media wide">
-        <img src="assets/rest-tant.png" alt="Tant restaurent">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt=""></button>
+        <img src="assets/rest-tant.png" alt="Tant restaurent" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt="" loading="lazy" decoding="async"></button>
       </div>
       <div class="content">
         <h3>Tant restaurent</h3>
-        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR"><span>210.75</span></div>
+        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
       </div>
     </article>
     <article class="product-card">
       <div class="media wide">
-        <img src="assets/rest-tant.png" alt="Tant restaurent">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt=""></button>
+        <img src="assets/rest-tant.png" alt="Tant restaurent" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt="" loading="lazy" decoding="async"></button>
       </div>
       <div class="content">
         <h3>Tant restaurent</h3>
-        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR"><span>210.75</span></div>
+        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
       </div>
     </article>
     <article class="product-card">
       <div class="media wide">
-        <img src="assets/rest-tant.png" alt="Tant restaurent">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt=""></button>
+        <img src="assets/rest-tant.png" alt="Tant restaurent" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt="" loading="lazy" decoding="async"></button>
       </div>
       <div class="content">
         <h3>Tant restaurent</h3>
-        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR"><span>210.75</span></div>
+        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
       </div>
     </article>
     <article class="product-card">
       <div class="media wide">
-        <img src="assets/rest-tant.png" alt="Tant restaurent">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt=""></button>
+        <img src="assets/rest-tant.png" alt="Tant restaurent" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/rest-heart.svg" alt="" loading="lazy" decoding="async"></button>
       </div>
       <div class="content">
         <h3>Tant restaurent</h3>
-        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR"><span>210.75</span></div>
+        <div class="price"><img src="assets/rest-sar-symbol.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
       </div>
     </article>
   </div>
 
   <div class="controls">
     <div class="btns">
-      <button class="ctrl-btn prev dim" aria-label="Previous restaurants"><img src="assets/rest-arrow-prev.svg" alt=""></button>
-      <button class="ctrl-btn next" aria-label="Next restaurants"><img src="assets/rest-arrow-next.svg" alt=""></button>
+      <button class="ctrl-btn prev dim" aria-label="Previous restaurants"><img src="assets/rest-arrow-prev.svg" alt="" loading="lazy" decoding="async"></button>
+      <button class="ctrl-btn next" aria-label="Next restaurants"><img src="assets/rest-arrow-next.svg" alt="" loading="lazy" decoding="async"></button>
     </div>
     <div class="progress"><div class="fill" style="width: 17%;"></div></div>
   </div>
@@ -1811,7 +1823,7 @@
 <!-- ================= GALLERY ================= -->
 <section class="gallery-sec" id="gallery">
   <div class="tear tear-top-white">
-    <img src="assets/rules-page-tear.png" alt="">
+    <img src="assets/rules-page-tear.png" alt="" loading="lazy" decoding="async">
     <div class="bar"></div>
   </div>
 
@@ -1823,40 +1835,40 @@
   <div class="gal-row">
     <div class="gal-track">
       <div class="gal-set">
-        <img src="assets/rides-photo-1.png" alt="Wave Swinger at night">
-        <img src="assets/exp-lost-museum.png" alt="The lost museum experience">
-        <img src="assets/rest-tant.png" alt="Tant restaurant facade">
-        <img src="assets/zones-story-japan.png" alt="Japan zone">
-        <img src="assets/rides-photo-2.png" alt="Sky Loop sign">
-        <img src="assets/exp-tomb-pharaoh.png" alt="Tomb of the pharaoh">
+        <img src="assets/rides-photo-1.png" alt="Wave Swinger at night" loading="lazy" decoding="async">
+        <img src="assets/exp-lost-museum.png" alt="The lost museum experience" loading="lazy" decoding="async">
+        <img src="assets/rest-tant.png" alt="Tant restaurant facade" loading="lazy" decoding="async">
+        <img src="assets/zones-story-japan.png" alt="Japan zone" loading="lazy" decoding="async">
+        <img src="assets/rides-photo-2.png" alt="Sky Loop sign" loading="lazy" decoding="async">
+        <img src="assets/exp-tomb-pharaoh.png" alt="Tomb of the pharaoh" loading="lazy" decoding="async">
       </div>
       <div class="gal-set" aria-hidden="true">
-        <img src="assets/rides-photo-1.png" alt="">
-        <img src="assets/exp-lost-museum.png" alt="">
-        <img src="assets/rest-tant.png" alt="">
-        <img src="assets/zones-story-japan.png" alt="">
-        <img src="assets/rides-photo-2.png" alt="">
-        <img src="assets/exp-tomb-pharaoh.png" alt="">
+        <img src="assets/rides-photo-1.png" alt="" loading="lazy" decoding="async">
+        <img src="assets/exp-lost-museum.png" alt="" loading="lazy" decoding="async">
+        <img src="assets/rest-tant.png" alt="" loading="lazy" decoding="async">
+        <img src="assets/zones-story-japan.png" alt="" loading="lazy" decoding="async">
+        <img src="assets/rides-photo-2.png" alt="" loading="lazy" decoding="async">
+        <img src="assets/exp-tomb-pharaoh.png" alt="" loading="lazy" decoding="async">
       </div>
     </div>
   </div>
   <div class="gal-row rev">
     <div class="gal-track">
       <div class="gal-set">
-        <img src="assets/zones-story-paris.png" alt="Paris zone">
-        <img src="assets/rides-photo-3.png" alt="Log flume ride">
-        <img src="assets/exp-escape-room.png" alt="Escape room">
-        <img src="assets/zones-story-egypt.png" alt="Egypt zone">
-        <img src="assets/exp-pyramids-mystery.png" alt="Pyramid's mystery">
-        <img src="assets/zones-story-kuwait.png" alt="Kuwait zone">
+        <img src="assets/zones-story-paris.png" alt="Paris zone" loading="lazy" decoding="async">
+        <img src="assets/rides-photo-3.png" alt="Log flume ride" loading="lazy" decoding="async">
+        <img src="assets/exp-escape-room.png" alt="Escape room" loading="lazy" decoding="async">
+        <img src="assets/zones-story-egypt.png" alt="Egypt zone" loading="lazy" decoding="async">
+        <img src="assets/exp-pyramids-mystery.png" alt="Pyramid's mystery" loading="lazy" decoding="async">
+        <img src="assets/zones-story-kuwait.png" alt="Kuwait zone" loading="lazy" decoding="async">
       </div>
       <div class="gal-set" aria-hidden="true">
-        <img src="assets/zones-story-paris.png" alt="">
-        <img src="assets/rides-photo-3.png" alt="">
-        <img src="assets/exp-escape-room.png" alt="">
-        <img src="assets/zones-story-egypt.png" alt="">
-        <img src="assets/exp-pyramids-mystery.png" alt="">
-        <img src="assets/zones-story-kuwait.png" alt="">
+        <img src="assets/zones-story-paris.png" alt="" loading="lazy" decoding="async">
+        <img src="assets/rides-photo-3.png" alt="" loading="lazy" decoding="async">
+        <img src="assets/exp-escape-room.png" alt="" loading="lazy" decoding="async">
+        <img src="assets/zones-story-egypt.png" alt="" loading="lazy" decoding="async">
+        <img src="assets/exp-pyramids-mystery.png" alt="" loading="lazy" decoding="async">
+        <img src="assets/zones-story-kuwait.png" alt="" loading="lazy" decoding="async">
       </div>
     </div>
   </div>
@@ -1870,47 +1882,47 @@
 
   <div class="rules-grid">
     <div class="rule-card">
-      <span class="ic"><img src="assets/rules-no-food.svg" alt=""></span>
+      <span class="ic"><img src="assets/rules-no-food.svg" alt="" loading="lazy" decoding="async"></span>
       <b>No outside food</b>
       <p>Food trucks and kitchens are<br>inside the venue.</p>
     </div>
     <div class="rule-card">
-      <span class="ic"><img src="assets/rules-no-pets.svg" alt=""></span>
+      <span class="ic"><img src="assets/rules-no-pets.svg" alt="" loading="lazy" decoding="async"></span>
       <b>No pets</b>
       <p>Animals are not allowed on the<br>premises.</p>
     </div>
     <div class="rule-card">
-      <span class="ic"><img src="assets/rules-no-cameras.svg" alt=""></span>
+      <span class="ic"><img src="assets/rules-no-cameras.svg" alt="" loading="lazy" decoding="async"></span>
       <b>No pro cameras</b>
       <p>No professional cameras or<br>video recorders.</p>
     </div>
     <div class="rule-card">
-      <span class="ic"><img src="assets/rules-smoke-free.svg" alt=""></span>
+      <span class="ic"><img src="assets/rules-smoke-free.svg" alt="" loading="lazy" decoding="async"></span>
       <b>Smoke free</b>
       <p>Including e&#8209;cigarettes.<br>Designated areas only.</p>
     </div>
     <div class="rule-card">
-      <span class="ic"><img src="assets/rules-no-reentry.svg" alt=""></span>
+      <span class="ic"><img src="assets/rules-no-reentry.svg" alt="" loading="lazy" decoding="async"></span>
       <b>No re&#8209;entry</b>
       <p>Leaving the venue ends your<br>visit.</p>
     </div>
     <div class="rule-card">
-      <span class="ic"><img src="assets/rules-non-refundable.svg" alt=""></span>
+      <span class="ic"><img src="assets/rules-non-refundable.svg" alt="" loading="lazy" decoding="async"></span>
       <b>Non refundable</b>
       <p>Tickets cannot be refunded once<br>bought.</p>
     </div>
     <div class="rule-card">
-      <span class="ic"><img src="assets/rules-parking.svg" alt=""></span>
+      <span class="ic"><img src="assets/rules-parking.svg" alt="" loading="lazy" decoding="async"></span>
       <b>Parking</b>
       <p>Parking is available at the gates.</p>
     </div>
     <div class="rule-card">
-      <span class="ic"><img src="assets/rules-open-air.svg" alt=""></span>
+      <span class="ic"><img src="assets/rules-open-air.svg" alt="" loading="lazy" decoding="async"></span>
       <b>Open air</b>
       <p>The venue is outdoors from end<br>to end.</p>
     </div>
     <div class="rule-card">
-      <span class="ic"><img src="assets/rules-live-music.svg" alt=""></span>
+      <span class="ic"><img src="assets/rules-live-music.svg" alt="" loading="lazy" decoding="async"></span>
       <b>Live music</b>
       <p>Performances run nightly in<br>every zone.</p>
     </div>
@@ -1920,7 +1932,7 @@
 <!-- ================= FAQ ================= -->
 <section class="section-pad navy-bg on-navy faq-section" id="faq">
   <div class="tear tear-top">
-    <img src="assets/faq-page-tear.png" alt="">
+    <img src="assets/faq-page-tear.png" alt="" loading="lazy" decoding="async">
     <div class="bar"></div>
   </div>
 
@@ -1970,7 +1982,7 @@
   <div class="vm-map-wrap">
     <div class="vm-stage">
       <div class="vm-map-holder">
-        <img class="vm-map" src="assets/zones-map.png" alt="BLVD World park map" draggable="false">
+        <img class="vm-map" src="assets/zones-map.png" alt="BLVD World park map" draggable="false" loading="lazy" decoding="async">
         <div class="vm-markers"></div>
       </div>
     </div>
@@ -1979,84 +1991,84 @@
     <aside class="vm-panel">
       <button class="vm-grab" aria-label="Expand or collapse the list"></button>
       <div class="vm-head">
-        <button class="vm-iconbtn vm-back" aria-label="Close map"><img src="assets/map2-ic-back.svg" alt=""></button>
+        <button class="vm-iconbtn vm-back" aria-label="Close map"><img src="assets/map2-ic-back.svg" alt="" loading="lazy" decoding="async"></button>
         <h3 class="vm-title">Discover BLVD World</h3>
       </div>
       <div class="vm-searchbar">
-        <img src="assets/map2-ic-search.svg" alt="">
+        <img src="assets/map2-ic-search.svg" alt="" loading="lazy" decoding="async">
         <input class="vm-search" type="text" placeholder="Search anything" aria-label="Search places">
       </div>
       <div class="vm-chips">
-        <button class="vm-filter-btn" aria-label="Reset all filters" title="Reset filters"><img src="assets/map2-ic-filter.svg" alt=""></button>
-        <button class="vm-chip" data-filter="ride"><img src="assets/map2-ic-rides.svg" alt=""><span>Rides &amp; Attractions</span></button>
-        <button class="vm-chip" data-filter="dining"><img src="assets/map2-ic-dining.svg" alt=""><span>Dining</span></button>
-        <button class="vm-chip" data-filter="shopping"><img src="assets/map2-ic-shopping.svg" alt=""><span>Shopping</span></button>
-        <button class="vm-chip" data-filter="experience"><img src="assets/map2-ic-experience.svg" alt=""><span>Experience</span></button>
-        <button class="vm-chip" data-filter="facilities"><img src="assets/map2-ic-facilities.svg" alt=""><span>Facilities</span></button>
+        <button class="vm-filter-btn" aria-label="Reset all filters" title="Reset filters"><img src="assets/map2-ic-filter.svg" alt="" loading="lazy" decoding="async"></button>
+        <button class="vm-chip" data-filter="ride"><img src="assets/map2-ic-rides.svg" alt="" loading="lazy" decoding="async"><span>Rides &amp; Attractions</span></button>
+        <button class="vm-chip" data-filter="dining"><img src="assets/map2-ic-dining.svg" alt="" loading="lazy" decoding="async"><span>Dining</span></button>
+        <button class="vm-chip" data-filter="shopping"><img src="assets/map2-ic-shopping.svg" alt="" loading="lazy" decoding="async"><span>Shopping</span></button>
+        <button class="vm-chip" data-filter="experience"><img src="assets/map2-ic-experience.svg" alt="" loading="lazy" decoding="async"><span>Experience</span></button>
+        <button class="vm-chip" data-filter="facilities"><img src="assets/map2-ic-facilities.svg" alt="" loading="lazy" decoding="async"><span>Facilities</span></button>
       </div>
       <div class="vm-results-label">Results</div>
       <div class="vm-list">
         <div class="vm-card" data-type="experience">
-          <img class="thumb" src="assets/exp-lost-museum.png" alt="">
+          <img class="thumb" src="assets/exp-lost-museum.png" alt="" loading="lazy" decoding="async">
           <div class="body">
-            <div class="meta"><span>Experience</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating"><span>5</span></div>
+            <div class="meta"><span>Experience</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating" loading="lazy" decoding="async"><span>5</span></div>
             <h4>The lost muesem</h4>
-            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR"><b>210.75</b></div>
-            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="">Instant booking</div>
+            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR" loading="lazy" decoding="async"><b>210.75</b></div>
+            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="" loading="lazy" decoding="async">Instant booking</div>
           </div>
         </div>
         <div class="vm-card" data-type="experience">
-          <img class="thumb" src="assets/exp-escape-room.png" alt="">
+          <img class="thumb" src="assets/exp-escape-room.png" alt="" loading="lazy" decoding="async">
           <div class="body">
-            <div class="meta"><span>Experience</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating"><span>5</span></div>
+            <div class="meta"><span>Experience</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating" loading="lazy" decoding="async"><span>5</span></div>
             <h4>Escape room</h4>
-            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR"><b>210.75</b></div>
-            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="">Instant booking</div>
+            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR" loading="lazy" decoding="async"><b>210.75</b></div>
+            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="" loading="lazy" decoding="async">Instant booking</div>
           </div>
         </div>
         <div class="vm-card" data-type="experience">
-          <img class="thumb" src="assets/exp-tomb-pharaoh.png" alt="">
+          <img class="thumb" src="assets/exp-tomb-pharaoh.png" alt="" loading="lazy" decoding="async">
           <div class="body">
-            <div class="meta"><span>Experience</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating"><span>5</span></div>
+            <div class="meta"><span>Experience</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating" loading="lazy" decoding="async"><span>5</span></div>
             <h4>The tomb of pharoh</h4>
-            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR"><b>210.75</b></div>
-            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="">Instant booking</div>
+            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR" loading="lazy" decoding="async"><b>210.75</b></div>
+            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="" loading="lazy" decoding="async">Instant booking</div>
           </div>
         </div>
         <div class="vm-card" data-type="experience">
-          <img class="thumb" src="assets/exp-pyramids-mystery.png" alt="">
+          <img class="thumb" src="assets/exp-pyramids-mystery.png" alt="" loading="lazy" decoding="async">
           <div class="body">
-            <div class="meta"><span>Experience</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating"><span>5</span></div>
+            <div class="meta"><span>Experience</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating" loading="lazy" decoding="async"><span>5</span></div>
             <h4>Pyramid&rsquo;s mystery</h4>
-            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR"><b>210.75</b></div>
-            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="">Instant booking</div>
+            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR" loading="lazy" decoding="async"><b>210.75</b></div>
+            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="" loading="lazy" decoding="async">Instant booking</div>
           </div>
         </div>
         <div class="vm-card" data-type="ride">
-          <img class="thumb" src="assets/rides-photo-1.png" alt="">
+          <img class="thumb" src="assets/rides-photo-1.png" alt="" loading="lazy" decoding="async">
           <div class="body">
-            <div class="meta"><span>Ride</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating"><span>5</span></div>
+            <div class="meta"><span>Ride</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating" loading="lazy" decoding="async"><span>5</span></div>
             <h4>Wave Swinger</h4>
-            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR"><b>210.75</b></div>
-            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="">Instant booking</div>
+            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR" loading="lazy" decoding="async"><b>210.75</b></div>
+            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="" loading="lazy" decoding="async">Instant booking</div>
           </div>
         </div>
         <div class="vm-card" data-type="ride">
-          <img class="thumb" src="assets/rides-photo-2.png" alt="">
+          <img class="thumb" src="assets/rides-photo-2.png" alt="" loading="lazy" decoding="async">
           <div class="body">
-            <div class="meta"><span>Ride</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating"><span>5</span></div>
+            <div class="meta"><span>Ride</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating" loading="lazy" decoding="async"><span>5</span></div>
             <h4>Sky Loop</h4>
-            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR"><b>210.75</b></div>
-            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="">Instant booking</div>
+            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR" loading="lazy" decoding="async"><b>210.75</b></div>
+            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="" loading="lazy" decoding="async">Instant booking</div>
           </div>
         </div>
         <div class="vm-card" data-type="dining">
-          <img class="thumb" src="assets/rest-tant.png" alt="">
+          <img class="thumb" src="assets/rest-tant.png" alt="" loading="lazy" decoding="async">
           <div class="body">
-            <div class="meta"><span>Dining</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating"><span>5</span></div>
+            <div class="meta"><span>Dining</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating" loading="lazy" decoding="async"><span>5</span></div>
             <h4>Tant restaurent</h4>
-            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR"><b>210.75</b></div>
-            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="">Instant booking</div>
+            <div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR" loading="lazy" decoding="async"><b>210.75</b></div>
+            <div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="" loading="lazy" decoding="async">Instant booking</div>
           </div>
         </div>
         <div class="vm-empty" hidden>
@@ -2067,18 +2079,18 @@
     </aside>
   </div>
   <div class="vm-zoom">
-    <button class="vm-zoom-in" aria-label="Zoom in"><img src="assets/map-ic-plus.svg" alt=""></button>
-    <button class="vm-zoom-out" aria-label="Zoom out"><img src="assets/map-ic-minus.svg" alt=""></button>
+    <button class="vm-zoom-in" aria-label="Zoom in"><img src="assets/map2-ic-plus.svg" alt="" loading="lazy" decoding="async"></button>
+    <button class="vm-zoom-out" aria-label="Zoom out"><img src="assets/map2-ic-minus.svg" alt="" loading="lazy" decoding="async"></button>
   </div>
   <div class="vm-detail" hidden>
     <button class="vm-detail-close" aria-label="Close details">&#10005;</button>
     <img class="vm-detail-img" alt="">
     <div class="vm-detail-body">
-      <div class="meta"><span class="type"></span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating"><span>5</span></div>
+      <div class="meta"><span class="type"></span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating" loading="lazy" decoding="async"><span>5</span></div>
       <h4></h4>
       <p class="desc"></p>
       <div class="row">
-        <span class="book"><img src="assets/map2-ic-instant-booking.svg" alt="">Instant booking</span>
+        <span class="book"><img src="assets/map2-ic-instant-booking.svg" alt="" loading="lazy" decoding="async">Instant booking</span>
         <button class="vm-detail-cta">Book now</button>
       </div>
     </div>
@@ -2116,10 +2128,12 @@
 
     var fill = loader.querySelector('.ld-fill');
     var count = loader.querySelector('.ld-count');
-    var imgs = Array.prototype.filter.call(document.images, function (im) { return !im.complete; });
-    var total = document.images.length || 1;
-    var loadedCount = total - imgs.length;
-    imgs.forEach(function (im) {
+    // only wait on what the first screen actually paints — everything else is lazy
+    var critical = Array.prototype.slice.call(document.querySelectorAll('#loader img, .hero img'));
+    var total = critical.length || 1;
+    var loadedCount = critical.filter(function (im) { return im.complete; }).length;
+    critical.forEach(function (im) {
+      if (im.complete) return;
       im.addEventListener('load', function () { loadedCount++; }, { once: true });
       im.addEventListener('error', function () { loadedCount++; }, { once: true });
     });
@@ -2133,31 +2147,41 @@
         document.documentElement.style.overflow = '';
         if (window.playHeroIntro) window.playHeroIntro();
       }
-      if (window.gsap) {
-        gsap.timeline()
-          .to('.ld-inner', { opacity: 0, y: -30, duration: 0.4, ease: 'power2.in' })
-          .to(loader, { yPercent: -104, duration: 0.95, ease: 'power4.inOut' }, '-=0.05')
-          .add(reveal, '-=0.6')
-          .set(loader, { display: 'none' });
-      } else {
-        loader.classList.add('ld-done');
-        reveal();
-        setTimeout(function () { loader.style.display = 'none'; }, 900);
-      }
+      // decode the hero art off the animation frame, so the intro doesn't
+      // share a frame with six full-size PNG decodes
+      var decodes = critical.map(function (im) {
+        return im.decode ? im.decode().catch(function () {}) : Promise.resolve();
+      });
+      Promise.race([
+        Promise.all(decodes),
+        new Promise(function (r) { setTimeout(r, 1200); })
+      ]).then(function () { tearAway(reveal); });
     }
 
-    (function tick() {
+    // the tear is a CSS transition (compositor-driven, and it still runs when
+    // rAF is throttled) so the reveal can never be left hanging
+    function tearAway(reveal) {
+      loader.classList.add('ld-done');
+      reveal();
+      setTimeout(function () { loader.style.display = 'none'; }, 950);
+    }
+
+    function tick() {
       if (finished) return;
       var elapsed = performance.now() - start;
       var timeP = Math.min(elapsed / MIN_TIME, 1);
       var loadP = elapsed > MAX_TIME ? 1 : loadedCount / total;
       var p = Math.min(timeP, loadP);
-      var pct = Math.round(p * 100);
       fill.style.transform = 'scaleX(' + p + ')';
-      count.textContent = pct + '%';
-      if (p >= 1) { setTimeout(done, 150); return; }
+      count.textContent = Math.round(p * 100) + '%';
+      if (p >= 1) { clearInterval(poll); setTimeout(done, 150); return; }
       requestAnimationFrame(tick);
-    })();
+    }
+    // rAF is throttled or paused in background tabs, so a timer keeps the
+    // progress honest and guarantees the loader can never stall
+    var poll = setInterval(tick, 250);
+    tick();
+    setTimeout(function () { clearInterval(poll); done(); }, MAX_TIME + 800);
   })();
 
   // FAQ accordion
@@ -2578,10 +2602,10 @@
         html += '<div class="vm-card" data-type="' + p.type + '" data-poi="' + zoneKey + ':' + i + '">' +
           '<img class="thumb" src="' + p.img + '" alt="">' +
           '<div class="body">' +
-            '<div class="meta"><span>' + LABELS[p.type] + '</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating"><span>5</span></div>' +
+            '<div class="meta"><span>' + LABELS[p.type] + '</span><span>&middot;</span><img class="star" src="assets/map2-ic-star.svg" alt="Rating" loading="lazy" decoding="async"><span>5</span></div>' +
             '<h4>' + p.name + '</h4>' +
-            '<div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR"><b>210.75</b></div>' +
-            '<div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="">Instant booking</div>' +
+            '<div class="price"><span>From</span><img src="assets/map2-ic-riyal.svg" alt="SAR" loading="lazy" decoding="async"><b>210.75</b></div>' +
+            '<div class="book"><img src="assets/map2-ic-instant-booking.svg" alt="" loading="lazy" decoding="async">Instant booking</div>' +
           '</div></div>';
       });
       emptyState.insertAdjacentHTML('beforebegin', html);
@@ -2796,7 +2820,13 @@
     });
 
     // hero entrance (paused: the preloader plays it as it tears away)
-    var intro = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+    var intro = gsap.timeline({
+      paused: true,
+      // immediateRender:false keeps the hero at its natural state until the
+      // intro actually runs, so a throttled rAF can never leave it blank
+      defaults: { ease: 'power3.out', force3D: true, immediateRender: false },
+      onComplete: function () { document.querySelector('.hero').classList.add('intro-done'); }
+    });
     window.playHeroIntro = function () { intro.play(); };
     intro
       .from('.hero-decor', { opacity: 0, y: 90, duration: 1.2, stagger: 0.07, ease: 'power2.out' }, 0)
