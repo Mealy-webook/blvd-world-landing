@@ -103,6 +103,7 @@
     width: 1937px; height: 837px;
     pointer-events: none;
   }
+  .hero-art { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
   .hero-decor {
     position: absolute;
     pointer-events: none;
@@ -127,8 +128,8 @@
     text-align: center;
     line-height: normal;
   }
-  .hero-headline .l1 { font-size: 70px; }
-  .hero-headline .l2 { font-size: 100px; white-space: nowrap; }
+  .hero-headline .l1 { font-size: clamp(34px, 9vw, 70px); }
+  .hero-headline .l2 { font-size: clamp(40px, 12.5vw, 100px); white-space: nowrap; }
 
   .pricing-row {
     display: flex;
@@ -370,7 +371,10 @@
   }
   .pill.cta { background: var(--pink); color: #fff; }
   .pill.cta:hover { box-shadow: 0 6px 18px rgba(255, 44, 121, 0.35); }
-  .pill.ghost { background: #fff; color: var(--ink); border: 1px solid #000; }
+  .pill.ghost {
+    background: #fff; color: var(--ink); border: 1px solid #000;
+    display: inline-flex; align-items: center;
+  }
 
   /* ============ RIDES (ticket cards) ============ */
   .rail-wrap {
@@ -1306,15 +1310,101 @@
   }
 
   /* ============ responsive ============ */
-  /* 900px-1920px viewports scale the whole 1920 design down via body zoom (see script) */
+  /* 900px-1920px viewports scale the whole 1920 design down via body zoom (see script);
+     below 900px the layout below takes over as a real mobile design */
   @media (max-width: 900px) {
-    .hero-headline .l1 { font-size: 48px; }
-    .hero-headline .l2 { font-size: 64px; }
-    .pricing-row { flex-wrap: wrap; }
-    .price-card { flex: 1 1 40%; }
+    /* --- hero --- */
+    .hero { min-height: auto; padding: 64px 20px 72px; gap: 32px; }
+    .hero-stars { display: none; }
+    /* the collage is laid out in a 1920x1100 space — pin that space to the hero's
+       bottom edge and scale it down, so the landmarks read as a skyline */
+    .hero-art {
+      top: auto; bottom: 0; height: 1100px;
+      transform: scale(0.52);
+      transform-origin: 50% 100%;
+    }
+    .hero::after { height: 150px; }
+    .hero-logo .mark { width: 74px; height: 73px; }
+    .hero-logo .word { width: 82px; height: 13.6px; }
+    .scroll-cue span { font-size: 17px; }
+
+    /* pricing tiles: 2-up grid, titles allowed to wrap */
+    .pricing-row { display: grid; grid-template-columns: repeat(2, 1fr); width: 100%; }
+    .price-card { padding: 18px 16px; gap: 16px; }
     .price-card + .price-card { border-left: none; }
-    .section-head h2 { font-size: 42px; }
-    .faq-section h2 { font-size: 42px; line-height: 1.15; }
+    .price-card:nth-child(even) { border-left: 1px solid var(--border); }
+    .price-card:nth-child(n + 3) { border-top: 1px solid var(--border); }
+    .price-card .title-row h3 { font-size: 18px; white-space: normal; }
+    .price-card .tile { width: 44px; height: 44px; border-radius: 13px; }
+    .price-card .tile img { width: 20px; height: 20px; }
+    .price-card .desc { font-size: 13px; }
+
+    /* --- shared section rhythm --- */
+    .section-pad { padding: 56px 20px; gap: 24px; }
+    .section-head h2 { font-size: clamp(30px, 8.5vw, 42px); }
+    .section-head p { font-size: 15px; }
+
+    /* --- zones --- */
+    .facts { gap: 18px; row-gap: 10px; }
+    .facts li { gap: 18px; }
+    .zones-buttons { flex-wrap: wrap; justify-content: center; gap: 12px; }
+    .story .ring { padding: 8px; border-width: 4px; }
+    .story .avatar { width: 96px; height: 96px; }
+    .story .label { font-size: 16px; }
+
+    /* --- rides: fluid ticket cards, photo in flow --- */
+    .ticket-card { width: min(456px, 84vw); }
+    .ticket-card .cap { width: 100%; height: 30px; }
+    .ticket-card .card-body { height: auto; padding: 14px; }
+    .ticket-card .photo {
+      position: static;
+      width: 100%; height: auto;
+      margin-top: -22px;
+      aspect-ratio: 424 / 283;
+      object-fit: cover;
+    }
+    .ticket-card .text { height: auto; padding-top: 14px; gap: 10px; }
+    .ticket-card h3 { font-size: 21px; }
+    .ticket-card .meta span, .ticket-card .desc { font-size: 15px; }
+
+    /* --- venue rules --- */
+    .rule-card { width: auto; flex: 1 1 240px; max-width: 100%; padding: 20px 18px; }
+    .rule-card b { font-size: 20px; }
+
+    /* --- gallery --- */
+    .gallery-sec { padding: 56px 0; gap: 24px; }
+    .gal-set img { height: 170px; border-radius: 18px; }
+    .gal-set { gap: 14px; padding-right: 14px; }
+
+    /* --- faq --- */
+    .faq-section h2 { font-size: clamp(28px, 8vw, 42px); }
+    .faq-q { padding: 15px 16px; }
+    .faq-q span { font-size: 16px; }
+  }
+  @media (max-width: 560px) {
+    .hero-art { transform: scale(0.4); }
+    .hero-headline .l2 { white-space: normal; }
+    /* one swipeable row keeps the hero from becoming three screens tall */
+    .pricing-row {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .pricing-row::-webkit-scrollbar { display: none; }
+    .price-card {
+      flex: 0 0 76vw;
+      scroll-snap-align: center;
+      border-top: none !important;
+    }
+    .price-card + .price-card { border-left: 1px solid var(--border) !important; }
+    .ticket-card { width: 88vw; }
+    .rule-card { flex-basis: 100%; }
+    .gal-set img { height: 140px; }
+  }
+  /* tablet/phone rules that pair with the mobile block above
+     (kept separate so the mobile block is not overridden) */
+  @media (max-width: 900px) {
     .cards-row .product-card { flex: 0 0 72%; }
     .info-strip { grid-template-columns: 1fr; gap: 34px; padding-bottom: 84px; }
     .info-col + .info-col { border-left: none; border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 30px; }
@@ -1378,6 +1468,7 @@
 <section class="hero navy-bg" id="street">
   <img class="hero-stars" src="assets/hero-stars.svg" alt="">
 
+  <div class="hero-art">
   <!-- left landmark collage -->
   <div class="hero-decor" style="left: calc(50% - 960px - 344.1px); top: 275.7px; width: 920px; height: 920px;">
     <img src="assets/hero-left-landmark-1.png" alt="">
@@ -1398,6 +1489,7 @@
   </div>
   <div class="hero-decor crop" style="left: calc(50% - 960px + 1324px); top: 418px; width: 1105px; height: 683px;">
     <img src="assets/hero-right-landmark-3.png" alt="" style="width: 100%; height: 161.74%; top: 0; left: 0;">
+  </div>
   </div>
 
   <div class="hero-logo">
@@ -1565,7 +1657,7 @@
 
   <div class="zones-buttons">
     <button class="pill cta" id="open-map">Explore zones on map</button>
-    <button class="pill ghost">Live show schedule</button>
+    <a class="pill ghost" href="shows.html">Live show schedule</a>
   </div>
 </section>
 
@@ -1597,7 +1689,7 @@
               <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
               <span>Height: 130-195cm</span>
             </div>
-            <p class="desc">Meet the beast that&rsquo;s changing the thrill game. King Claw has arrived and it&rsquo;s every bit as monstrous as you imagined (in the best possible way).</p>
+            <p class="desc">A gentle-looking swing that picks up speed until the whole zone tilts sideways. Everyone&rsquo;s first ride of the night.</p>
           </div>
         </div>
         <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
@@ -1607,16 +1699,16 @@
         <div class="card-body">
           <img class="photo" src="assets/rides-photo-2.png" alt="Sky Loop ride" loading="lazy" decoding="async">
           <div class="text">
-            <h3>Wave Swinger</h3>
+            <h3>Sky Loop</h3>
             <div class="meta">
               <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
               <span>Thrill: Max</span>
             </div>
             <div class="meta">
               <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
-              <span>Height: 130-195cm</span>
+              <span>Height: 140-195cm</span>
             </div>
-            <p class="desc">Meet the beast that&rsquo;s changing the thrill game. King Claw has arrived and it&rsquo;s every bit as monstrous as you imagined (in the best possible way).</p>
+            <p class="desc">A vertical loop that flips you twice before you can decide whether to scream. The queue is half the fun &mdash; the drop is all of it.</p>
           </div>
         </div>
         <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
@@ -1626,14 +1718,90 @@
         <div class="card-body">
           <img class="photo" src="assets/rides-photo-3.png" alt="Log flume ride" loading="lazy" decoding="async">
           <div class="text">
-            <h3>Wave Swinger</h3>
+            <h3>Fuji River Rapids</h3>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
+              <span>Thrill: Medium</span>
+            </div>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
+              <span>Height: 110-195cm</span>
+            </div>
+            <p class="desc">A splashing flume run through the canyon that soaks the first two rows. Sit at the back if you value dry shoes.</p>
+          </div>
+        </div>
+        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
+      </article>
+      <article class="ticket-card">
+        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
+        <div class="card-body">
+          <img class="photo" src="assets/rides-photo-3.png" alt="Turbo 360 ride" loading="lazy" decoding="async">
+          <div class="text">
+            <h3>Turbo 360</h3>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
+              <span>Thrill: High</span>
+            </div>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
+              <span>Height: 135-195cm</span>
+            </div>
+            <p class="desc">Three hundred and sixty degrees of pure spin, suspended over the lake. Keep your eyes open on the way over the top.</p>
+          </div>
+        </div>
+        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
+      </article>
+      <article class="ticket-card">
+        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
+        <div class="card-body">
+          <img class="photo" src="assets/rides-photo-1.png" alt="The Wheel observation ride" loading="lazy" decoding="async">
+          <div class="text">
+            <h3>The Wheel</h3>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
+              <span>Thrill: Gentle</span>
+            </div>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
+              <span>Height: 90-195cm</span>
+            </div>
+            <p class="desc">The calmest seat in the park and the best view of all twenty zones lit up after dark. Bring someone you like.</p>
+          </div>
+        </div>
+        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
+      </article>
+      <article class="ticket-card">
+        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
+        <div class="card-body">
+          <img class="photo" src="assets/rides-photo-2.png" alt="Rollover ride" loading="lazy" decoding="async">
+          <div class="text">
+            <h3>Rollover</h3>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
+              <span>Thrill: High</span>
+            </div>
+            <div class="meta">
+              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
+              <span>Height: 140-195cm</span>
+            </div>
+            <p class="desc">Swings out, tips over and holds you there just long enough to regret your dinner order. A BLVD World favourite.</p>
+          </div>
+        </div>
+        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
+      </article>
+      <article class="ticket-card">
+        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
+        <div class="card-body">
+          <img class="photo" src="assets/rides-photo-3.png" alt="King Claw ride" loading="lazy" decoding="async">
+          <div class="text">
+            <h3>King Claw</h3>
             <div class="meta">
               <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
               <span>Thrill: Max</span>
             </div>
             <div class="meta">
               <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
-              <span>Height: 130-195cm</span>
+              <span>Height: 145-195cm</span>
             </div>
             <p class="desc">Meet the beast that&rsquo;s changing the thrill game. King Claw has arrived and it&rsquo;s every bit as monstrous as you imagined (in the best possible way).</p>
           </div>

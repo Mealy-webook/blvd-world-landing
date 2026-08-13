@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live show schedule — BLVD World</title>
+<link rel="icon" href="assets/hero-logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #ff2c79;
+    --ink: #18181b;
+    --sub: #56565d;
+    --muted: #a1a1aa;
+    --border: #e4e4e7;
+    --sub-inverse: #9fb0d8;
+    --gold: #f5b921;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    background: #fff;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: "opsz" 14, "wdth" 100;
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+  img { display: block; }
+  button, a { font: inherit; color: inherit; cursor: pointer; background: none; border: none; }
+  a { text-decoration: none; }
+
+  /* ---------- top bar ---------- */
+  .bar {
+    position: sticky; top: 0; z-index: 30;
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px clamp(16px, 5vw, 48px);
+    background: rgba(3, 0, 60, 0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .bar .back {
+    width: 40px; height: 40px; flex-shrink: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 17px;
+    transition: background 0.2s;
+  }
+  .bar .back:hover { background: rgba(255, 255, 255, 0.14); }
+  .bar .mark { width: 26px; height: 26px; }
+  .bar .name { font-weight: 700; font-size: 16px; color: #fff; letter-spacing: -0.1px; }
+  .bar .spacer { flex: 1; }
+  .bar .cta {
+    background: var(--pink); color: #fff;
+    font-family: 'Figtree', sans-serif; font-weight: 600; font-size: 15px;
+    padding: 10px 18px; border-radius: 9999px; white-space: nowrap;
+  }
+
+  /* ---------- header ---------- */
+  .head {
+    position: relative;
+    background: linear-gradient(180deg, #03003c 0%, #001d5f 55%, #212859 100%);
+    padding: 52px clamp(20px, 5vw, 48px) 96px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .head .kicker {
+    font-family: 'Figtree', sans-serif;
+    font-weight: 600; font-size: 13px; letter-spacing: 2.4px;
+    text-transform: uppercase; color: var(--gold);
+  }
+  .head h1 {
+    margin-top: 10px;
+    font-weight: 700;
+    font-size: clamp(30px, 6.5vw, 60px);
+    line-height: 1.05; letter-spacing: -1.1px;
+    color: #fff;
+  }
+  .head p {
+    margin: 14px auto 0; max-width: 640px;
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--sub-inverse);
+  }
+  .head .tw { position: absolute; border-radius: 50%; background: #fff; opacity: 0.14; animation: twinkle 3.2s ease-in-out infinite; }
+  @keyframes twinkle { 50% { opacity: 0.85; transform: scale(1.5); } }
+  .tear { position: absolute; left: 0; bottom: 0; width: 100%; height: 66px; overflow: hidden; pointer-events: none; }
+  .tear img { position: absolute; width: 100%; height: 135.83%; top: -17.92%; }
+  .tear .seam { position: absolute; left: 0; bottom: -1px; width: 100%; height: 2px; background: #fff; }
+
+  /* ---------- controls ---------- */
+  .controls {
+    position: sticky; top: 65px; z-index: 20;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px clamp(16px, 5vw, 48px);
+  }
+  .ctrl-row { display: flex; gap: 8px; align-items: center; max-width: 1080px; margin: 0 auto; }
+  .ctrl-row + .ctrl-row { margin-top: 10px; }
+  .seg { display: flex; gap: 4px; padding: 4px; background: rgba(0, 0, 0, 0.05); border-radius: 9999px; flex-shrink: 0; }
+  .seg button {
+    font-family: 'Figtree', sans-serif; font-weight: 600; font-size: 14px;
+    padding: 8px 14px; border-radius: 9999px; color: var(--sub);
+    white-space: nowrap; transition: background 0.2s, color 0.2s;
+  }
+  .seg button.on { background: #fff; color: var(--ink); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12); }
+  .scroller { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+  .scroller::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 6px;
+    height: 38px; padding: 0 14px;
+    border-radius: 9999px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    font-family: 'Figtree', sans-serif; font-weight: 600; font-size: 14px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .chip:hover { background: rgba(0, 0, 0, 0.05); }
+  .chip.on { background: rgba(0, 0, 0, 0.1); border-color: var(--ink); }
+  .chip.on::after { content: "\2715"; font-size: 11px; }
+  .count { font-family: 'Figtree', sans-serif; font-size: 13px; color: var(--muted); white-space: nowrap; }
+
+  /* ---------- schedule ---------- */
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 28px clamp(16px, 5vw, 48px) 90px; }
+
+  .zone-card {
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .zone-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 18px;
+    background: #fafafa;
+    border-bottom: 1px solid var(--border);
+  }
+  .zone-head .flag {
+    width: 34px; height: 34px; flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--ink);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+  }
+  .zone-head h2 { font-weight: 700; font-size: 21px; flex: 1; }
+  .zone-head .n { font-family: 'Figtree', sans-serif; font-size: 13px; color: var(--muted); }
+
+  .rows { display: flex; flex-direction: column; }
+  .row {
+    display: grid;
+    grid-template-columns: 132px 1fr auto;
+    gap: 14px; align-items: center;
+    padding: 13px 18px;
+  }
+  .row + .row { border-top: 1px solid #f1f1f3; }
+  .row:hover { background: #fcfcfd; }
+  .row .when {
+    font-weight: 700; font-size: 15px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .row .when small { display: block; font-family: 'Figtree', sans-serif; font-weight: 500; font-size: 12px; color: var(--muted); }
+  .row .what { min-width: 0; }
+  .row .what b { font-weight: 600; font-size: 16px; }
+  .row .what span { display: block; font-family: 'Figtree', sans-serif; font-size: 13px; color: var(--muted); }
+  .tag {
+    font-family: 'Figtree', sans-serif; font-weight: 600; font-size: 11px;
+    letter-spacing: 0.6px; text-transform: uppercase;
+    padding: 5px 10px; border-radius: 9999px; white-space: nowrap;
+  }
+  .tag.stage { background: rgba(255, 44, 121, 0.12); color: var(--pink); }
+  .tag.roaming { background: rgba(23, 70, 204, 0.1); color: #1746cc; }
+  .tag.dance { background: rgba(21, 128, 61, 0.12); color: #15803d; }
+
+  /* timeline view */
+  .slot { display: grid; grid-template-columns: 96px 1fr; gap: 18px; }
+  .slot .time { padding-top: 16px; font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; }
+  .slot .time small { display: block; font-family: 'Figtree', sans-serif; font-size: 12px; font-weight: 500; color: var(--muted); }
+  .slot .line { position: relative; padding: 12px 0 20px; }
+  .slot .line::before { content: ""; position: absolute; left: -18px; top: 24px; bottom: 0; width: 1px; background: var(--border); }
+  .slot:last-child .line::before { bottom: 24px; }
+  .slot .line::after { content: ""; position: absolute; left: -22px; top: 20px; width: 9px; height: 9px; border-radius: 50%; background: var(--pink); }
+  .tl-show {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border); border-radius: 16px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .tl-show + .tl-show { margin-top: 8px; }
+  .tl-show:hover { border-color: var(--pink); transform: translateY(-1px); }
+  .tl-show .body { flex: 1; min-width: 0; }
+  .tl-show b { font-weight: 600; font-size: 16px; }
+  .tl-show span { display: block; font-family: 'Figtree', sans-serif; font-size: 13px; color: var(--muted); }
+
+  .empty { text-align: center; padding: 56px 0; color: var(--sub); }
+  .empty b { display: block; font-size: 20px; color: var(--ink); margin-bottom: 6px; }
+  .note {
+    margin-top: 20px; padding: 18px 20px; border-radius: 18px;
+    background: rgba(245, 185, 33, 0.1);
+    font-family: 'Figtree', sans-serif; font-size: 14px; line-height: 1.55; color: #6b5307;
+  }
+
+  @media (max-width: 620px) {
+    .bar .name { display: none; }
+    .controls { top: 65px; padding: 12px 16px; }
+    .ctrl-row { flex-wrap: wrap; }
+    .count { width: 100%; }
+    .row { grid-template-columns: 1fr auto; gap: 8px 12px; padding: 12px 14px; }
+    .row .when { grid-column: 1 / -1; font-size: 14px; }
+    .row .when small { display: inline; margin-left: 6px; }
+    .zone-head { padding: 14px; }
+    .zone-head h2 { font-size: 18px; }
+    .slot { grid-template-columns: 74px 1fr; gap: 12px; }
+    .slot .time { font-size: 16px; }
+    .slot .line::before { left: -12px; }
+    .slot .line::after { left: -16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="bar">
+  <a class="back" href="index.html" aria-label="Back to BLVD World">&#8592;</a>
+  <img class="mark" src="assets/hero-logo-mark.svg" alt="">
+  <span class="name">BLVD World</span>
+  <span class="spacer"></span>
+  <a class="cta" href="index.html#zones">Explore zones</a>
+</nav>
+
+<header class="head">
+  <div class="kicker">Ramadan at BLVD World</div>
+  <h1>Live show schedule</h1>
+  <p>Roaming performers, stage shows and parades across every zone &mdash; from the welcoming roamers at 8:30 PM to the last Mesaharati after midnight.</p>
+  <div class="tear">
+    <img src="assets/hero-torn-paper.png" alt="">
+    <div class="seam"></div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="ctrl-row">
+    <div class="seg" id="days">
+      <button data-day="satTue" class="on">Sat &ndash; Tue</button>
+      <button data-day="wedThu">Wed &amp; Thu</button>
+      <button data-day="fri">Friday</button>
+    </div>
+    <div class="seg" id="views">
+      <button data-view="zone" class="on">By zone</button>
+      <button data-view="time">By time</button>
+    </div>
+  </div>
+  <div class="ctrl-row">
+    <div class="scroller" id="zoneChips"></div>
+  </div>
+  <div class="ctrl-row"><span class="count" id="count"></span></div>
+</div>
+
+<main class="wrap">
+  <div id="out"></div>
+  <p class="note"><strong>Good to know:</strong> show times are taken from the venue&rsquo;s Ramadan schedule and can shift on the night &mdash; roaming acts move through their zone, stage acts perform at the zone stage. Saudi zone programming changes between Sat&ndash;Tue, Wed&ndash;Thu and Friday.</p>
+</main>
+
+<script>
+  /* Shows schedule during Ramadan at BLVD World — transcribed from the venue schedule.
+     s = start, e = end (evening times; anything from 12:00 onward is after midnight),
+     d = duration in minutes, v = venue: roaming | stage | dance */
+  var ZONES = [
+    { name: 'Saudi Arabia', short: 'KSA', byDay: {
+      satTue: [
+        { n: 'Welcoming Roamers', d: 10, s: '08:30', e: '08:40', v: 'roaming' },
+        { n: 'Storyteller', d: 15, s: '09:00', e: '09:15', v: 'stage' },
+        { n: 'Welcoming Roamers', d: 10, s: '09:40', e: '09:50', v: 'roaming' },
+        { n: 'Storyteller', d: 15, s: '10:20', e: '10:35', v: 'stage' },
+        { n: 'Mesaharati', d: 15, s: '10:45', e: '11:00', v: 'roaming' },
+        { n: 'Welcoming Roamers', d: 10, s: '11:10', e: '11:20', v: 'roaming' },
+        { n: 'Storyteller', d: 15, s: '12:10', e: '12:25', v: 'stage' },
+        { n: 'Mesaharati', d: 15, s: '12:40', e: '12:55', v: 'roaming' }
+      ],
+      wedThu: [
+        { n: 'Welcoming Roamers', d: 10, s: '08:30', e: '08:45', v: 'roaming' },
+        { n: 'Storyteller', d: 15, s: '09:00', e: '09:15', v: 'stage' },
+        { n: 'Majas', d: 15, s: '09:15', e: '09:30', v: 'roaming' },
+        { n: 'Welcoming Roamers', d: 10, s: '09:40', e: '09:50', v: 'roaming' },
+        { n: 'Majas', d: 15, s: '10:00', e: '10:15', v: 'roaming' },
+        { n: 'Storyteller', d: 15, s: '10:20', e: '10:35', v: 'stage' },
+        { n: 'Mesaharati', d: 15, s: '10:45', e: '11:00', v: 'roaming' },
+        { n: 'Welcoming Roamers', d: 10, s: '11:10', e: '11:20', v: 'roaming' },
+        { n: 'Storyteller', d: 15, s: '12:10', e: '12:25', v: 'stage' },
+        { n: 'Mesaharati', d: 15, s: '12:35', e: '12:50', v: 'roaming' }
+      ],
+      fri: [
+        { n: 'Welcoming Roamers', d: 10, s: '08:30', e: '08:45', v: 'roaming' },
+        { n: 'Storyteller', d: 15, s: '09:00', e: '09:15', v: 'stage' },
+        { n: 'Majas', d: 15, s: '09:15', e: '09:30', v: 'roaming' },
+        { n: 'Welcoming Roamers', d: 10, s: '09:40', e: '09:50', v: 'roaming' },
+        { n: 'Majas', d: 15, s: '10:00', e: '10:15', v: 'roaming' },
+        { n: 'Traditional Learning', d: 15, s: '10:20', e: '10:35', v: 'stage' },
+        { n: 'Mesaharati', d: 15, s: '10:45', e: '11:00', v: 'roaming' },
+        { n: 'Welcoming Roamers', d: 10, s: '11:10', e: '11:20', v: 'roaming' },
+        { n: 'Storyteller', d: 15, s: '12:10', e: '12:25', v: 'stage' },
+        { n: 'Traditional Learning', d: 15, s: '12:35', e: '12:50', v: 'stage' },
+        { n: 'Mesaharati', d: 15, s: '01:00', e: '01:15', v: 'roaming' }
+      ]
+    } },
+    { name: 'France', short: 'FR', shows: [
+      { n: 'Eiffel Gentlemen', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Parisian Tourists', d: 15, s: '09:45', e: '10:00', v: 'roaming' },
+      { n: 'French Mime', d: 15, s: '10:15', e: '10:30', v: 'roaming' },
+      { n: 'Eiffel Gentlemen', d: 15, s: '11:00', e: '11:15', v: 'roaming' },
+      { n: 'French Mime', d: 15, s: '11:35', e: '11:50', v: 'roaming' },
+      { n: 'Parisian Tourists', d: 15, s: '12:00', e: '12:15', v: 'roaming' },
+      { n: 'Eiffel Gentlemen', d: 15, s: '12:30', e: '12:45', v: 'roaming' }
+    ] },
+    { name: 'Turkey', short: 'TR', shows: [
+      { n: 'Turkish Rovers', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Turkish Folkloric Dance', d: 15, s: '08:45', e: '09:00', v: 'roaming' },
+      { n: 'Turkish Folkloric Dance', d: 15, s: '09:00', e: '09:15', v: 'roaming' },
+      { n: 'Turkish Folkloric Dance', d: 25, s: '09:25', e: '09:50', v: 'roaming' },
+      { n: 'Turkish Rovers', d: 15, s: '10:30', e: '10:45', v: 'roaming' },
+      { n: 'Turkish Folkloric Dance', d: 15, s: '11:00', e: '11:15', v: 'roaming' },
+      { n: 'Turkish Rovers', d: 15, s: '11:15', e: '11:30', v: 'dance' },
+      { n: 'Turkish Folkloric Dance', d: 15, s: '11:30', e: '11:45', v: 'roaming' },
+      { n: 'Turkish Folkloric Dance', d: 15, s: '12:30', e: '12:45', v: 'roaming' }
+    ] },
+    { name: 'Asia', short: 'AS', shows: [
+      { n: 'Greeting', d: 10, s: '08:30', e: '08:40', v: 'roaming' },
+      { n: 'Greeting', d: 10, s: '09:00', e: '09:10', v: 'roaming' },
+      { n: 'Greeting', d: 15, s: '09:30', e: '09:40', v: 'roaming' },
+      { n: 'Greeting', d: 10, s: '09:50', e: '10:00', v: 'roaming' },
+      { n: 'Greeting', d: 10, s: '10:30', e: '10:40', v: 'roaming' },
+      { n: 'Greeting', d: 10, s: '11:00', e: '11:10', v: 'roaming' },
+      { n: 'Greeting', d: 15, s: '11:30', e: '11:40', v: 'stage' },
+      { n: 'Greeting', d: 10, s: '12:00', e: '12:10', v: 'roaming' },
+      { n: 'Greeting', d: 15, s: '12:30', e: '12:40', v: 'stage' }
+    ] },
+    { name: 'Japan', short: 'JP', shows: [
+      { n: 'Full Parade', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Samurai & Geisha', d: 15, s: '09:30', e: '09:45', v: 'roaming' },
+      { n: 'Samurai & Geisha', d: 15, s: '10:30', e: '10:45', v: 'roaming' },
+      { n: 'Samurai & Geisha', d: 15, s: '11:00', e: '11:15', v: 'roaming' },
+      { n: 'Samurai & Geisha', d: 15, s: '11:45', e: '12:00', v: 'roaming' },
+      { n: 'Full Parade', d: 15, s: '12:45', e: '01:00', v: 'roaming' }
+    ] },
+    { name: 'USA', short: 'US', shows: [
+      { n: 'Western Rhythms', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Cowboy Mascots', d: 15, s: '09:00', e: '09:15', v: 'roaming' },
+      { n: 'Swinging Polka Nights', d: 15, s: '09:30', e: '09:45', v: 'roaming' },
+      { n: 'Western Rhythms', d: 15, s: '10:00', e: '10:15', v: 'roaming' },
+      { n: 'Cowboy Mascots', d: 15, s: '10:30', e: '10:45', v: 'roaming' },
+      { n: 'Western Rhythms', d: 15, s: '11:00', e: '11:15', v: 'roaming' },
+      { n: 'Cowboy Mascots', d: 15, s: '11:30', e: '11:45', v: 'roaming' },
+      { n: 'Swinging Polka Nights', d: 15, s: '12:00', e: '12:15', v: 'roaming' },
+      { n: 'Cowboy Mascots', d: 15, s: '12:30', e: '12:45', v: 'roaming' }
+    ] },
+    { name: 'Spain', short: 'ES', shows: [
+      { n: 'Spain Roaming', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Traditional Spain Roaming', d: 15, s: '09:30', e: '09:45', v: 'roaming' },
+      { n: 'Spain Roaming', d: 15, s: '10:10', e: '10:25', v: 'roaming' },
+      { n: 'Spain Roaming & Couple', d: 15, s: '10:45', e: '11:00', v: 'roaming' },
+      { n: 'Traditional Spain Roaming', d: 15, s: '11:45', e: '12:00', v: 'roaming' },
+      { n: 'Spain Roaming & Couple', d: 15, s: '12:15', e: '12:30', v: 'roaming' }
+    ] },
+    { name: 'Mexico', short: 'MX', shows: [
+      { n: 'Mexican Mariachi Band', d: 15, s: '08:45', e: '09:00', v: 'roaming' },
+      { n: 'Mexican Mariachi Band', d: 15, s: '09:45', e: '10:00', v: 'roaming' },
+      { n: 'Roaming Show', d: 15, s: '10:20', e: '10:35', v: 'roaming' },
+      { n: 'Mexican Mariachi Band', d: 15, s: '10:55', e: '11:10', v: 'roaming' },
+      { n: 'Mexican Mariachi Band', d: 15, s: '12:00', e: '12:15', v: 'roaming' },
+      { n: 'Roaming Show', d: 15, s: '12:30', e: '12:45', v: 'roaming' }
+    ] },
+    { name: 'Iran', short: 'IR', shows: [
+      { n: 'Iran Roaming', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Iran Roaming', d: 15, s: '09:30', e: '09:45', v: 'roaming' },
+      { n: 'Iran Roaming', d: 15, s: '10:45', e: '11:00', v: 'roaming' },
+      { n: 'Iran Roaming', d: 15, s: '11:45', e: '12:00', v: 'roaming' }
+    ] },
+    { name: 'China', short: 'CN', shows: [
+      { n: 'Dragon / Mini-Circus', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Lion Dance', d: 10, s: '08:50', e: '09:00', v: 'roaming' },
+      { n: 'China Masks Inspiration', d: 15, s: '09:00', e: '09:15', v: 'stage' },
+      { n: 'Dragon / Mini-Circus', d: 15, s: '09:25', e: '09:40', v: 'roaming' },
+      { n: 'Lion Dance', d: 10, s: '09:45', e: '09:55', v: 'roaming' },
+      { n: 'China Masks Inspiration', d: 15, s: '10:00', e: '10:15', v: 'roaming' },
+      { n: 'Dragon / Mini-Circus', d: 15, s: '10:25', e: '10:40', v: 'roaming' },
+      { n: 'Lion Dance', d: 10, s: '10:45', e: '10:55', v: 'roaming' },
+      { n: 'China Masks Inspiration', d: 15, s: '11:05', e: '11:20', v: 'stage' }
+    ] },
+    { name: 'India', short: 'IN', shows: [
+      { n: 'Bollywood Parade', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Global Village Greeting', d: 10, s: '08:50', e: '09:00', v: 'roaming' },
+      { n: 'Bollywood Parade', d: 15, s: '09:30', e: '09:45', v: 'roaming' },
+      { n: 'Global Village Greeting', d: 10, s: '09:50', e: '10:00', v: 'roaming' },
+      { n: 'Bollywood Parade', d: 15, s: '10:30', e: '10:45', v: 'roaming' },
+      { n: 'Global Village Greeting', d: 10, s: '10:50', e: '11:00', v: 'roaming' },
+      { n: 'Bollywood Parade', d: 15, s: '11:15', e: '11:30', v: 'roaming' },
+      { n: 'Global Village Greeting', d: 10, s: '11:40', e: '11:50', v: 'roaming' },
+      { n: 'Bollywood Parade', d: 15, s: '12:00', e: '12:15', v: 'roaming' }
+    ] },
+    { name: 'Levant', short: 'LV', shows: [
+      { n: 'Mesaharati', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Ramadan Nights', d: 15, s: '09:20', e: '09:35', v: 'stage' },
+      { n: 'Storyteller', d: 15, s: '09:35', e: '09:50', v: 'roaming' },
+      { n: 'Ramadan Nights', d: 15, s: '10:25', e: '10:40', v: 'stage' },
+      { n: 'Mesaharati', d: 15, s: '10:40', e: '10:55', v: 'roaming' },
+      { n: 'Ramadan Nights', d: 15, s: '11:30', e: '11:45', v: 'stage' },
+      { n: 'Storyteller', d: 15, s: '12:00', e: '12:15', v: 'roaming' },
+      { n: 'Ramadan Nights', d: 15, s: '12:30', e: '12:45', v: 'stage' }
+    ] },
+    { name: 'Morocco', short: 'MA', shows: [
+      { n: 'Ramadan Melodies', d: 15, s: '09:00', e: '09:15', v: 'roaming' },
+      { n: 'Dakar Esawi', d: 15, s: '10:00', e: '10:15', v: 'roaming' },
+      { n: 'Ramadan Melodies', d: 15, s: '10:50', e: '11:05', v: 'roaming' },
+      { n: 'Dakar Esawi', d: 15, s: '11:25', e: '11:40', v: 'roaming' },
+      { n: 'Ramadan Melodies', d: 15, s: '12:30', e: '12:45', v: 'roaming' }
+    ] },
+    { name: 'Italy', short: 'IT', shows: [
+      { n: 'Venetian Masquerade', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Italian Rhythms of Tradition', d: 15, s: '09:00', e: '09:15', v: 'roaming' },
+      { n: 'Venetian Masquerade', d: 15, s: '09:30', e: '09:45', v: 'roaming' },
+      { n: 'Italian Rhythms of Tradition', d: 15, s: '10:00', e: '10:15', v: 'roaming' },
+      { n: 'Venetian Masquerade', d: 15, s: '10:30', e: '10:45', v: 'roaming' },
+      { n: 'Italian Rhythms of Tradition', d: 15, s: '11:00', e: '11:15', v: 'roaming' },
+      { n: 'Venetian Masquerade', d: 15, s: '11:30', e: '11:45', v: 'roaming' },
+      { n: 'Italian Rhythms of Tradition', d: 15, s: '12:00', e: '12:15', v: 'roaming' },
+      { n: 'Venetian Masquerade', d: 15, s: '12:30', e: '12:45', v: 'roaming' }
+    ] },
+    { name: 'Greece', short: 'GR', shows: [
+      { n: 'Empire Warriors', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Mainland Greek', d: 15, s: '09:00', e: '09:15', v: 'roaming' },
+      { n: 'Empire Warriors', d: 15, s: '09:30', e: '09:45', v: 'roaming' },
+      { n: 'Mainland Greek', d: 15, s: '10:00', e: '10:15', v: 'roaming' },
+      { n: 'Empire Warriors', d: 15, s: '10:30', e: '10:45', v: 'roaming' },
+      { n: 'Mainland Greek', d: 15, s: '11:00', e: '11:15', v: 'roaming' },
+      { n: 'Empire Warriors', d: 15, s: '11:30', e: '11:45', v: 'roaming' },
+      { n: 'Mainland Greek', d: 15, s: '12:00', e: '12:15', v: 'roaming' },
+      { n: 'Empire Warriors', d: 15, s: '12:30', e: '12:45', v: 'roaming' }
+    ] },
+    { name: 'Egypt', short: 'EG', shows: [
+      { n: 'Full Parade', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Egyptian Servants', d: 15, s: '09:05', e: '09:20', v: 'roaming' },
+      { n: 'Greeting Parade', d: 15, s: '09:25', e: '09:40', v: 'roaming' },
+      { n: 'Cleopatra', d: 15, s: '09:45', e: '10:00', v: 'roaming' },
+      { n: 'Greeting Parade', d: 15, s: '10:05', e: '10:20', v: 'roaming' },
+      { n: 'Egyptian Servants', d: 15, s: '10:25', e: '10:40', v: 'roaming' },
+      { n: 'Cleopatra', d: 15, s: '11:00', e: '11:15', v: 'roaming' },
+      { n: 'Mesaharati', d: 15, s: '11:20', e: '11:35', v: 'roaming' },
+      { n: 'Full Parade', d: 15, s: '11:45', e: '12:00', v: 'roaming' }
+    ] },
+    { name: 'Africa', short: 'AF', shows: [
+      { n: 'Roaming Africans', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Roaming Africans / Drums', d: 15, s: '08:50', e: '09:05', v: 'roaming' },
+      { n: 'Roaming Africans', d: 15, s: '09:10', e: '09:25', v: 'roaming' },
+      { n: 'Roaming Africans', d: 15, s: '10:00', e: '10:15', v: 'roaming' },
+      { n: 'Roaming Africans / Drums', d: 15, s: '10:20', e: '10:35', v: 'roaming' },
+      { n: 'Roaming Africans', d: 15, s: '10:50', e: '11:05', v: 'roaming' },
+      { n: 'Roaming Africans', d: 15, s: '11:35', e: '11:50', v: 'roaming' },
+      { n: 'Roaming Africans / Drums', d: 15, s: '12:00', e: '12:15', v: 'roaming' },
+      { n: 'Roaming Show', d: 15, s: '12:25', e: '12:40', v: 'roaming' },
+      { n: 'Roaming Africans / Drums', d: 15, s: '12:45', e: '01:00', v: 'roaming' }
+    ] },
+    { name: 'Korea', short: 'KR', shows: [
+      { n: 'Korea Roaming', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Korea Roaming', d: 15, s: '09:45', e: '10:00', v: 'roaming' },
+      { n: 'Korea Roaming', d: 15, s: '10:30', e: '10:45', v: 'roaming' },
+      { n: 'Korea Roaming', d: 15, s: '11:30', e: '11:45', v: 'roaming' },
+      { n: 'Korea Roaming', d: 15, s: '12:45', e: '01:00', v: 'roaming' }
+    ] },
+    { name: 'Indonesia', short: 'ID', shows: [
+      { n: 'Indonesia Roaming', d: 15, s: '08:30', e: '08:45', v: 'roaming' },
+      { n: 'Indonesia Greeting', d: 10, s: '09:00', e: '09:15', v: 'roaming' },
+      { n: 'Indonesia Roaming', d: 15, s: '09:25', e: '09:40', v: 'roaming' },
+      { n: 'Indonesia Greeting', d: 10, s: '09:50', e: '10:05', v: 'roaming' },
+      { n: 'Indonesia Roaming', d: 15, s: '10:30', e: '10:45', v: 'roaming' },
+      { n: 'Indonesia Greeting', d: 10, s: '10:50', e: '11:05', v: 'roaming' },
+      { n: 'Indonesia Roaming', d: 15, s: '11:25', e: '11:40', v: 'roaming' },
+      { n: 'Indonesia Greeting', d: 10, s: '11:45', e: '12:00', v: 'roaming' },
+      { n: 'Indonesia Roaming', d: 15, s: '12:45', e: '01:00', v: 'roaming' }
+    ] }
+  ];
+
+  var VENUE_LABEL = { roaming: 'Roaming', stage: 'Stage', dance: 'Dance show' };
+  var day = 'satTue', view = 'zone', picked = [];
+
+  function showsFor(z) { return z.byDay ? z.byDay[day] : z.shows; }
+
+  /* evening schedule: 08:xx–11:xx are PM, 12:xx and 01:xx are after midnight */
+  function fmt(t) {
+    var h = +t.split(':')[0], m = t.split(':')[1];
+    var mer = (h === 12 || h <= 2) ? 'AM' : 'PM';
+    return { t: h + ':' + m, mer: mer };
+  }
+  function sortKey(t) {
+    var h = +t.split(':')[0], m = +t.split(':')[1];
+    if (h >= 8 && h <= 11) return h * 60 + m;            // same evening
+    return (h === 12 ? 12 : h + 12) * 60 + m;            // after midnight
+  }
+
+  /* --- zone chips --- */
+  var chipsEl = document.getElementById('zoneChips');
+  chipsEl.innerHTML = ZONES.map(function (z) {
+    return '<button class="chip" data-z="' + z.name + '">' + z.name + '</button>';
+  }).join('');
+  chipsEl.addEventListener('click', function (e) {
+    var c = e.target.closest('.chip');
+    if (!c) return;
+    c.classList.toggle('on');
+    picked = Array.prototype.filter.call(chipsEl.querySelectorAll('.chip'), function (x) {
+      return x.classList.contains('on');
+    }).map(function (x) { return x.dataset.z; });
+    render();
+  });
+
+  function segHandler(id, set) {
+    var el = document.getElementById(id);
+    el.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      el.querySelectorAll('button').forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      set(b.dataset);
+      render();
+    });
+  }
+  segHandler('days', function (d) { day = d.day; });
+  segHandler('views', function (d) { view = d.view; });
+
+  var out = document.getElementById('out');
+  var countEl = document.getElementById('count');
+
+  function render() {
+    var zones = ZONES.filter(function (z) { return !picked.length || picked.indexOf(z.name) > -1; });
+    var total = zones.reduce(function (a, z) { return a + showsFor(z).length; }, 0);
+    countEl.textContent = total + ' shows across ' + zones.length + ' zone' + (zones.length === 1 ? '' : 's');
+
+    if (!total) {
+      out.innerHTML = '<div class="empty"><b>No shows to show</b><p>Clear a zone filter to see the full schedule.</p></div>';
+      return;
+    }
+
+    if (view === 'zone') {
+      out.innerHTML = zones.map(function (z) {
+        var list = showsFor(z);
+        return '<section class="zone-card">' +
+          '<div class="zone-head"><span class="flag">' + z.short + '</span>' +
+            '<h2>' + z.name + '</h2><span class="n">' + list.length + ' shows</span></div>' +
+          '<div class="rows">' + list.map(function (s) {
+            var a = fmt(s.s), b = fmt(s.e);
+            return '<div class="row">' +
+              '<div class="when">' + a.t + ' &ndash; ' + b.t + '<small>' + a.mer + ' &middot; ' + s.d + ' min</small></div>' +
+              '<div class="what"><b>' + s.n + '</b></div>' +
+              '<span class="tag ' + s.v + '">' + VENUE_LABEL[s.v] + '</span>' +
+            '</div>';
+          }).join('') + '</div></section>';
+      }).join('');
+      return;
+    }
+
+    /* by time: flatten every zone's shows and group by start time */
+    var all = [];
+    zones.forEach(function (z) {
+      showsFor(z).forEach(function (s) { all.push({ z: z.name, s: s }); });
+    });
+    all.sort(function (a, b) { return sortKey(a.s.s) - sortKey(b.s.s); });
+
+    var order = [], groups = {};
+    all.forEach(function (item) {
+      if (!groups[item.s.s]) { groups[item.s.s] = []; order.push(item.s.s); }
+      groups[item.s.s].push(item);
+    });
+
+    out.innerHTML = order.map(function (t) {
+      var f = fmt(t);
+      return '<section class="slot">' +
+        '<div class="time">' + f.t + '<small>' + f.mer + '</small></div>' +
+        '<div class="line">' + groups[t].map(function (i) {
+          return '<article class="tl-show"><div class="body"><b>' + i.s.n + '</b>' +
+            '<span>' + i.z + ' &middot; ' + i.s.d + ' min</span></div>' +
+            '<span class="tag ' + i.s.v + '">' + VENUE_LABEL[i.s.v] + '</span></article>';
+        }).join('') + '</div></section>';
+    }).join('');
+  }
+  render();
+
+  /* twinkling stars in the header */
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var head = document.querySelector('.head');
+    for (var k = 0; k < 14; k++) {
+      var st = document.createElement('span');
+      st.className = 'tw';
+      st.style.left = (Math.random() * 100).toFixed(2) + '%';
+      st.style.top = (Math.random() * 80).toFixed(2) + '%';
+      st.style.width = st.style.height = (Math.random() * 2.5 + 1.5).toFixed(1) + 'px';
+      st.style.animationDelay = (Math.random() * 3).toFixed(2) + 's';
+      head.appendChild(st);
+    }
+  }
+</script>
+
+</body>
+</html>
