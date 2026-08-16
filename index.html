@@ -648,6 +648,63 @@
   .faq-item { transition: background 0.3s, border-color 0.3s; }
   .faq-item:hover { background: rgba(255, 255, 255, 0.09); border-color: rgba(255, 255, 255, 0.12); }
 
+  /* ============ sponsors ============ */
+  .sponsors {
+    position: relative;
+    background: #fff;
+    padding: 72px max(calc(50vw - 700px), 32px) 88px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 28px;
+  }
+  .sp-lead {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 20px;
+    width: 100%; max-width: 900px;
+  }
+  .sp-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    width: 100%; max-width: 1080px;
+  }
+  .sp-item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px;
+    min-height: 104px;
+    padding: 20px 18px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    text-align: center;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  }
+  .sp-item:hover {
+    border-color: var(--pink);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.07);
+  }
+  .sp-item.lead { flex: 1 1 300px; min-height: 128px; background: #fafafa; }
+  .sp-role {
+    font-family: 'Figtree', sans-serif;
+    font-weight: 600; font-size: 11px; letter-spacing: 1.6px;
+    text-transform: uppercase; color: var(--sub);
+  }
+  .sp-name {
+    font-weight: 700; font-size: 20px; letter-spacing: -0.2px;
+    color: var(--ink);
+    filter: grayscale(1);
+    transition: color 0.3s;
+  }
+  .sp-item.lead .sp-name { font-size: 27px; }
+  .sp-name em { font-style: normal; color: var(--sub); }
+  .sp-item:hover .sp-name { color: var(--pink); }
+  .sp-item:hover .sp-name em { color: rgba(255, 44, 121, 0.6); }
+  .sp-note {
+    font-family: 'Figtree', sans-serif;
+    font-size: 15px; color: var(--sub);
+  }
+  .sp-note a { color: var(--pink); font-weight: 600; }
+  .sp-note a:hover { text-decoration: underline; }
+
   /* gallery marquee */
   .gallery-sec {
     position: relative;
@@ -1370,6 +1427,13 @@
     .info-col b { font-size: 24px; }
     .info-col p { font-size: 15px; line-height: 1.5; }
     .pill { font-size: 15px; padding: 13px 20px; }
+    .sponsors { padding: 44px 18px 56px; gap: 20px; }
+    .sp-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .sp-item { min-height: 88px; padding: 16px 12px; border-radius: 16px; }
+    .sp-item.lead { flex: 1 1 100%; min-height: 104px; }
+    .sp-name { font-size: 16px; }
+    .sp-item.lead .sp-name { font-size: 22px; }
+    .sp-note { font-size: 14px; text-align: center; }
 
     /* --- zones --- */
     .facts { gap: 18px; row-gap: 10px; }
@@ -2157,6 +2221,39 @@
       <div class="faq-a"><p>Tickets are non-refundable once purchased, but you can reschedule your visit date up to 24 hours in advance through your account.</p></div>
     </div>
   </div>
+</section>
+
+<!-- ================= SPONSORS ================= -->
+<section class="sponsors" id="sponsors">
+  <div class="tear tear-top-white">
+    <img src="assets/rules-page-tear.png" alt="" loading="lazy" decoding="async">
+    <div class="bar"></div>
+  </div>
+
+  <div class="section-head">
+    <h2>Our partners</h2>
+    <p>BLVD World is brought to you with the support of our partners across the season.</p>
+  </div>
+
+  <div class="sp-lead">
+    <div class="sp-item lead">
+      <span class="sp-role">Presented by</span>
+      <span class="sp-name">Riyadh Season</span>
+    </div>
+    <div class="sp-item lead">
+      <span class="sp-role">Official ticketing</span>
+      <span class="sp-name">webook<em>.com</em></span>
+    </div>
+  </div>
+
+  <div class="sp-grid">
+    <div class="sp-item"><span class="sp-name">General Entertainment Authority</span></div>
+    <div class="sp-item"><span class="sp-name">Saudi Vision 2030</span></div>
+    <div class="sp-item"><span class="sp-name">Visit Saudi</span></div>
+    <div class="sp-item"><span class="sp-name">Boulevard City</span></div>
+  </div>
+
+  <p class="sp-note">Interested in partnering with BLVD World? <a href="mailto:partners@blvdworld.sa">Get in touch</a></p>
 </section>
 
 <!-- ================= MAP EXPLORER (Figma: section#view-map) ================= -->
@@ -3138,6 +3235,8 @@
     revealGroup('.rules-grid', '.rule-card', { y: 36, scale: 0.94, stagger: 0.06 });
     revealGroup('.faq-section h2', null, { y: 34 });
     revealGroup('.faq-list', '.faq-item', { y: 26, stagger: 0.08 });
+    revealGroup('.sp-lead', '.sp-item', { y: 26, stagger: 0.1 });
+    revealGroup('.sp-grid', '.sp-item', { y: 24, stagger: 0.07 });
     revealGroup('.zones-buttons', null, {});
     revealGroup('.controls', null, { y: 20 });
 
