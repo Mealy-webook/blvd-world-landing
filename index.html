@@ -686,17 +686,18 @@
     transform: translateY(-3px);
     box-shadow: 0 12px 26px rgba(0, 0, 0, 0.07);
   }
-  /* logos rest in greyscale and come to life on hover — standard partner-wall treatment.
+  /* Logos render as solid black marks. brightness(0) flattens each one to black
+     while keeping its alpha, so it works for both dark and white artwork.
      A definite box (not auto) keeps them from collapsing to 0x0 before they load,
      which would stop the lazy loader from ever fetching them. */
   .sp-item img {
     width: 100%; height: 56px;
     object-fit: contain;
-    filter: grayscale(1);
-    opacity: 0.72;
-    transition: filter 0.35s, opacity 0.35s;
+    filter: brightness(0);
+    opacity: 0.82;
+    transition: opacity 0.35s;
   }
-  .sp-item:hover img { filter: grayscale(0); opacity: 1; }
+  .sp-item:hover img { opacity: 1; }
 
   /* gallery marquee */
   .gallery-sec {
@@ -2253,7 +2254,7 @@
   <div class="sp-tier">
     <h3>Official main partners</h3>
     <div class="sp-row">
-      <div class="sp-item"><img src="assets/sp-checkapp.jpg" alt="Check App" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-checkapp.png" alt="Check App" loading="lazy" decoding="async"></div>
       <div class="sp-item"><img src="assets/sp-cocacola.png" alt="Coca-Cola" loading="lazy" decoding="async"></div>
       <div class="sp-item"><img src="assets/sp-dunkin.png" alt="Dunkin'" loading="lazy" decoding="async"></div>
       <div class="sp-item"><img src="assets/sp-shawermer.png" alt="Shawermer" loading="lazy" decoding="async"></div>
