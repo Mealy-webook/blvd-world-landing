@@ -656,25 +656,29 @@
     display: flex; flex-direction: column; align-items: center;
     gap: 28px;
   }
-  .sp-lead {
-    display: flex; flex-wrap: wrap; justify-content: center;
-    gap: 20px;
-    width: 100%; max-width: 900px;
+  .sp-tier { width: 100%; max-width: 1080px; text-align: center; }
+  .sp-tier h3 {
+    font-family: 'Figtree', sans-serif;
+    font-weight: 700; font-size: 12px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--sub);
+    margin-bottom: 16px;
   }
-  .sp-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    width: 100%; max-width: 1080px;
+  .sp-row {
+    display: flex; flex-wrap: wrap;
+    align-items: stretch; justify-content: center;
+    gap: 14px;
+  }
+  .sp-tier-split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 28px;
   }
   .sp-item {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 6px;
-    min-height: 104px;
-    padding: 20px 18px;
+    flex: 0 1 190px;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 96px;
+    padding: 18px 22px;
     border: 1px solid var(--border);
     border-radius: 18px;
-    text-align: center;
     transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
   }
   .sp-item:hover {
@@ -682,28 +686,17 @@
     transform: translateY(-3px);
     box-shadow: 0 12px 26px rgba(0, 0, 0, 0.07);
   }
-  .sp-item.lead { flex: 1 1 300px; min-height: 128px; background: #fafafa; }
-  .sp-role {
-    font-family: 'Figtree', sans-serif;
-    font-weight: 600; font-size: 11px; letter-spacing: 1.6px;
-    text-transform: uppercase; color: var(--sub);
-  }
-  .sp-name {
-    font-weight: 700; font-size: 20px; letter-spacing: -0.2px;
-    color: var(--ink);
+  /* logos rest in greyscale and come to life on hover — standard partner-wall treatment.
+     A definite box (not auto) keeps them from collapsing to 0x0 before they load,
+     which would stop the lazy loader from ever fetching them. */
+  .sp-item img {
+    width: 100%; height: 56px;
+    object-fit: contain;
     filter: grayscale(1);
-    transition: color 0.3s;
+    opacity: 0.72;
+    transition: filter 0.35s, opacity 0.35s;
   }
-  .sp-item.lead .sp-name { font-size: 27px; }
-  .sp-name em { font-style: normal; color: var(--sub); }
-  .sp-item:hover .sp-name { color: var(--pink); }
-  .sp-item:hover .sp-name em { color: rgba(255, 44, 121, 0.6); }
-  .sp-note {
-    font-family: 'Figtree', sans-serif;
-    font-size: 15px; color: var(--sub);
-  }
-  .sp-note a { color: var(--pink); font-weight: 600; }
-  .sp-note a:hover { text-decoration: underline; }
+  .sp-item:hover img { filter: grayscale(0); opacity: 1; }
 
   /* gallery marquee */
   .gallery-sec {
@@ -1427,13 +1420,12 @@
     .info-col b { font-size: 24px; }
     .info-col p { font-size: 15px; line-height: 1.5; }
     .pill { font-size: 15px; padding: 13px 20px; }
-    .sponsors { padding: 44px 18px 56px; gap: 20px; }
-    .sp-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .sp-item { min-height: 88px; padding: 16px 12px; border-radius: 16px; }
-    .sp-item.lead { flex: 1 1 100%; min-height: 104px; }
-    .sp-name { font-size: 16px; }
-    .sp-item.lead .sp-name { font-size: 22px; }
-    .sp-note { font-size: 14px; text-align: center; }
+    .sponsors { padding: 44px 18px 56px; gap: 26px; }
+    .sp-row { gap: 10px; }
+    .sp-item { flex: 0 1 calc(50% - 5px); min-height: 76px; padding: 14px 16px; border-radius: 14px; }
+    .sp-item img { height: 40px; }
+    .sp-tier h3 { font-size: 11px; margin-bottom: 12px; }
+    .sp-tier-split { grid-template-columns: 1fr; gap: 26px; }
 
     /* --- zones --- */
     .facts { gap: 18px; row-gap: 10px; }
@@ -2235,25 +2227,54 @@
     <p>BLVD World is brought to you with the support of our partners across the season.</p>
   </div>
 
-  <div class="sp-lead">
-    <div class="sp-item lead">
-      <span class="sp-role">Presented by</span>
-      <span class="sp-name">Riyadh Season</span>
-    </div>
-    <div class="sp-item lead">
-      <span class="sp-role">Official ticketing</span>
-      <span class="sp-name">webook<em>.com</em></span>
+  <div class="sp-tier">
+    <h3>Official premium partners</h3>
+    <div class="sp-row">
+      <div class="sp-item"><img src="assets/sp-snb.svg" alt="Saudi National Bank" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-alhabib.png" alt="Dr. Sulaiman Al Habib" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-stc.png" alt="stc" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-aramco.png" alt="Aramco" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-saudia.png" alt="Saudia" loading="lazy" decoding="async"></div>
     </div>
   </div>
 
-  <div class="sp-grid">
-    <div class="sp-item"><span class="sp-name">General Entertainment Authority</span></div>
-    <div class="sp-item"><span class="sp-name">Saudi Vision 2030</span></div>
-    <div class="sp-item"><span class="sp-name">Visit Saudi</span></div>
-    <div class="sp-item"><span class="sp-name">Boulevard City</span></div>
+  <div class="sp-tier">
+    <h3>Official strategic partners</h3>
+    <div class="sp-row">
+      <div class="sp-item"><img src="assets/sp-muc.png" alt="MUC" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-aroya.png" alt="Aroya Cruises" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-sadia.png" alt="Sadia" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-lucid.png" alt="Lucid" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-shg.png" alt="SHG" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-azure.png" alt="Azure" loading="lazy" decoding="async"></div>
+    </div>
   </div>
 
-  <p class="sp-note">Interested in partnering with BLVD World? <a href="mailto:partners@blvdworld.sa">Get in touch</a></p>
+  <div class="sp-tier">
+    <h3>Official main partners</h3>
+    <div class="sp-row">
+      <div class="sp-item"><img src="assets/sp-checkapp.jpg" alt="Check App" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-cocacola.png" alt="Coca-Cola" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-dunkin.png" alt="Dunkin'" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-shawermer.png" alt="Shawermer" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-pepsi.png" alt="Pepsi" loading="lazy" decoding="async"></div>
+    </div>
+  </div>
+
+  <div class="sp-tier sp-tier-split">
+    <div>
+      <h3>Official co sponsor</h3>
+      <div class="sp-row">
+        <div class="sp-item"><img src="assets/sp-dominos.png" alt="Domino's" loading="lazy" decoding="async"></div>
+      </div>
+    </div>
+    <div>
+      <h3>Commercial partner</h3>
+      <div class="sp-row">
+        <div class="sp-item"><img src="assets/sp-prime.png" alt="Prime" loading="lazy" decoding="async"></div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ================= MAP EXPLORER (Figma: section#view-map) ================= -->
@@ -3235,8 +3256,7 @@
     revealGroup('.rules-grid', '.rule-card', { y: 36, scale: 0.94, stagger: 0.06 });
     revealGroup('.faq-section h2', null, { y: 34 });
     revealGroup('.faq-list', '.faq-item', { y: 26, stagger: 0.08 });
-    revealGroup('.sp-lead', '.sp-item', { y: 26, stagger: 0.1 });
-    revealGroup('.sp-grid', '.sp-item', { y: 24, stagger: 0.07 });
+    revealGroup('.sp-row', '.sp-item', { y: 22, stagger: 0.06 });
     revealGroup('.zones-buttons', null, {});
     revealGroup('.controls', null, { y: 20 });
 
@@ -3292,7 +3312,22 @@
       });
     }
 
-    window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+    // The browser can restore scroll after load (returning from the shows page),
+    // which leaves ScrollTrigger's cached position at 0 and the reveals stuck.
+    // Refresh once on load and again once restoration has settled.
+    window.addEventListener('load', function () {
+      ScrollTrigger.refresh();
+      setTimeout(function () { ScrollTrigger.refresh(); }, 350);
+    });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) ScrollTrigger.refresh(); });
+    // lazy images land after layout is measured, so re-measure as they arrive
+    var refreshT;
+    document.querySelectorAll('img[loading="lazy"]').forEach(function (im) {
+      im.addEventListener('load', function () {
+        clearTimeout(refreshT);
+        refreshT = setTimeout(function () { ScrollTrigger.refresh(); }, 200);
+      }, { once: true });
+    });
   }
 
   // ---------- custom cursor ----------
