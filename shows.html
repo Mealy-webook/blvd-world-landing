@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Live show schedule — BLVD World</title>
 <link rel="icon" href="assets/hero-logo-mark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -65,6 +65,8 @@
   /* ---------- controls ---------- */
   .controls {
     position: sticky; top: 0; z-index: 20;
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
     background: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);

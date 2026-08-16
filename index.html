@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>BLVD World — Explore New Worlds</title>
 <link rel="icon" href="assets/hero-logo-mark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -581,6 +581,19 @@
     color: var(--sub-inverse);
   }
 
+  /* ============ iPhone safe areas (Dynamic Island / home indicator) ============
+     viewport-fit=cover lets the page paint edge to edge, so anything fixed has
+     to keep clear of the insets itself. dvh tracks Safari's collapsing toolbar. */
+  .sponsors, .section-pad, .gallery-sec, .info-strip {
+    padding-left: max(18px, env(safe-area-inset-left));
+    padding-right: max(18px, env(safe-area-inset-right));
+  }
+  #dock { bottom: max(24px, calc(env(safe-area-inset-bottom) + 12px)); }
+  .vm-zoom { bottom: max(24px, calc(env(safe-area-inset-bottom) + 12px)); }
+  .sv-card { margin-bottom: env(safe-area-inset-bottom); }
+  .sv-head { top: max(24px, calc(env(safe-area-inset-top) + 8px)); }
+  .vm-panel { padding-bottom: max(24px, calc(env(safe-area-inset-bottom) + 8px)); }
+
   /* ============ delight layer ============ */
   #scroll-progress {
     position: fixed; top: 0; left: 0;
@@ -786,6 +799,7 @@
     margin-left: clamp(16px, 6.25vw, 120px);
     width: min(520px, calc(100vw - 32px));
     height: min(992px, calc(100vh - 48px));
+    height: min(992px, calc(100dvh - 48px));
     background: #fff;
     border-radius: 24px;
     padding: 24px;
@@ -2233,7 +2247,7 @@
     <div class="sp-row">
       <div class="sp-item"><img src="assets/sp-snb.svg" alt="Saudi National Bank" loading="lazy" decoding="async"></div>
       <div class="sp-item"><img src="assets/sp-alhabib.png" alt="Dr. Sulaiman Al Habib" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-stc.png" alt="stc" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-stc.svg" alt="stc" loading="lazy" decoding="async"></div>
       <div class="sp-item"><img src="assets/sp-aramco.png" alt="Aramco" loading="lazy" decoding="async"></div>
       <div class="sp-item"><img src="assets/sp-saudia.png" alt="Saudia" loading="lazy" decoding="async"></div>
     </div>
@@ -2245,7 +2259,7 @@
       <div class="sp-item"><img src="assets/sp-muc.png" alt="MUC" loading="lazy" decoding="async"></div>
       <div class="sp-item"><img src="assets/sp-aroya.png" alt="Aroya Cruises" loading="lazy" decoding="async"></div>
       <div class="sp-item"><img src="assets/sp-sadia.png" alt="Sadia" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-lucid.png" alt="Lucid" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-lucid.svg" alt="Lucid" loading="lazy" decoding="async"></div>
       <div class="sp-item"><img src="assets/sp-shg.png" alt="SHG" loading="lazy" decoding="async"></div>
       <div class="sp-item"><img src="assets/sp-azure.png" alt="Azure" loading="lazy" decoding="async"></div>
     </div>
@@ -2255,8 +2269,8 @@
     <h3>Official main partners</h3>
     <div class="sp-row">
       <div class="sp-item"><img src="assets/sp-checkapp.png" alt="Check App" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-cocacola.png" alt="Coca-Cola" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-dunkin.png" alt="Dunkin'" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-cocacola.svg" alt="Coca-Cola" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-dunkin.svg" alt="Dunkin'" loading="lazy" decoding="async"></div>
       <div class="sp-item"><img src="assets/sp-shawermer.png" alt="Shawermer" loading="lazy" decoding="async"></div>
       <div class="sp-item"><img src="assets/sp-pepsi.png" alt="Pepsi" loading="lazy" decoding="async"></div>
     </div>
@@ -2272,7 +2286,7 @@
     <div>
       <h3>Commercial partner</h3>
       <div class="sp-row">
-        <div class="sp-item"><img src="assets/sp-prime.png" alt="Prime" loading="lazy" decoding="async"></div>
+        <div class="sp-item"><img src="assets/sp-prime.svg" alt="Prime" loading="lazy" decoding="async"></div>
       </div>
     </div>
   </div>
