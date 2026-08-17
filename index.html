@@ -34,6 +34,10 @@
   section { position: relative; }
 
   .navy-bg { background: linear-gradient(180deg, #03003c 0%, #001d5f 55%, #212859 100%); }
+  /* Rides and Restaurants now sit back to back. Restarting the gradient would put a
+     hard light-to-dark seam between them, so the second one continues from where the
+     first ends and the pair reads as a single navy band. */
+  #restaurants.navy-bg { background: #212859; }
 
   .section-pad {
     display: flex;
@@ -1729,6 +1733,85 @@
   </div>
 </section>
 
+<!-- ================= EXPERIENCES ================= -->
+<section class="section-pad" id="experiences">
+  <div class="section-head">
+    <h2>Experiences</h2>
+    <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
+  </div>
+
+  <div class="cards-row" data-rail>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
+      </div>
+      <div class="content">
+        <h3>The lost muesem</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-escape-room.png" alt="Escape room" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
+      </div>
+      <div class="content">
+        <h3>Escape room</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
+      </div>
+      <div class="content">
+        <h3>The tomb of pharoh</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-pyramids-mystery.png" alt="Pyramid's mystery" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
+      </div>
+      <div class="content">
+        <h3>Pyramid&rsquo;s mystery</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
+      </div>
+      <div class="content">
+        <h3>The lost muesem</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
+      </div>
+      <div class="content">
+        <h3>The tomb of pharoh</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="controls">
+    <div class="btns">
+      <button class="ctrl-btn prev dim" aria-label="Previous experiences"><img src="assets/exp-arrow.svg" alt="" loading="lazy" decoding="async"></button>
+      <button class="ctrl-btn next" aria-label="Next experiences"><img src="assets/exp-arrow-next.svg" alt="" loading="lazy" decoding="async"></button>
+    </div>
+    <div class="progress"><div class="fill" style="width: 50%;"></div></div>
+  </div>
+</section>
+
 <!-- ================= RIDES ================= -->
 <section class="section-pad navy-bg on-navy" id="rides">
   <div class="tear tear-top">
@@ -1887,98 +1970,10 @@
     <div class="progress"><div class="fill" style="width: 18%;"></div></div>
   </div>
 
-  <div class="tear tear-bottom">
-    <img src="assets/rides-tear-edge.png" alt="" loading="lazy" decoding="async">
-    <div class="bar"></div>
-  </div>
-</section>
-
-<!-- ================= EXPERIENCES ================= -->
-<section class="section-pad" id="experiences">
-  <div class="section-head">
-    <h2>Experiences</h2>
-    <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
-  </div>
-
-  <div class="cards-row" data-rail>
-    <article class="product-card">
-      <div class="media square">
-        <img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
-      </div>
-      <div class="content">
-        <h3>The lost muesem</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
-      </div>
-    </article>
-    <article class="product-card">
-      <div class="media square">
-        <img src="assets/exp-escape-room.png" alt="Escape room" loading="lazy" decoding="async">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
-      </div>
-      <div class="content">
-        <h3>Escape room</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
-      </div>
-    </article>
-    <article class="product-card">
-      <div class="media square">
-        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
-      </div>
-      <div class="content">
-        <h3>The tomb of pharoh</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
-      </div>
-    </article>
-    <article class="product-card">
-      <div class="media square">
-        <img src="assets/exp-pyramids-mystery.png" alt="Pyramid's mystery" loading="lazy" decoding="async">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
-      </div>
-      <div class="content">
-        <h3>Pyramid&rsquo;s mystery</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
-      </div>
-    </article>
-    <article class="product-card">
-      <div class="media square">
-        <img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
-      </div>
-      <div class="content">
-        <h3>The lost muesem</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
-      </div>
-    </article>
-    <article class="product-card">
-      <div class="media square">
-        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
-      </div>
-      <div class="content">
-        <h3>The tomb of pharoh</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
-      </div>
-    </article>
-  </div>
-
-  <div class="controls">
-    <div class="btns">
-      <button class="ctrl-btn prev dim" aria-label="Previous experiences"><img src="assets/exp-arrow.svg" alt="" loading="lazy" decoding="async"></button>
-      <button class="ctrl-btn next" aria-label="Next experiences"><img src="assets/exp-arrow-next.svg" alt="" loading="lazy" decoding="async"></button>
-    </div>
-    <div class="progress"><div class="fill" style="width: 50%;"></div></div>
-  </div>
 </section>
 
 <!-- ================= RESTAURANTS ================= -->
 <section class="section-pad navy-bg on-navy" id="restaurants">
-  <div class="tear tear-top">
-    <img src="assets/rest-page-tear.png" alt="" loading="lazy" decoding="async">
-    <div class="bar"></div>
-  </div>
-
   <div class="section-head">
     <h2>Restaurants</h2>
     <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
