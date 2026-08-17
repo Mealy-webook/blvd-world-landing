@@ -42,8 +42,11 @@
 
   /* ============ night sky (shared by every navy section) ============ */
   .sky { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
-  /* section content sits above the sky; the hero manages its own layers */
-  .navy-bg:not(.hero) > *:not(.sky), .info-strip > *:not(.sky) { position: relative; z-index: 1; }
+  /* Section content sits above the sky; the hero manages its own layers.
+     .tear must be excluded — it is absolutely positioned against the section
+     edge, and this rule's higher specificity would drop it into normal flow. */
+  .navy-bg:not(.hero) > *:not(.sky):not(.tear),
+  .info-strip > *:not(.sky):not(.tear) { position: relative; z-index: 1; }
   .sky .st {
     position: absolute;
     border-radius: 50%;
@@ -1861,7 +1864,7 @@
         <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>35</span></span>
       </div>
     </div>
-    <div class="price-card">
+    <a class="price-card" href="rides.html">
       <div class="tile"><img src="assets/hero-icon-rocket.svg" alt=""></div>
       <div class="body">
         <div class="title-row">
@@ -1874,7 +1877,7 @@
         <span class="from">From</span>
         <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>70</span></span>
       </div>
-    </div>
+    </a>
     <div class="price-card">
       <div class="tile"><img class="tilted" src="assets/hero-icon-ticket.svg" alt=""></div>
       <div class="body">
@@ -2094,7 +2097,6 @@
   <div class="section-head">
     <h2>Explore rides</h2>
     <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
-    <a class="pill cta" href="rides.html" style="margin-top:16px;display:inline-block">Rides package &mdash; from 70 SAR</a>
   </div>
 
   <div class="rail-wrap" data-rail>
