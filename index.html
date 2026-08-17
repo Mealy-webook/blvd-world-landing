@@ -809,6 +809,97 @@
   .sv-head { top: max(24px, calc(env(safe-area-inset-top) + 8px)); }
   .vm-panel { padding-bottom: max(24px, calc(env(safe-area-inset-bottom) + 8px)); }
 
+
+  /* ============ rides packages (homepage) ============ */
+  .pkg-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%; max-width: 1400px;
+  }
+  .pkg {
+    position: relative;
+    display: flex; flex-direction: column;
+    background: linear-gradient(180deg, #0a1044, #131a4d);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 22px;
+    padding: 22px 18px 20px;
+    color: #fff;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s;
+  }
+  .pkg:hover { transform: translateY(-6px); border-color: rgba(255, 255, 255, 0.3); }
+  .pkg.best { border-color: var(--pink); box-shadow: 0 16px 40px rgba(255, 44, 121, 0.2); }
+  .pkg h3 { font-weight: 700; font-size: 19px; line-height: 1.2; }
+  .pkg .amt { display: flex; align-items: baseline; gap: 5px; margin-top: 8px; }
+  .pkg .amt img { width: 13px; height: 13px; align-self: center; filter: brightness(0) invert(1); }
+  .pkg .amt b { font-weight: 700; font-size: 25px; }
+  .pkg .amt span { font-family: 'Figtree', sans-serif; font-size: 13.5px; color: var(--sub-inverse); }
+  .pkg .specs {
+    margin: 18px 0 20px; padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    display: flex; flex-direction: column; gap: 11px; flex: 1;
+  }
+  .pkg .spec {
+    display: flex; align-items: center; gap: 7px;
+    font-family: 'Figtree', sans-serif; font-size: 14.5px; color: var(--sub-inverse);
+  }
+  .pkg .spec .ic { width: 16px; height: 16px; flex-shrink: 0; color: #fff; opacity: 0.8; }
+  .pkg .spec .ic svg { width: 16px; height: 16px; }
+  .pkg .spec .v { margin-left: auto; font-weight: 600; color: #fff; white-space: nowrap; }
+  .pkg .spec .v.no { color: rgba(255, 255, 255, 0.35); font-weight: 500; }
+  .pkg .spec .v.yes { color: #4ade80; }
+  .pkg .book {
+    display: block; width: 100%;
+    padding: 12px 16px; border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.12);
+    text-align: center;
+    font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 15px;
+    color: #fff;
+    transition: background 0.2s;
+  }
+  .pkg .book:hover { background: rgba(255, 255, 255, 0.24); }
+  .pkg.best .book { background: var(--pink); }
+  .pkg.best .book:hover { filter: brightness(1.08); }
+
+  /* ============ what's included gallery ============ */
+  .inc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    width: 100%; max-width: 1400px;
+  }
+  .inc-grid.narrow { grid-template-columns: repeat(3, 1fr); max-width: 1060px; }
+  .inc-grid img {
+    width: 100%; aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 18px;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .inc-grid img:hover { transform: scale(1.03); }
+
+  /* ============ FAQ on white (per the design) ============ */
+  .faq-section h2 { color: var(--ink); }
+  .faq-section .faq-item { background: #fafafa; border-color: var(--border); }
+  .faq-section .faq-item:hover { background: #f4f4f5; border-color: #d4d4d8; }
+  .faq-section .faq-q span { color: var(--ink); }
+  .faq-section .faq-a p { color: var(--sub); }
+
+  /* ============ partners on navy (per the design) ============ */
+  .sponsors.navy-bg { background: linear-gradient(180deg, #03003c 0%, #001d5f 55%, #212859 100%); }
+  .sponsors.navy-bg .section-head h2 { color: #fff; }
+  .sponsors.navy-bg .section-head p { color: var(--sub-inverse); }
+  .sponsors.navy-bg .sp-tier h3 { color: var(--sub-inverse); }
+  .sponsors.navy-bg .sp-item { border-color: rgba(255, 255, 255, 0.16); }
+  .sponsors.navy-bg .sp-item:hover { border-color: var(--pink); box-shadow: 0 12px 26px rgba(0, 0, 0, 0.3); }
+  .sponsors.navy-bg .sp-item img { filter: brightness(0) invert(1); opacity: 0.85; }
+  .sponsors.navy-bg .sp-item:hover img { opacity: 1; }
+
+  @media (max-width: 900px) {
+    .pkg-grid { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+    .inc-grid, .inc-grid.narrow { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .inc-grid img { border-radius: 14px; }
+  }
+
   /* ============ delight layer ============ */
   #scroll-progress {
     position: fixed; top: 0; left: 0;
@@ -1800,7 +1891,7 @@
   <img class="dock-logo" src="assets/hero-logo-mark.svg" alt="">
   <button class="dock-item" data-target="#zones">Zones</button>
   <button class="dock-item" data-target="#experiences">Experiences</button>
-  <button class="dock-item" data-target="#rides">Rides</button>
+  <button class="dock-item" data-target="#packages">Packages</button>
   <button class="dock-item" data-target="#restaurants">Restaurants</button>
   <button class="dock-item" data-target="#rules">Rules</button>
   <button class="dock-item" data-target="#faq">FAQ</button>
@@ -1903,10 +1994,6 @@
     </div>
   </div>
 
-  <div class="tear tear-bottom">
-    <img src="assets/hero-torn-paper.png" alt="" loading="lazy" decoding="async">
-    <div class="bar"></div>
-  </div>
 
   <div class="scroll-cue">
     <span>SCROLL</span>
@@ -1915,6 +2002,48 @@
 
 </section>
 
+
+<!-- ================= INFO STRIP ================= -->
+<section class="info-strip">
+  <div class="info-col">
+    <span class="ic" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path>
+      </svg>
+    </span>
+    <span class="eyebrow">Visiting hours</span>
+    <b>4:00 PM &ndash; 1:00 AM</b>
+    <p>Every day, right through the season</p>
+  </div>
+  <div class="info-col">
+    <span class="ic" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3.5" y="5.5" width="17" height="15" rx="2.5"></rect>
+        <path d="M3.5 10h17M8 3.5v4M16 3.5v4"></path>
+        <path d="M7.5 14h3M13.5 14h3M7.5 17.5h3M13.5 17.5h3"></path>
+      </svg>
+    </span>
+    <span class="eyebrow">The season</span>
+    <b>11 October &ndash; 2 May</b>
+    <p>Riyadh Season, every night in between</p>
+  </div>
+  <div class="info-col">
+    <span class="ic" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 21.5s7-6.1 7-11.2A7 7 0 0 0 5 10.3c0 5.1 7 11.2 7 11.2Z"></path>
+        <circle cx="12" cy="10" r="2.6"></circle>
+      </svg>
+    </span>
+    <span class="eyebrow">Where it is</span>
+    <b>Boulevard City, Riyadh</b>
+    <p><button class="open-map-link">Open the park map</button></p>
+  </div>
+
+  <div class="tear tear-bottom">
+    <img src="assets/hero-torn-paper.png" alt="">
+    <div class="bar"></div>
+  </div>
+</section>
 
 <!-- ================= ZONES ================= -->
 <section class="section-pad" id="zones">
@@ -1967,172 +2096,13 @@
   </div>
 </section>
 
-<!-- ================= RIDES ================= -->
-<section class="section-pad navy-bg on-navy" id="rides">
+<!-- ================= EXPERIENCES ================= -->
+<section class="section-pad navy-bg on-navy" id="experiences">
   <div class="tear tear-top">
     <img src="assets/rides-tear-edge.png" alt="" loading="lazy" decoding="async">
     <div class="bar"></div>
   </div>
 
-  <div class="section-head">
-    <h2>Explore rides</h2>
-    <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
-  </div>
-
-  <div class="rail-wrap" data-rail>
-    <div class="rail">
-      <article class="ticket-card">
-        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
-        <div class="card-body">
-          <img class="photo" src="assets/rides-photo-1.png" alt="Wave Swinger ride" loading="lazy" decoding="async">
-          <div class="text">
-            <h3>Wave Swinger</h3>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
-              <span>Thrill: Max</span>
-            </div>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
-              <span>Height: 130-195cm</span>
-            </div>
-            <p class="desc">A gentle-looking swing that picks up speed until the whole zone tilts sideways. Everyone&rsquo;s first ride of the night.</p>
-          </div>
-        </div>
-        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
-      </article>
-      <article class="ticket-card">
-        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
-        <div class="card-body">
-          <img class="photo" src="assets/rides-photo-2.png" alt="Sky Loop ride" loading="lazy" decoding="async">
-          <div class="text">
-            <h3>Sky Loop</h3>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
-              <span>Thrill: Max</span>
-            </div>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
-              <span>Height: 140-195cm</span>
-            </div>
-            <p class="desc">A vertical loop that flips you twice before you can decide whether to scream. The queue is half the fun &mdash; the drop is all of it.</p>
-          </div>
-        </div>
-        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
-      </article>
-      <article class="ticket-card">
-        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
-        <div class="card-body">
-          <img class="photo" src="assets/rides-photo-3.png" alt="Log flume ride" loading="lazy" decoding="async">
-          <div class="text">
-            <h3>Fuji River Rapids</h3>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
-              <span>Thrill: Medium</span>
-            </div>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
-              <span>Height: 110-195cm</span>
-            </div>
-            <p class="desc">A splashing flume run through the canyon that soaks the first two rows. Sit at the back if you value dry shoes.</p>
-          </div>
-        </div>
-        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
-      </article>
-      <article class="ticket-card">
-        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
-        <div class="card-body">
-          <img class="photo" src="assets/rides-photo-3.png" alt="Turbo 360 ride" loading="lazy" decoding="async">
-          <div class="text">
-            <h3>Turbo 360</h3>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
-              <span>Thrill: High</span>
-            </div>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
-              <span>Height: 135-195cm</span>
-            </div>
-            <p class="desc">Three hundred and sixty degrees of pure spin, suspended over the lake. Keep your eyes open on the way over the top.</p>
-          </div>
-        </div>
-        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
-      </article>
-      <article class="ticket-card">
-        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
-        <div class="card-body">
-          <img class="photo" src="assets/rides-photo-1.png" alt="The Wheel observation ride" loading="lazy" decoding="async">
-          <div class="text">
-            <h3>The Wheel</h3>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
-              <span>Thrill: Gentle</span>
-            </div>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
-              <span>Height: 90-195cm</span>
-            </div>
-            <p class="desc">The calmest seat in the park and the best view of all twenty zones lit up after dark. Bring someone you like.</p>
-          </div>
-        </div>
-        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
-      </article>
-      <article class="ticket-card">
-        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
-        <div class="card-body">
-          <img class="photo" src="assets/rides-photo-2.png" alt="Rollover ride" loading="lazy" decoding="async">
-          <div class="text">
-            <h3>Rollover</h3>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
-              <span>Thrill: High</span>
-            </div>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
-              <span>Height: 140-195cm</span>
-            </div>
-            <p class="desc">Swings out, tips over and holds you there just long enough to regret your dinner order. A BLVD World favourite.</p>
-          </div>
-        </div>
-        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
-      </article>
-      <article class="ticket-card">
-        <img class="cap top" src="assets/rides-card-notch-strip.svg" alt="" loading="lazy" decoding="async">
-        <div class="card-body">
-          <img class="photo" src="assets/rides-photo-3.png" alt="King Claw ride" loading="lazy" decoding="async">
-          <div class="text">
-            <h3>King Claw</h3>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-thrill.svg" alt="" width="20" height="17" loading="lazy" decoding="async"></span>
-              <span>Thrill: Max</span>
-            </div>
-            <div class="meta">
-              <span class="ic"><img src="assets/rides-icon-height.svg" alt="" width="10" height="20" loading="lazy" decoding="async"></span>
-              <span>Height: 145-195cm</span>
-            </div>
-            <p class="desc">Meet the beast that&rsquo;s changing the thrill game. King Claw has arrived and it&rsquo;s every bit as monstrous as you imagined (in the best possible way).</p>
-          </div>
-        </div>
-        <img class="cap" src="assets/rides-card-notch-strip-bottom.svg" alt="" loading="lazy" decoding="async">
-      </article>
-    </div>
-  </div>
-
-  <div class="controls">
-    <div class="btns">
-      <button class="ctrl-btn prev dim" data-prev aria-label="Previous rides"><img src="assets/rides-icon-arrow-right.svg" alt="" loading="lazy" decoding="async"></button>
-      <button class="ctrl-btn next" data-next aria-label="Next rides"><img src="assets/rides-icon-arrow-right.svg" alt="" loading="lazy" decoding="async"></button>
-    </div>
-    <div class="progress"><div class="fill" style="width: 18%;"></div></div>
-  </div>
-
-  <div class="tear tear-bottom">
-    <img src="assets/rides-tear-edge.png" alt="" loading="lazy" decoding="async">
-    <div class="bar"></div>
-  </div>
-</section>
-
-<!-- ================= EXPERIENCES ================= -->
-<section class="section-pad" id="experiences">
   <div class="section-head">
     <h2>Experiences</h2>
     <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
@@ -2209,6 +2179,41 @@
     <div class="progress"><div class="fill" style="width: 50%;"></div></div>
   </div>
 </section>
+
+<!-- ================= RIDES PACKAGES ================= -->
+<section class="section-pad" id="packages">
+  <div class="tear tear-top-white">
+    <img src="assets/rules-page-tear.png" alt="" loading="lazy" decoding="async">
+    <div class="bar"></div>
+  </div>
+
+  <div class="section-head">
+    <h2>Explore rides packages</h2>
+    <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
+  </div>
+
+  <div class="pkg-grid" id="pkgGrid"></div>
+</section>
+
+<!-- ================= WHAT'S INCLUDED ================= -->
+<section class="section-pad" id="included">
+  <div class="section-head">
+    <h2>What&rsquo;s included in the rides packages</h2>
+  </div>
+
+  <div class="inc-grid">
+    <img src="assets/rides-photo-1.png" alt="Wave Swinger" loading="lazy" decoding="async">
+    <img src="assets/rides-photo-2.png" alt="Sky Loop" loading="lazy" decoding="async">
+    <img src="assets/exp-pyramids-mystery.png" alt="Pyramid&rsquo;s mystery" loading="lazy" decoding="async">
+    <img src="assets/rides-photo-3.png" alt="Fuji River Rapids" loading="lazy" decoding="async">
+  </div>
+  <div class="inc-grid narrow">
+    <img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async">
+    <img src="assets/exp-escape-room.png" alt="Escape room" loading="lazy" decoding="async">
+    <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async">
+  </div>
+</section>
+
 
 <!-- ================= RESTAURANTS ================= -->
 <section class="section-pad navy-bg on-navy" id="restaurants">
@@ -2356,12 +2361,7 @@
 </section>
 
 <!-- ================= FAQ ================= -->
-<section class="section-pad navy-bg on-navy faq-section" id="faq">
-  <div class="tear tear-top">
-    <img src="assets/faq-page-tear.png" alt="" loading="lazy" decoding="async">
-    <div class="bar"></div>
-  </div>
-
+<section class="section-pad faq-section" id="faq">
   <h2>Frequently asked questions</h2>
 
   <div class="faq-list" id="faq-list">
@@ -2403,6 +2403,68 @@
   </div>
 </section>
 
+
+<!-- ================= SPONSORS ================= -->
+<section class="sponsors navy-bg on-navy" id="sponsors">
+  <div class="tear tear-top">
+    <img src="assets/rest-page-tear.png" alt="" loading="lazy" decoding="async">
+    <div class="bar"></div>
+  </div>
+
+  <div class="section-head">
+    <h2>Our partners</h2>
+    <p>BLVD World is brought to you with the support of our partners across the season.</p>
+  </div>
+
+  <div class="sp-tier">
+    <h3>Official premium partners</h3>
+    <div class="sp-row">
+      <div class="sp-item"><img src="assets/sp-snb.svg" alt="Saudi National Bank" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-alhabib.png" alt="Dr. Sulaiman Al Habib" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-stc.svg" alt="stc" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-aramco.png" alt="Aramco" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-saudia.png" alt="Saudia" loading="lazy" decoding="async"></div>
+    </div>
+  </div>
+
+  <div class="sp-tier">
+    <h3>Official strategic partners</h3>
+    <div class="sp-row">
+      <div class="sp-item"><img src="assets/sp-muc.png" alt="MUC" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-aroya.png" alt="Aroya Cruises" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-sadia.png" alt="Sadia" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-lucid.svg" alt="Lucid" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-shg.png" alt="SHG" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-azure.png" alt="Azure" loading="lazy" decoding="async"></div>
+    </div>
+  </div>
+
+  <div class="sp-tier">
+    <h3>Official main partners</h3>
+    <div class="sp-row">
+      <div class="sp-item"><img src="assets/sp-checkapp.png" alt="Check App" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-cocacola.svg" alt="Coca-Cola" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-dunkin.svg" alt="Dunkin'" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-shawermer.png" alt="Shawermer" loading="lazy" decoding="async"></div>
+      <div class="sp-item"><img src="assets/sp-pepsi.png" alt="Pepsi" loading="lazy" decoding="async"></div>
+    </div>
+  </div>
+
+  <div class="sp-tier sp-tier-split">
+    <div>
+      <h3>Official co sponsor</h3>
+      <div class="sp-row">
+        <div class="sp-item"><img src="assets/sp-dominos.png" alt="Domino's" loading="lazy" decoding="async"></div>
+      </div>
+    </div>
+    <div>
+      <h3>Commercial partner</h3>
+      <div class="sp-row">
+        <div class="sp-item"><img src="assets/sp-prime.svg" alt="Prime" loading="lazy" decoding="async"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ================= ASK BLVD (chat assistant) ================= -->
 <button id="ask-fab" aria-label="Ask BLVD World a question" aria-expanded="false">
@@ -2576,6 +2638,41 @@
   var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
   function zoomFactor() { return parseFloat(document.body.style.zoom) || 1; }
+
+
+  /* ---------- rides packages (same data as rides.html) ---------- */
+  (function () {
+    var grid = document.getElementById('pkgGrid');
+    if (!grid) return;
+    var IC = {
+      rides: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15c-1.5 3 .5 5 .5 5s2.5-.5 3.5-2"/><path d="M14.5 3.5c3.5 1 6 3.5 6 3.5s-1 5-5 9c-1.6 1.6-3.6 2.4-5 2.8L7.2 15.3c.4-1.4 1.2-3.4 2.8-5 1.6-1.6 3.3-4.9 4.5-6.8Z"/><circle cx="15" cy="9" r="1.6"/></svg>',
+      card:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><path d="M2.5 10h19M6 14.5h4"/></svg>',
+      band:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="8.5" width="7" height="7" rx="2"/><path d="M8.5 10.5h-3a2 2 0 0 1-2-2v-1M15.5 10.5h3a2 2 0 0 0 2-2v-1M8.5 13.5h-3a2 2 0 0 0-2 2v1M15.5 13.5h3a2 2 0 0 1 2 2v1"/></svg>',
+      fast:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/></svg>'
+    };
+    var PACKAGES = [
+      { n: 'Value deal',          p: 89,  unit: '/ person',    rides: 'Any 5',     card: '1', fast: false },
+      { n: 'Value deal plus',     p: 135, unit: '/ person',    rides: 'Any 10',    card: '1', fast: false },
+      { n: 'Family package',      p: 299, unit: '/ 3 persons', rides: 'Any 30',    card: '3', fast: false },
+      { n: 'Unlimited - Regular', p: 199, unit: '/ person',    rides: 'Unlimited', band: true, fast: false },
+      { n: 'Unlimited - Fast',    p: 349, unit: '/ person',    rides: 'Unlimited', band: true, fast: true, best: true }
+    ];
+    grid.innerHTML = PACKAGES.map(function (k) {
+      var rows =
+        '<div class="spec"><span class="ic">' + IC.rides + '</span>Rides<span class="v">' + k.rides + '</span></div>' +
+        (k.band
+          ? '<div class="spec"><span class="ic">' + IC.band + '</span>Bracelet<span class="v yes">&#10003;</span></div>'
+          : '<div class="spec"><span class="ic">' + IC.card + '</span>Digital card<span class="v">' + k.card + '</span></div>') +
+        '<div class="spec"><span class="ic">' + IC.fast + '</span>Fast track<span class="v ' + (k.fast ? 'yes' : 'no') + '">' +
+          (k.fast ? '&#10003;' : '&#10005;') + '</span></div>';
+      return '<article class="pkg' + (k.best ? ' best' : '') + '">' +
+        '<h3>' + k.n + '</h3>' +
+        '<div class="amt"><img src="assets/hero-icon-riyal.svg" alt="SAR"><b>' + k.p + '</b><span>' + k.unit + '</span></div>' +
+        '<div class="specs">' + rows + '</div>' +
+        '<a class="book" href="rides.html">Book</a>' +
+      '</article>';
+    }).join('');
+  })();
 
   /* ---------- night sky: twinkling stars + shooting stars in every navy section ---------- */
   var SKIES = [];
@@ -3692,7 +3789,8 @@
     revealGroup('section:not(.hero) .section-head', null, { y: 34 });
     revealGroup('.info-strip', '.info-col', { y: 30, stagger: 0.12 });
     revealGroup('.stories-row', '.story', { y: 30, scale: 0.6, ease: 'back.out(1.5)', stagger: 0.08 });
-    revealGroup('#rides .rail', '.ticket-card', { y: 90, rotation: 2.5, stagger: 0.12, duration: 1 });
+    revealGroup('.pkg-grid', '.pkg', { y: 30, stagger: 0.08 });
+    revealGroup('.inc-grid', 'img', { y: 26, scale: 0.96, stagger: 0.06 });
     revealGroup('#experiences .cards-row', '.product-card', {});
     revealGroup('#restaurants .cards-row', '.product-card', {});
     revealGroup('.rules-grid', '.rule-card', { y: 36, scale: 0.94, stagger: 0.06 });
