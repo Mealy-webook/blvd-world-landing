@@ -19,7 +19,12 @@
     --content-secondary: #a1a1aa;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    /* clears the pinned tab bar when jumping to a section */
+    scroll-padding-top: 92px;
+  }
   body {
     background: #fff;
     font-family: 'Bricolage Grotesque', sans-serif;
@@ -585,6 +590,175 @@
     color: var(--sub-inverse);
   }
 
+  /* ============ Ask BLVD assistant (FAB + chat panel) ============ */
+  #ask-fab {
+    position: fixed;
+    right: 24px; bottom: max(24px, calc(env(safe-area-inset-bottom) + 12px));
+    z-index: 120;
+    display: flex; align-items: center; gap: 10px;
+    height: 56px; padding: 0 22px 0 18px;
+    border-radius: 9999px;
+    background: var(--pink);
+    color: #fff;
+    box-shadow: 0 12px 30px rgba(255, 44, 121, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s, opacity 0.3s;
+  }
+  #ask-fab:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 18px 40px rgba(255, 44, 121, 0.5); }
+  #ask-fab .fab-ic { display: flex; }
+  #ask-fab svg { width: 24px; height: 24px; }
+  #ask-fab .fab-label { font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 16px; white-space: nowrap; }
+  #ask-fab .fab-dot {
+    position: absolute; top: 12px; right: 16px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #fff;
+    animation: askPing 2.4s ease-out infinite;
+  }
+  @keyframes askPing { 0%,100% { opacity: 0.25; transform: scale(1); } 50% { opacity: 1; transform: scale(1.35); } }
+  #ask-fab.hidden { opacity: 0; pointer-events: none; transform: translateY(12px) scale(0.9); }
+
+  #ask-panel {
+    position: fixed;
+    right: 24px; bottom: max(24px, calc(env(safe-area-inset-bottom) + 12px));
+    z-index: 121;
+    width: 392px; max-width: calc(100vw - 32px);
+    height: 560px; max-height: calc(100dvh - 48px);
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: "opsz" 14, "wdth" 100;
+  }
+  #ask-panel.open { display: flex; animation: askIn 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes askIn { from { opacity: 0; transform: translateY(24px) scale(0.96); } }
+
+  .ask-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 18px;
+    background: linear-gradient(180deg, #03003c, #001d5f);
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .ask-head img { width: 32px; height: 32px; }
+  .ask-id { flex: 1; min-width: 0; }
+  .ask-id b { display: block; font-weight: 700; font-size: 17px; }
+  .ask-id span { font-family: 'Figtree', sans-serif; font-size: 12.5px; color: var(--sub-inverse); }
+  .ask-close {
+    width: 30px; height: 30px; flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .ask-close:hover { background: rgba(255, 255, 255, 0.28); }
+
+  .ask-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    scrollbar-width: thin;
+  }
+  .msg {
+    max-width: 86%;
+    padding: 11px 14px;
+    border-radius: 16px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 15px; line-height: 1.5;
+    animation: msgIn 0.3s ease both;
+  }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } }
+  .msg.bot { align-self: flex-start; background: #f4f4f5; color: var(--ink); border-bottom-left-radius: 6px; }
+  .msg.me { align-self: flex-end; background: var(--pink); color: #fff; border-bottom-right-radius: 6px; }
+  .msg b { font-weight: 700; }
+  .msg ul { margin: 6px 0 0; padding-left: 18px; }
+  .msg li { margin-bottom: 3px; }
+  .msg .act {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin: 8px 6px 0 0;
+    padding: 7px 13px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 1px solid var(--border);
+    font-weight: 600; font-size: 13.5px;
+    color: var(--ink);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .msg .act:hover { border-color: var(--pink); color: var(--pink); }
+  .typing { display: flex; gap: 4px; align-self: flex-start; padding: 14px; }
+  .typing i {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #c4c4c8;
+    animation: dot 1.2s ease-in-out infinite;
+  }
+  .typing i:nth-child(2) { animation-delay: 0.15s; }
+  .typing i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes dot { 0%,60%,100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-5px); opacity: 1; } }
+
+  .ask-chips {
+    display: flex; gap: 6px;
+    padding: 0 16px 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
+  }
+  .ask-chips::-webkit-scrollbar { display: none; }
+  .ask-chips button {
+    flex-shrink: 0;
+    padding: 8px 13px;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    font-family: 'Figtree', sans-serif;
+    font-weight: 600; font-size: 13px;
+    color: var(--sub);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .ask-chips button:hover { border-color: var(--pink); color: var(--pink); }
+
+  .ask-form {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 14px max(12px, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  #ask-input {
+    flex: 1; min-width: 0;
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    background: #fafafa;
+    font-family: 'Figtree', sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    outline: none;
+  }
+  #ask-input:focus { border-color: var(--pink); background: #fff; }
+  .ask-send {
+    width: 44px; height: 44px; flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--pink);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    transition: filter 0.2s;
+  }
+  .ask-send svg { width: 20px; height: 20px; }
+  .ask-send:hover { filter: brightness(1.08); }
+
+  @media (max-width: 560px) {
+    #ask-fab { right: 16px; padding: 0 18px 0 16px; height: 52px; }
+    #ask-fab .fab-label { font-size: 15px; }
+    #ask-panel {
+      right: 0; left: 0; bottom: 0;
+      width: 100%; max-width: 100%;
+      height: 86dvh;
+      border-radius: 22px 22px 0 0;
+    }
+  }
+
   /* ============ iPhone safe areas (Dynamic Island / home indicator) ============
      viewport-fit=cover lets the page paint edge to edge, so anything fixed has
      to keep clear of the insets itself. dvh tracks Safari's collapsing toolbar. */
@@ -592,7 +766,7 @@
     padding-left: max(18px, env(safe-area-inset-left));
     padding-right: max(18px, env(safe-area-inset-right));
   }
-  #dock { bottom: max(24px, calc(env(safe-area-inset-bottom) + 12px)); }
+  #dock { top: max(16px, calc(env(safe-area-inset-top) + 8px)); }
   .vm-zoom { bottom: max(24px, calc(env(safe-area-inset-bottom) + 12px)); }
   .sv-card { margin-bottom: env(safe-area-inset-bottom); }
   .sv-head { top: max(24px, calc(env(safe-area-inset-top) + 8px)); }
@@ -1302,10 +1476,11 @@
   @media (max-width: 600px) { .sv-arrow { display: none; } }
 
   /* floating quick-actions dock */
+  /* pinned to the top of the viewport once the hero is scrolled past */
   #dock {
     position: fixed;
-    left: 50%; bottom: 24px;
-    transform: translate(-50%, 150%);
+    left: 50%; top: 16px;
+    transform: translate(-50%, -160%);
     display: flex; align-items: center; gap: 4px;
     padding: 10px;
     background: linear-gradient(180deg, rgba(26, 22, 88, 0.97), rgba(8, 6, 48, 0.98));
@@ -1320,6 +1495,8 @@
     transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
   }
   #dock.show { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+  /* keep clear of the scroll-progress bar at the very top */
+  #scroll-progress { z-index: 122; }
   .dock-logo { width: 30px; height: 30px; margin: 0 10px 0 8px; }
   .dock-item {
     display: flex; align-items: center; gap: 10px;
@@ -1344,8 +1521,6 @@
   }
   .dock-item .p img { width: 10px; height: 10px; filter: brightness(0) invert(1); }
   .dock-item.active .p { background: var(--pink); }
-  /* dock hidden for now — delete this one rule to bring it back */
-  #dock { display: none !important; }
 
   /* custom cursor (enabled via .has-cursor on <html> for fine pointers) */
   html.has-cursor, html.has-cursor * { cursor: none !important; }
@@ -2270,6 +2445,42 @@
   </div>
 </section>
 
+<!-- ================= ASK BLVD (chat assistant) ================= -->
+<button id="ask-fab" aria-label="Ask BLVD World a question" aria-expanded="false">
+  <span class="fab-ic">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H8l-4 3v-4.2A8.5 8.5 0 1 1 21 11.5Z"></path>
+      <path d="M8.5 10.5h7M8.5 14h4.5"></path>
+    </svg>
+  </span>
+  <span class="fab-label">Ask BLVD</span>
+  <span class="fab-dot"></span>
+</button>
+
+<section id="ask-panel" aria-hidden="true" aria-label="Ask BLVD World">
+  <header class="ask-head">
+    <img src="assets/hero-logo-mark.svg" alt="">
+    <div class="ask-id">
+      <b>Ask BLVD</b>
+      <span>Zones, rides, dining &amp; tickets</span>
+    </div>
+    <button class="ask-close" aria-label="Close chat">&#10005;</button>
+  </header>
+
+  <div class="ask-log" id="ask-log" role="log" aria-live="polite"></div>
+
+  <div class="ask-chips" id="ask-chips"></div>
+
+  <form class="ask-form" id="ask-form">
+    <input id="ask-input" type="text" autocomplete="off" placeholder="Ask about rides, food, tickets&hellip;" aria-label="Type your question">
+    <button type="submit" class="ask-send" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 12h15M13 6l6 6-6 6"></path>
+      </svg>
+    </button>
+  </form>
+</section>
+
 <!-- ================= MAP EXPLORER (Figma: section#view-map) ================= -->
 <section id="view-map" aria-hidden="true">
   <div class="vm-map-wrap">
@@ -2810,6 +3021,180 @@
       if (e.key === 'ArrowRight') next();
       if (e.key === 'ArrowLeft') prev();
     });
+  })();
+
+  /* ---------- Ask BLVD assistant ----------
+     Answers from this site's own content, so it works offline with no key and
+     no backend. To put a real model behind it, make askBackend() POST the
+     question to your own endpoint (never ship an API key in this file) and
+     return the reply text; the UI already handles the async path. */
+  (function () {
+    var fab = document.getElementById('ask-fab');
+    var panel = document.getElementById('ask-panel');
+    if (!fab || !panel) return;
+    // live outside the body so the fit-to-width zoom doesn't shrink it
+    document.documentElement.appendChild(fab);
+    document.documentElement.appendChild(panel);
+
+    var log = panel.querySelector('#ask-log');
+    var chipsWrap = panel.querySelector('#ask-chips');
+    var form = panel.querySelector('#ask-form');
+    var input = panel.querySelector('#ask-input');
+
+    var ACTIONS = {
+      map: { label: 'Open the park map', run: function () { closeAsk(); var b = document.getElementById('open-map'); if (b) b.click(); } },
+      shows: { label: 'See the show schedule', run: function () { window.location.href = 'shows.html'; } },
+      rides: { label: 'Jump to rides', run: function () { closeAsk(); document.getElementById('rides').scrollIntoView({ behavior: 'smooth' }); } },
+      exp: { label: 'Jump to experiences', run: function () { closeAsk(); document.getElementById('experiences').scrollIntoView({ behavior: 'smooth' }); } },
+      eat: { label: 'Jump to restaurants', run: function () { closeAsk(); document.getElementById('restaurants').scrollIntoView({ behavior: 'smooth' }); } },
+      zones: { label: 'Jump to zones', run: function () { closeAsk(); document.getElementById('zones').scrollIntoView({ behavior: 'smooth' }); } },
+      rules: { label: 'Read the venue rules', run: function () { closeAsk(); document.getElementById('rules').scrollIntoView({ behavior: 'smooth' }); } },
+      tickets: { label: 'See ticket options', run: function () { closeAsk(); document.getElementById('street').scrollIntoView({ behavior: 'smooth' }); } }
+    };
+
+    // knowledge drawn from the page itself
+    var KB = [
+      { k: ['hour','open','close','time','when open','timing','late'], a:
+        'BLVD World opens <b>4:00 PM and closes at 1:00 AM</b>, every day through the season. Live shows start around 8:30 PM and the last Mesaharati act runs after midnight.', acts:['shows'] },
+      { k: ['season','date','until','how long','running','october','may','close for'], a:
+        'The season runs <b>11 October to 2 May</b> as part of Riyadh Season — open every night in between.', acts:[] },
+      { k: ['where','location','address','get there','direction','riyadh','how do i get'], a:
+        'It\'s at <b>Boulevard City, Riyadh</b>, right next to Boulevard World. You can explore the whole site on the interactive park map.', acts:['map'] },
+      { k: ['ticket','price','cost','how much','entry','fee','cheap','package','pay'], a:
+        'Ticket options start from:<ul><li><b>Entry ticket — from 35 SAR</b>: access to 20 spectacular country zones</li><li><b>Rides Package — from 70 SAR</b>: general zone entry + rides</li><li><b>Experiences — from 99 SAR</b>: general zone entry + premium pavilion access</li></ul>', acts:['tickets'] },
+      { k: ['ride','rides','coaster','thrill','swinger','sky loop','flume','rapids','scary','fast','height'], a:
+        'There are <b>14 rides</b>. The headliners are:<ul><li><b>Wave Swinger</b> — Thrill: Max, height 130–195cm</li><li><b>Sky Loop</b> — Thrill: Max, height 140–195cm</li><li><b>Fuji River Rapids</b> — Thrill: Medium, height 110–195cm</li></ul>', acts:['rides'] },
+      { k: ['experience','experiences','museum','muesem','escape','tomb','pharoh','pharaoh','pyramid','mystery','immersive'], a:
+        'Featured experiences are <b>The lost muesem</b>, <b>Escape room</b>, <b>The tomb of pharoh</b> and <b>Pyramid\'s mystery</b> — each from <b>210.75 SAR</b>, with instant booking.', acts:['exp'] },
+      { k: ['restaurant','eat','food','dining','dinner','hungry','tant','cafe','coffee','drink'], a:
+        'There are <b>4 restaurants</b> plus food trucks and kitchens across the zones — <b>Tant restaurent</b> is the signature one, from <b>210.75 SAR</b>. Outside food isn\'t allowed, but there\'s plenty inside.', acts:['eat'] },
+      { k: ['zone','zones','country','countries','japan','egypt','turkey','paris','kuwait','saudi','which countries'], a:
+        'There are <b>24 zones</b> inspired by countries around the world — Saudia Arabia, Egypt, Turkey, Japan, Paris and Kuwait are the highlights this season, with Indonesia, Korea and Kuwait newly added.', acts:['zones','map'] },
+      { k: ['show','schedule','performance','parade','live','roaming','stage','mesaharati','what time show'], a:
+        'There are <b>151 showtimes a night</b> — roaming performers, stage shows and parades in every zone, from the welcoming roamers at 8:30 PM to the last Mesaharati after midnight.', acts:['shows'] },
+      { k: ['rule','allowed','bring','food outside','pet','animal','camera','smoke','cigarette','re-entry','reentry','refund','park','parking','outdoor'], a:
+        'The main venue rules: <b>no outside food</b>, <b>no pets</b>, <b>no professional cameras</b>, <b>smoke free</b> (designated areas only), and <b>no re-entry</b> once you leave. Tickets are non-refundable, parking is available at the gates, and the venue is open air.', acts:['rules'] },
+      { k: ['child','children','kid','family','baby','age','suitable'], a:
+        'Yes — it\'s family friendly. Zones and shows suit all ages, and every ride lists its height requirement (from 110cm on the gentler ones).', acts:['rides'] },
+      { k: ['refund','cancel','change booking','reschedule'], a:
+        'Tickets are <b>non-refundable</b> once purchased, but you can reschedule your visit date up to <b>24 hours in advance</b> through your account.', acts:[] },
+      { k: ['how many','stats','big','size','number'], a:
+        'This season: <b>24 zones</b>, <b>14 rides</b>, <b>4 restaurants</b> and <b>151 showtimes a night</b>.', acts:['map'] },
+      { k: ['book','buy','reserve','purchase','webook'], a:
+        'Booking is through <b>webook.com</b>, the official ticketing partner — most experiences offer instant booking.', acts:['tickets'] },
+      { k: ['what is blvd','about','tell me about','blvd world','what\'s blvd'], a:
+        '<b>BLVD World</b> is a Riyadh Season destination that takes you around the world in one night — 24 country zones with rides, immersive experiences, restaurants and live shows, all open air at Boulevard City.', acts:['zones','map'] },
+      { k: ['hello','hi','hey','salam','marhaba','good morning','good evening'], a:
+        'Hey! I can help with zones, rides, experiences, restaurants, tickets, showtimes and venue rules. What would you like to know?', acts:[] },
+      { k: ['thank','thanks','shukran','great','cool','nice'], a:
+        'Anytime — enjoy BLVD World! Ask me anything else while you\'re planning.', acts:[] }
+    ];
+
+    var CHIPS = ['Opening hours', 'Ticket prices', 'Best rides', 'Where can I eat?', 'What zones are there?', 'Can I bring food?'];
+
+    function normalise(s) { return s.toLowerCase().replace(/[^\w\s']/g, ' '); }
+
+    function findAnswer(q) {
+      var text = normalise(q);
+      var best = null, bestScore = 0;
+      KB.forEach(function (item) {
+        var score = 0;
+        item.k.forEach(function (kw) {
+          if (text.indexOf(kw) > -1) score += kw.indexOf(' ') > -1 ? 3 : 2;   // phrases weigh more
+        });
+        if (score > bestScore) { bestScore = score; best = item; }
+      });
+      if (best && bestScore >= 2) return best;
+      return { a: 'I can help with <b>zones, rides, experiences, restaurants, tickets, showtimes</b> and <b>venue rules</b>. Try asking something like &ldquo;how much is a ticket?&rdquo; or &ldquo;what rides are there?&rdquo;', acts: ['map','shows'] };
+    }
+
+    /* Swap this for a fetch() to your own endpoint to put a real model behind
+       the same UI. Returning null falls back to the built-in knowledge base. */
+    function askBackend(/* question */) { return null; }
+
+    function addMsg(html, who, acts) {
+      var el = document.createElement('div');
+      el.className = 'msg ' + who;
+      el.innerHTML = html;
+      (acts || []).forEach(function (key) {
+        var a = ACTIONS[key];
+        if (!a) return;
+        var b = document.createElement('button');
+        b.className = 'act';
+        b.type = 'button';
+        b.textContent = a.label;
+        b.addEventListener('click', a.run);
+        el.appendChild(b);
+      });
+      log.appendChild(el);
+      log.scrollTop = log.scrollHeight;
+      return el;
+    }
+
+    function respond(q) {
+      var typing = document.createElement('div');
+      typing.className = 'typing';
+      typing.innerHTML = '<i></i><i></i><i></i>';
+      log.appendChild(typing);
+      log.scrollTop = log.scrollHeight;
+
+      Promise.resolve(askBackend(q)).then(function (remote) {
+        var hit = remote ? { a: remote, acts: [] } : findAnswer(q);
+        setTimeout(function () {
+          typing.remove();
+          addMsg(hit.a, 'bot', hit.acts);
+        }, REDUCED ? 0 : 520);
+      });
+    }
+
+    function ask(q) {
+      q = (q || '').trim();
+      if (!q) return;
+      addMsg(q.replace(/[<>&]/g, ''), 'me');
+      input.value = '';
+      respond(q);
+    }
+
+    CHIPS.forEach(function (c) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = c;
+      b.addEventListener('click', function () { ask(c); });
+      chipsWrap.appendChild(b);
+    });
+
+    var greeted = false;
+    function openAsk() {
+      panel.classList.add('open');
+      panel.setAttribute('aria-hidden', 'false');
+      fab.classList.add('hidden');
+      fab.setAttribute('aria-expanded', 'true');
+      if (!greeted) {
+        greeted = true;
+        addMsg('Hi! I\'m the BLVD World guide. Ask me about <b>zones, rides, experiences, restaurants, tickets</b> or <b>showtimes</b>.', 'bot');
+      }
+      if (window.matchMedia('(min-width: 561px)').matches) setTimeout(function () { input.focus(); }, 250);
+    }
+    function closeAsk() {
+      panel.classList.remove('open');
+      panel.setAttribute('aria-hidden', 'true');
+      fab.classList.remove('hidden');
+      fab.setAttribute('aria-expanded', 'false');
+    }
+
+    fab.addEventListener('click', openAsk);
+    panel.querySelector('.ask-close').addEventListener('click', closeAsk);
+    form.addEventListener('submit', function (e) { e.preventDefault(); ask(input.value); });
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && panel.classList.contains('open')) closeAsk();
+    });
+    // don't compete with the map overlay
+    var mapEl = document.getElementById('view-map');
+    if (mapEl) new MutationObserver(function () {
+      var mapOpen = mapEl.classList.contains('open');
+      fab.style.display = mapOpen ? 'none' : '';
+      if (mapOpen) closeAsk();
+    }).observe(mapEl, { attributes: true, attributeFilter: ['class'] });
   })();
 
   // Map explorer: opens from the "Explore zones on map" CTA
