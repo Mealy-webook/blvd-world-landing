@@ -547,7 +547,7 @@
     max-width: 1400px;
   }
   .rule-card {
-    width: 260.8px;
+    flex: 0 0 calc((100% - 96px) / 5);   /* exactly five per row, as in the design */
     padding: 24px;
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -799,9 +799,9 @@
   /* ============ iPhone safe areas (Dynamic Island / home indicator) ============
      viewport-fit=cover lets the page paint edge to edge, so anything fixed has
      to keep clear of the insets itself. dvh tracks Safari's collapsing toolbar. */
-  .sponsors, .section-pad, .gallery-sec, .info-strip {
-    padding-left: max(18px, env(safe-area-inset-left));
-    padding-right: max(18px, env(safe-area-inset-right));
+  .section-pad {
+    padding-left: max(calc(50vw - 700px), 32px, env(safe-area-inset-left));
+    padding-right: max(calc(50vw - 700px), 32px, env(safe-area-inset-right));
   }
   #dock { top: max(16px, calc(env(safe-area-inset-top) + 8px)); }
   .vm-zoom { bottom: max(24px, calc(env(safe-area-inset-bottom) + 12px)); }
