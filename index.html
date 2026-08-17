@@ -830,59 +830,52 @@
     /* the extra top padding keeps a long title clear of the tier chip */
     padding: 62px 24px 24px;
     border-radius: 28px;
-    background: #051132;
+    /* flat navy card, lit from the top-left by the tier's own accent */
+    background:
+      radial-gradient(130% 80% at 12% 0%, var(--accent-soft) 0%, transparent 58%),
+      linear-gradient(180deg, #0a1a44 0%, #051132 62%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
     overflow: hidden;
     isolation: isolate;
-    transform-style: preserve-3d;
     transition:
       flex-grow 0.55s cubic-bezier(0.22, 1, 0.36, 1),
       height 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
       box-shadow 0.45s;
   }
-  .pkg:nth-child(1) { --h: 424px; }
-  .pkg:nth-child(2) { --h: 452px; }
-  .pkg:nth-child(3) { --h: 480px; }
-  .pkg:nth-child(4) { --h: 508px; }
-  .pkg:nth-child(5) { --h: 536px; }
+  .pkg:nth-child(1) { --h: 424px; --accent: #6f8cff; --accent-soft: rgba(111, 140, 255, 0.16); }
+  .pkg:nth-child(2) { --h: 452px; --accent: #4fd1c5; --accent-soft: rgba(79, 209, 197, 0.16); }
+  .pkg:nth-child(3) { --h: 480px; --accent: #f0b429; --accent-soft: rgba(240, 180, 41, 0.16); }
+  .pkg:nth-child(4) { --h: 508px; --accent: #a78bfa; --accent-soft: rgba(167, 139, 250, 0.18); }
+  .pkg:nth-child(5) { --h: 536px; --accent: #ff2c79; --accent-soft: rgba(255, 44, 121, 0.22); }
+
+  /* a faint arc of dots, the only texture on the card */
+  .pkg::after {
+    content: "";
+    position: absolute; top: -40px; right: -40px; z-index: -1;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1.2px) 0 0 / 12px 12px;
+    -webkit-mask-image: radial-gradient(closest-side, #000 40%, transparent 100%);
+            mask-image: radial-gradient(closest-side, #000 40%, transparent 100%);
+    opacity: 0.7;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s;
+  }
 
   /* the accordion: the hovered card takes room from its neighbours and stands up */
   .pkg-grid:hover .pkg { flex-grow: 0.86; }
   .pkg-grid .pkg:hover {
     flex-grow: 1.62;
     height: calc(var(--h) + 26px);
-    box-shadow: 0 34px 70px rgba(5, 17, 50, 0.5);
+    box-shadow:
+      inset 0 0 0 1px var(--accent),
+      0 34px 70px rgba(5, 17, 50, 0.45);
   }
+  .pkg:hover::after { transform: translate(-14px, 14px) scale(1.12); opacity: 1; }
 
-  .pkg .shot {
-    position: absolute; inset: -6%; z-index: -2;
-    width: 112%; height: 112%;
-    object-fit: cover;
-    animation: pkgDrift 18s ease-in-out infinite alternate;
-    will-change: transform;
-  }
-  .pkg:nth-child(2) .shot { animation-duration: 21s; animation-delay: -4s; }
-  .pkg:nth-child(3) .shot { animation-duration: 24s; animation-delay: -9s; }
-  .pkg:nth-child(4) .shot { animation-duration: 19s; animation-delay: -13s; }
-  .pkg:nth-child(5) .shot { animation-duration: 23s; animation-delay: -6s; }
-  @keyframes pkgDrift {
-    from { transform: scale(1.04) translate3d(-1.5%, -1%, 0); }
-    to   { transform: scale(1.13) translate3d(1.5%, 1.5%, 0); }
-  }
-  /* the scrim lifts on hover so the ride photo comes through */
-  .pkg::after {
-    content: "";
-    position: absolute; inset: 0; z-index: -1;
-    background: linear-gradient(180deg, rgba(5, 17, 50, 0.1) 0%, rgba(5, 17, 50, 0.8) 40%, #051132 66%);
-    transition: background 0.55s ease;
-  }
-  .pkg:hover::after {
-    background: linear-gradient(180deg, rgba(5, 17, 50, 0) 0%, rgba(5, 17, 50, 0.5) 34%, rgba(5, 17, 50, 0.97) 72%);
-  }
   /* pointer-tracked spotlight */
   .pkg .glow {
     position: absolute; inset: 0; z-index: -1;
-    background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, 0.16), transparent 68%);
+    background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 30%), var(--accent-soft), transparent 70%);
     opacity: 0;
     transition: opacity 0.35s;
     pointer-events: none;
@@ -895,7 +888,8 @@
     display: flex; align-items: center; gap: 6px;
     padding: 6px 12px;
     border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.14);
+    background: var(--accent-soft);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     font-family: 'Figtree', sans-serif;
@@ -1018,7 +1012,7 @@
   /* the recommended tier carries the brand accent */
   .pkg.best { box-shadow: 0 0 0 1.5px var(--pink), 0 20px 50px rgba(255, 44, 121, 0.22); }
   .pkg-grid .pkg.best:hover { box-shadow: 0 0 0 1.5px var(--pink), 0 34px 74px rgba(255, 44, 121, 0.34); }
-  .pkg.best .tier { background: var(--pink); }
+  .pkg.best .tier { background: var(--pink); box-shadow: none; }
   .pkg.best .tier::before {
     content: ""; width: 6px; height: 6px; border-radius: 50%; background: #fff;
     animation: pkgBlink 1.8s ease-in-out infinite;
@@ -1038,9 +1032,10 @@
   @keyframes pkgSheen { 0%, 62% { transform: translateX(-120%); } 88%, 100% { transform: translateX(120%); } }
 
   @media (prefers-reduced-motion: reduce) {
-    .pkg .shot, .pkg.best::before, .pkg .per::before,
+    .pkg.best::before, .pkg .per::before,
     .pkg.best .tier::before, .pkg:hover .spec { animation: none; }
     .pkg.best::before { opacity: 0; }
+    .pkg::after, .pkg:hover::after { transition: none; }
     .pkg-grid:hover .pkg, .pkg-grid .pkg:hover { flex-grow: 1; height: var(--h); }
     .pkg .perk { grid-template-rows: 1fr; opacity: 1; }
   }
@@ -2844,19 +2839,19 @@
     var PACKAGES = [
       { tier: 'Taster',    n: 'Value deal',          p: 89,  unit: '/ person',    rides: 'Any 5',
         per: '≈ 18 SAR a ride', perk: 'Best for a first look — pick five and see what you love.',
-        card: '1', fast: false, shot: 'assets/rides-photo-1.png' },
+        card: '1', fast: false },
       { tier: 'Popular',   n: 'Value deal plus',     p: 135, unit: '/ person',    rides: 'Any 10',
         per: '≈ 14 SAR a ride', perk: 'Double the rides for barely half again the price.',
-        card: '1', fast: false, shot: 'assets/rides-photo-2.png' },
+        card: '1', fast: false },
       { tier: 'Group',     n: 'Family package',      p: 299, unit: '/ 3 persons', rides: 'Any 30',
         per: '≈ 10 SAR a ride', perk: 'Three digital cards, thirty rides — split them any way you like.',
-        card: '3', fast: false, shot: 'assets/rides-photo-3.png' },
+        card: '3', fast: false },
       { tier: 'All night', n: 'Unlimited - Regular', p: 199, unit: '/ person',    rides: 'Unlimited',
         per: 'Ride as much as you like', perk: 'One bracelet, no counting. Stay until the lights go out.',
-        band: true, fast: false, shot: 'assets/exp-pyramids-mystery.png' },
+        band: true, fast: false },
       { tier: 'Best value', n: 'Unlimited - Fast',   p: 349, unit: '/ person',    rides: 'Unlimited',
         per: 'Unlimited rides, no queues', perk: 'Fast track on every ride — walk past the line, all night.',
-        band: true, fast: true, best: true, shot: 'assets/exp-escape-room.png' }
+        band: true, fast: true, best: true }
     ];
     var YES = '<img src="assets/pkg-ic-check.svg?v=2" alt="included">';
     var NO  = '<img src="assets/pkg-ic-cross.svg?v=2" alt="not included">';
@@ -2866,7 +2861,6 @@
         ? '<div class="spec"><img src="assets/pkg-ic-bracelet.svg" alt=""><span class="lbl">Bracelet</span><span class="v">' + YES + '</span></div>'
         : '<div class="spec"><img src="assets/pkg-ic-card.svg" alt=""><span class="lbl">Digital card</span><span class="v">' + k.card + '</span></div>';
       return '<article class="pkg' + (k.best ? ' best' : '') + '">' +
-        '<img class="shot" src="' + k.shot + '" alt="" loading="lazy" decoding="async">' +
         '<span class="glow"></span>' +
         '<span class="tier">' + k.tier + '</span>' +
         '<div class="head">' +
