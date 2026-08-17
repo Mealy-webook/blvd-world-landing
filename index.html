@@ -821,10 +821,11 @@
     width: 100%; max-width: 1400px;
   }
   .pkg {
+    --h: 430px;
     position: relative;
     flex: 1 1 0;
     min-width: 0;
-    height: var(--h, 420px);
+    height: var(--h);
     display: flex; flex-direction: column; justify-content: flex-end;
     gap: 18px;
     /* the extra top padding keeps a long title clear of the tier chip */
@@ -842,11 +843,12 @@
       height 0.55s cubic-bezier(0.22, 1, 0.36, 1),
       box-shadow 0.45s;
   }
-  .pkg:nth-child(1) { --h: 424px; --accent: #6f8cff; --accent-soft: rgba(111, 140, 255, 0.16); }
-  .pkg:nth-child(2) { --h: 452px; --accent: #4fd1c5; --accent-soft: rgba(79, 209, 197, 0.16); }
-  .pkg:nth-child(3) { --h: 480px; --accent: #f0b429; --accent-soft: rgba(240, 180, 41, 0.16); }
-  .pkg:nth-child(4) { --h: 508px; --accent: #a78bfa; --accent-soft: rgba(167, 139, 250, 0.18); }
-  .pkg:nth-child(5) { --h: 536px; --accent: #ff2c79; --accent-soft: rgba(255, 44, 121, 0.22); }
+  /* every card is the same size — only the accent changes with the tier */
+  .pkg:nth-child(1) { --accent: #6f8cff; --accent-soft: rgba(111, 140, 255, 0.16); }
+  .pkg:nth-child(2) { --accent: #4fd1c5; --accent-soft: rgba(79, 209, 197, 0.16); }
+  .pkg:nth-child(3) { --accent: #f0b429; --accent-soft: rgba(240, 180, 41, 0.16); }
+  .pkg:nth-child(4) { --accent: #a78bfa; --accent-soft: rgba(167, 139, 250, 0.18); }
+  .pkg:nth-child(5) { --accent: #ff2c79; --accent-soft: rgba(255, 44, 121, 0.22); }
 
   /* a faint arc of dots, the only texture on the card */
   .pkg::after {
