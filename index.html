@@ -1481,8 +1481,10 @@
   @media (max-width: 560px) {
     .hero-art { transform: scale(0.4); }
     .hero-headline .l2 { white-space: normal; }
-    /* stays a 2-up grid on phones — no horizontal scrolling */
+    /* stays a 2-up grid on phones — no horizontal scrolling.
+       With three tiles the last one spans the row instead of leaving a gap. */
     .price-card { padding: 16px 14px; gap: 14px; }
+    .price-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
     .price-card .title-row h3 { font-size: 17px; }
     .ticket-card { width: 88vw; }
     .rule-card { flex-basis: 100%; }
@@ -1541,11 +1543,6 @@
     <img class="ic tilted" src="assets/hero-icon-ticket.svg" alt="">
     <span class="t">Experiences</span>
     <span class="p"><img src="assets/hero-icon-riyal.svg" alt="SAR">99</span>
-  </button>
-  <button class="dock-item" data-target="#restaurants">
-    <img class="ic" src="assets/hero-icon-dining.svg" alt="">
-    <span class="t">Restaurants</span>
-    <span class="p"><img src="assets/hero-icon-riyal.svg" alt="SAR">100</span>
   </button>
 </nav>
 
@@ -1628,20 +1625,6 @@
       <div class="price">
         <span class="from">From</span>
         <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>99</span></span>
-      </div>
-    </div>
-    <div class="price-card">
-      <div class="tile"><img src="assets/hero-icon-dining.svg" alt=""></div>
-      <div class="body">
-        <div class="title-row">
-          <h3>Restaurants</h3>
-          <img src="assets/hero-icon-chevron.svg" alt="">
-        </div>
-        <p class="desc">Includes General Zone Entry + Premium dining access</p>
-      </div>
-      <div class="price">
-        <span class="from">From</span>
-        <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>100</span></span>
       </div>
     </div>
   </div>
