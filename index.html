@@ -80,10 +80,6 @@
     100% { opacity: 0; transform: translate3d(var(--dx, 60vw), var(--dy, 22vw), 0) rotate(var(--ang, 20deg)); }
   }
   @media (prefers-reduced-motion: reduce) { .sky .shoot { display: none; } }
-  /* Rides and Restaurants now sit back to back. Restarting the gradient would put a
-     hard light-to-dark seam between them, so the second one continues from where the
-     first ends and the pair reads as a single navy band. */
-  #restaurants.navy-bg { background: #212859; }
 
   .section-pad {
     display: flex;
@@ -1806,7 +1802,6 @@
   <button class="dock-item" data-target="#experiences">Experiences</button>
   <button class="dock-item" data-target="#rides">Rides</button>
   <button class="dock-item" data-target="#restaurants">Restaurants</button>
-  <button class="dock-item" data-target="#gallery">Gallery</button>
   <button class="dock-item" data-target="#rules">Rules</button>
   <button class="dock-item" data-target="#faq">FAQ</button>
 </nav>
@@ -1875,7 +1870,7 @@
       </div>
       <div class="price">
         <span class="from">From</span>
-        <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>70</span></span>
+        <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>89</span></span>
       </div>
     </a>
     <div class="price-card">
@@ -1908,6 +1903,11 @@
     </div>
   </div>
 
+  <div class="tear tear-bottom">
+    <img src="assets/hero-torn-paper.png" alt="" loading="lazy" decoding="async">
+    <div class="bar"></div>
+  </div>
+
   <div class="scroll-cue">
     <span>SCROLL</span>
     <div class="line"></div>
@@ -1915,47 +1915,6 @@
 
 </section>
 
-<!-- ================= INFO STRIP ================= -->
-<section class="info-strip">
-  <div class="info-col">
-    <span class="ic" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path>
-      </svg>
-    </span>
-    <span class="eyebrow">Visiting hours</span>
-    <b>4:00 PM &ndash; 1:00 AM</b>
-    <p>Every day, right through the season</p>
-  </div>
-  <div class="info-col">
-    <span class="ic" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3.5" y="5.5" width="17" height="15" rx="2.5"></rect>
-        <path d="M3.5 10h17M8 3.5v4M16 3.5v4"></path>
-        <path d="M7.5 14h3M13.5 14h3M7.5 17.5h3M13.5 17.5h3"></path>
-      </svg>
-    </span>
-    <span class="eyebrow">The season</span>
-    <b>11 October &ndash; 2 May</b>
-    <p>Riyadh Season, every night in between</p>
-  </div>
-  <div class="info-col">
-    <span class="ic" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 21.5s7-6.1 7-11.2A7 7 0 0 0 5 10.3c0 5.1 7 11.2 7 11.2Z"></path>
-        <circle cx="12" cy="10" r="2.6"></circle>
-      </svg>
-    </span>
-    <span class="eyebrow">Where it is</span>
-    <b>Boulevard City, Riyadh</b>
-    <p><button class="open-map-link">Open the park map</button></p>
-  </div>
-
-  <div class="tear tear-bottom">
-    <img src="assets/hero-torn-paper.png" alt="">
-    <div class="bar"></div>
-  </div>
-</section>
 
 <!-- ================= ZONES ================= -->
 <section class="section-pad" id="zones">
@@ -2005,85 +1964,6 @@
   <div class="zones-buttons">
     <button class="pill cta" id="open-map">Explore zones on map</button>
     <a class="pill ghost" href="shows.html">Live show schedule</a>
-  </div>
-</section>
-
-<!-- ================= EXPERIENCES ================= -->
-<section class="section-pad" id="experiences">
-  <div class="section-head">
-    <h2>Experiences</h2>
-    <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
-  </div>
-
-  <div class="cards-row" data-rail>
-    <article class="product-card">
-      <div class="media square">
-        <img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
-      </div>
-      <div class="content">
-        <h3>The lost muesem</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
-      </div>
-    </article>
-    <article class="product-card">
-      <div class="media square">
-        <img src="assets/exp-escape-room.png" alt="Escape room" loading="lazy" decoding="async">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
-      </div>
-      <div class="content">
-        <h3>Escape room</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
-      </div>
-    </article>
-    <article class="product-card">
-      <div class="media square">
-        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
-      </div>
-      <div class="content">
-        <h3>The tomb of pharoh</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
-      </div>
-    </article>
-    <article class="product-card">
-      <div class="media square">
-        <img src="assets/exp-pyramids-mystery.png" alt="Pyramid's mystery" loading="lazy" decoding="async">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
-      </div>
-      <div class="content">
-        <h3>Pyramid&rsquo;s mystery</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
-      </div>
-    </article>
-    <article class="product-card">
-      <div class="media square">
-        <img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
-      </div>
-      <div class="content">
-        <h3>The lost muesem</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
-      </div>
-    </article>
-    <article class="product-card">
-      <div class="media square">
-        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async">
-        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
-      </div>
-      <div class="content">
-        <h3>The tomb of pharoh</h3>
-        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
-      </div>
-    </article>
-  </div>
-
-  <div class="controls">
-    <div class="btns">
-      <button class="ctrl-btn prev dim" aria-label="Previous experiences"><img src="assets/exp-arrow.svg" alt="" loading="lazy" decoding="async"></button>
-      <button class="ctrl-btn next" aria-label="Next experiences"><img src="assets/exp-arrow-next.svg" alt="" loading="lazy" decoding="async"></button>
-    </div>
-    <div class="progress"><div class="fill" style="width: 50%;"></div></div>
   </div>
 </section>
 
@@ -2245,10 +2125,98 @@
     <div class="progress"><div class="fill" style="width: 18%;"></div></div>
   </div>
 
+  <div class="tear tear-bottom">
+    <img src="assets/rides-tear-edge.png" alt="" loading="lazy" decoding="async">
+    <div class="bar"></div>
+  </div>
+</section>
+
+<!-- ================= EXPERIENCES ================= -->
+<section class="section-pad" id="experiences">
+  <div class="section-head">
+    <h2>Experiences</h2>
+    <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
+  </div>
+
+  <div class="cards-row" data-rail>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
+      </div>
+      <div class="content">
+        <h3>The lost muesem</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-escape-room.png" alt="Escape room" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
+      </div>
+      <div class="content">
+        <h3>Escape room</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
+      </div>
+      <div class="content">
+        <h3>The tomb of pharoh</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-pyramids-mystery.png" alt="Pyramid's mystery" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
+      </div>
+      <div class="content">
+        <h3>Pyramid&rsquo;s mystery</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
+      </div>
+      <div class="content">
+        <h3>The lost muesem</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
+      </div>
+    </article>
+    <article class="product-card">
+      <div class="media square">
+        <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async">
+        <button class="fav-btn" aria-label="Add to favorites"><img src="assets/exp-heart.svg" alt="" loading="lazy" decoding="async"></button>
+      </div>
+      <div class="content">
+        <h3>The tomb of pharoh</h3>
+        <div class="price"><img src="assets/exp-riyal.svg" alt="SAR" loading="lazy" decoding="async"><span>210.75</span></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="controls">
+    <div class="btns">
+      <button class="ctrl-btn prev dim" aria-label="Previous experiences"><img src="assets/exp-arrow.svg" alt="" loading="lazy" decoding="async"></button>
+      <button class="ctrl-btn next" aria-label="Next experiences"><img src="assets/exp-arrow-next.svg" alt="" loading="lazy" decoding="async"></button>
+    </div>
+    <div class="progress"><div class="fill" style="width: 50%;"></div></div>
+  </div>
 </section>
 
 <!-- ================= RESTAURANTS ================= -->
 <section class="section-pad navy-bg on-navy" id="restaurants">
+  <div class="tear tear-top">
+    <img src="assets/rest-page-tear.png" alt="" loading="lazy" decoding="async">
+    <div class="bar"></div>
+  </div>
+
   <div class="section-head">
     <h2>Restaurants</h2>
     <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
@@ -2326,62 +2294,14 @@
   </div>
 </section>
 
-<!-- ================= GALLERY ================= -->
-<section class="gallery-sec" id="gallery">
+
+<!-- ================= VENUE RULES ================= -->
+<section class="section-pad" id="rules">
   <div class="tear tear-top-white">
     <img src="assets/rules-page-tear.png" alt="" loading="lazy" decoding="async">
     <div class="bar"></div>
   </div>
 
-  <div class="section-head">
-    <h2>Gallery</h2>
-    <p>Moments from around the worlds &mdash; captured every night at BLVD World.</p>
-  </div>
-
-  <div class="gal-row">
-    <div class="gal-track">
-      <div class="gal-set">
-        <img src="assets/rides-photo-1.png" alt="Wave Swinger at night" loading="lazy" decoding="async">
-        <img src="assets/exp-lost-museum.png" alt="The lost museum experience" loading="lazy" decoding="async">
-        <img src="assets/rest-tant.png" alt="Tant restaurant facade" loading="lazy" decoding="async">
-        <img src="assets/zones-story-japan.png" alt="Japan zone" loading="lazy" decoding="async">
-        <img src="assets/rides-photo-2.png" alt="Sky Loop sign" loading="lazy" decoding="async">
-        <img src="assets/exp-tomb-pharaoh.png" alt="Tomb of the pharaoh" loading="lazy" decoding="async">
-      </div>
-      <div class="gal-set" aria-hidden="true">
-        <img src="assets/rides-photo-1.png" alt="" loading="lazy" decoding="async">
-        <img src="assets/exp-lost-museum.png" alt="" loading="lazy" decoding="async">
-        <img src="assets/rest-tant.png" alt="" loading="lazy" decoding="async">
-        <img src="assets/zones-story-japan.png" alt="" loading="lazy" decoding="async">
-        <img src="assets/rides-photo-2.png" alt="" loading="lazy" decoding="async">
-        <img src="assets/exp-tomb-pharaoh.png" alt="" loading="lazy" decoding="async">
-      </div>
-    </div>
-  </div>
-  <div class="gal-row rev">
-    <div class="gal-track">
-      <div class="gal-set">
-        <img src="assets/zones-story-paris.png" alt="Paris zone" loading="lazy" decoding="async">
-        <img src="assets/rides-photo-3.png" alt="Log flume ride" loading="lazy" decoding="async">
-        <img src="assets/exp-escape-room.png" alt="Escape room" loading="lazy" decoding="async">
-        <img src="assets/zones-story-egypt.png" alt="Egypt zone" loading="lazy" decoding="async">
-        <img src="assets/exp-pyramids-mystery.png" alt="Pyramid's mystery" loading="lazy" decoding="async">
-        <img src="assets/zones-story-kuwait.png" alt="Kuwait zone" loading="lazy" decoding="async">
-      </div>
-      <div class="gal-set" aria-hidden="true">
-        <img src="assets/zones-story-paris.png" alt="" loading="lazy" decoding="async">
-        <img src="assets/rides-photo-3.png" alt="" loading="lazy" decoding="async">
-        <img src="assets/exp-escape-room.png" alt="" loading="lazy" decoding="async">
-        <img src="assets/zones-story-egypt.png" alt="" loading="lazy" decoding="async">
-        <img src="assets/exp-pyramids-mystery.png" alt="" loading="lazy" decoding="async">
-        <img src="assets/zones-story-kuwait.png" alt="" loading="lazy" decoding="async">
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= VENUE RULES ================= -->
-<section class="section-pad" id="rules">
   <div class="section-head">
     <h2>Venue rules</h2>
   </div>
@@ -2483,67 +2403,6 @@
   </div>
 </section>
 
-<!-- ================= SPONSORS ================= -->
-<section class="sponsors" id="sponsors">
-  <div class="tear tear-top-white">
-    <img src="assets/rules-page-tear.png" alt="" loading="lazy" decoding="async">
-    <div class="bar"></div>
-  </div>
-
-  <div class="section-head">
-    <h2>Our partners</h2>
-    <p>BLVD World is brought to you with the support of our partners across the season.</p>
-  </div>
-
-  <div class="sp-tier">
-    <h3>Official premium partners</h3>
-    <div class="sp-row">
-      <div class="sp-item"><img src="assets/sp-snb.svg" alt="Saudi National Bank" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-alhabib.png" alt="Dr. Sulaiman Al Habib" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-stc.svg" alt="stc" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-aramco.png" alt="Aramco" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-saudia.png" alt="Saudia" loading="lazy" decoding="async"></div>
-    </div>
-  </div>
-
-  <div class="sp-tier">
-    <h3>Official strategic partners</h3>
-    <div class="sp-row">
-      <div class="sp-item"><img src="assets/sp-muc.png" alt="MUC" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-aroya.png" alt="Aroya Cruises" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-sadia.png" alt="Sadia" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-lucid.svg" alt="Lucid" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-shg.png" alt="SHG" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-azure.png" alt="Azure" loading="lazy" decoding="async"></div>
-    </div>
-  </div>
-
-  <div class="sp-tier">
-    <h3>Official main partners</h3>
-    <div class="sp-row">
-      <div class="sp-item"><img src="assets/sp-checkapp.png" alt="Check App" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-cocacola.svg" alt="Coca-Cola" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-dunkin.svg" alt="Dunkin'" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-shawermer.png" alt="Shawermer" loading="lazy" decoding="async"></div>
-      <div class="sp-item"><img src="assets/sp-pepsi.png" alt="Pepsi" loading="lazy" decoding="async"></div>
-    </div>
-  </div>
-
-  <div class="sp-tier sp-tier-split">
-    <div>
-      <h3>Official co sponsor</h3>
-      <div class="sp-row">
-        <div class="sp-item"><img src="assets/sp-dominos.png" alt="Domino's" loading="lazy" decoding="async"></div>
-      </div>
-    </div>
-    <div>
-      <h3>Commercial partner</h3>
-      <div class="sp-row">
-        <div class="sp-item"><img src="assets/sp-prime.svg" alt="Prime" loading="lazy" decoding="async"></div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ================= ASK BLVD (chat assistant) ================= -->
 <button id="ask-fab" aria-label="Ask BLVD World a question" aria-expanded="false">
@@ -3266,7 +3125,7 @@
       { k: ['where','location','address','get there','direction','riyadh','how do i get'], a:
         'It\'s at <b>Boulevard City, Riyadh</b>, right next to Boulevard World. You can explore the whole site on the interactive park map.', acts:['map'] },
       { k: ['ticket','price','cost','how much','entry','fee','cheap','package','pay'], a:
-        'Ticket options start from:<ul><li><b>Entry ticket — from 35 SAR</b>: access to 20 spectacular country zones</li><li><b>Rides Package — from 70 SAR</b>: general zone entry + rides</li><li><b>Experiences — from 99 SAR</b>: general zone entry + premium pavilion access</li></ul>', acts:['tickets'] },
+        'Ticket options start from:<ul><li><b>Entry ticket — from 35 SAR</b>: access to 20 spectacular country zones</li><li><b>Rides Package — from 89 SAR</b>: general zone entry + rides</li><li><b>Experiences — from 99 SAR</b>: general zone entry + premium pavilion access</li></ul>', acts:['tickets'] },
       { k: ['ride','rides','coaster','thrill','swinger','sky loop','flume','rapids','scary','fast','height'], a:
         'There are <b>14 rides</b>. The headliners are:<ul><li><b>Wave Swinger</b> — Thrill: Max, height 130–195cm</li><li><b>Sky Loop</b> — Thrill: Max, height 140–195cm</li><li><b>Fuji River Rapids</b> — Thrill: Medium, height 110–195cm</li></ul>', acts:['rides'] },
       { k: ['experience','experiences','museum','muesem','escape','tomb','pharoh','pharaoh','pyramid','mystery','immersive'], a:
