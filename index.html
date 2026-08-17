@@ -7,7 +7,7 @@
 <link rel="icon" href="assets/hero-logo-mark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Figtree:wght@400;500;600&family=Inter:wght@900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Figtree:wght@400;500;600;700&family=Inter:wght@900&display=swap" rel="stylesheet">
 <style>
   :root {
     --pink: #ff2c79;
@@ -39,6 +39,44 @@
   section { position: relative; }
 
   .navy-bg { background: linear-gradient(180deg, #03003c 0%, #001d5f 55%, #212859 100%); }
+
+  /* ============ night sky (shared by every navy section) ============ */
+  .sky { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+  /* section content sits above the sky; the hero manages its own layers */
+  .navy-bg:not(.hero) > *:not(.sky), .info-strip > *:not(.sky) { position: relative; z-index: 1; }
+  .sky .st {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0.18;
+    animation: twk 3.4s ease-in-out infinite;
+  }
+  @keyframes twk { 50% { opacity: 0.95; transform: scale(1.4); } }
+  /* shooting star: bright head with a tail that points back along its path */
+  .sky .shoot {
+    position: absolute;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.7);
+    opacity: 0;
+  }
+  .sky .shoot::after {
+    content: "";
+    position: absolute; right: 2px; top: 50%;
+    width: 120px; height: 1.6px;
+    transform: translateY(-50%);
+    background: linear-gradient(to left, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
+    border-radius: 2px;
+  }
+  .sky .shoot.go { animation: shoot 1.25s cubic-bezier(0.4, 0, 0.7, 1) forwards; }
+  @keyframes shoot {
+    0%   { opacity: 0; transform: translate3d(0, 0, 0) rotate(var(--ang, 20deg)); }
+    12%  { opacity: 1; }
+    75%  { opacity: 1; }
+    100% { opacity: 0; transform: translate3d(var(--dx, 60vw), var(--dy, 22vw), 0) rotate(var(--ang, 20deg)); }
+  }
+  @media (prefers-reduced-motion: reduce) { .sky .shoot { display: none; } }
   /* Rides and Restaurants now sit back to back. Restarting the gradient would put a
      hard light-to-dark seam between them, so the second one continues from where the
      first ends and the pair reads as a single navy band. */
@@ -921,7 +959,7 @@
   [data-rail].dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
 
   /* overlays attached to <html> don't inherit body's font — set it explicitly */
-  #view-map, #story-viewer, #loader {
+  #view-map, #story-viewer, #loader, #intro, #ask-fab, #ask-panel, #dock {
     font-family: 'Bricolage Grotesque', sans-serif;
     font-variation-settings: "opsz" 14, "wdth" 100;
   }
@@ -1344,6 +1382,55 @@
     .vm-detail-img { width: 68px; height: 68px; }
   }
 
+  /* ============ brand intro (plays once the loader tears away) ============ */
+  #intro {
+    position: fixed; inset: 0;
+    z-index: 250;
+    background: linear-gradient(180deg, #03003c 0%, #001d5f 55%, #212859 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px;
+    overflow: hidden;
+  }
+  #intro .in-type {
+    font-weight: 700;
+    font-size: clamp(24px, 5.2vw, 46px);
+    line-height: 1.18;
+    letter-spacing: -0.8px;
+    color: #fff;
+    text-align: center;
+  }
+  #intro .in-type .l { display: block; min-height: 1.18em; }
+  #intro .in-type .t2 { color: var(--pink); }
+  #intro .caret {
+    display: inline-block;
+    width: 3px; height: 1em;
+    margin-left: 3px;
+    vertical-align: -0.12em;
+    background: var(--pink);
+    opacity: 0;
+  }
+  #intro.p1 .c1, #intro.p2 .c2 { opacity: 1; animation: caret 0.9s steps(1) infinite; }
+  @keyframes caret { 50% { opacity: 0; } }
+  #intro .in-sub {
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px; letter-spacing: 2.6px; text-transform: uppercase;
+    color: var(--sub-inverse);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  #intro.typed .in-sub { opacity: 1; }
+  #intro .in-skip {
+    position: absolute; bottom: max(26px, env(safe-area-inset-bottom));
+    font-family: 'Figtree', sans-serif; font-size: 13px; letter-spacing: 1px;
+    text-transform: uppercase; color: rgba(255, 255, 255, 0.45);
+    opacity: 0;
+    animation: inFade 0.5s ease 1.2s forwards;
+  }
+  @keyframes inFade { to { opacity: 1; } }
+  /* the whole panel lifts and dissolves into the hero */
+  #intro.out { animation: inOut 0.8s cubic-bezier(0.76, 0, 0.24, 1) forwards; }
+  @keyframes inOut { to { opacity: 0; transform: scale(1.12); } }
+
   /* preloader */
   #loader {
     position: fixed; inset: 0;
@@ -1509,18 +1596,7 @@
   .dock-item.active { background: rgba(255, 255, 255, 0.14); }
   .dock-item .ic { width: 20px; height: 20px; filter: brightness(0) invert(1); }
   .dock-item .ic.tilted { transform: rotate(-30deg); }
-  .dock-item .t { font-weight: 700; font-size: 16px; white-space: nowrap; }
-  .dock-item .p {
-    display: flex; align-items: center; gap: 4px;
-    padding: 4px 10px;
-    border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.14);
-    font-family: 'Figtree', sans-serif;
-    font-weight: 600; font-size: 13px;
-    color: #fff;
-  }
-  .dock-item .p img { width: 10px; height: 10px; filter: brightness(0) invert(1); }
-  .dock-item.active .p { background: var(--pink); }
+  .dock-item { font-weight: 700; font-size: 15px; white-space: nowrap; }
 
   /* custom cursor (enabled via .has-cursor on <html> for fine pointers) */
   html.has-cursor, html.has-cursor * { cursor: none !important; }
@@ -1685,14 +1761,29 @@
     .stories-row::-webkit-scrollbar { display: none; }
     .stories-row .ctrl-btn { display: none; }
     .facts { flex-wrap: wrap; }
-    #dock { max-width: calc(100vw - 24px); padding: 8px 10px; }
-    .dock-item { padding: 8px 10px; gap: 6px; }
-    .dock-item .t { display: none; }
-    .dock-logo { margin-right: 4px; }
+    #dock {
+      max-width: calc(100vw - 20px);
+      padding: 7px 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      justify-content: flex-start;
+    }
+    #dock::-webkit-scrollbar { display: none; }
+    .dock-item { padding: 8px 12px; font-size: 14px; flex-shrink: 0; }
+    .dock-logo { margin: 0 6px 0 4px; flex-shrink: 0; }
   }
 </style>
 </head>
 <body>
+
+<div id="intro" aria-hidden="true">
+  <p class="in-type">
+    <span class="l"><span class="t1"></span><i class="caret c1"></i></span>
+    <span class="l"><span class="t2"></span><i class="caret c2"></i></span>
+  </p>
+  <p class="in-sub">Riyadh Season</p>
+  <p class="in-skip">Tap to skip</p>
+</div>
 
 <div id="loader" aria-hidden="true">
   <div class="ld-inner">
@@ -1706,28 +1797,15 @@
 
 <div id="scroll-progress"></div>
 
-<nav id="dock" aria-label="Quick tickets">
+<nav id="dock" aria-label="Jump to a section">
   <img class="dock-logo" src="assets/hero-logo-mark.svg" alt="">
-  <button class="dock-item" data-target="#zones">
-    <img class="ic tilted" src="assets/hero-icon-ticket.svg" alt="">
-    <span class="t">Entry ticket</span>
-    <span class="p"><img src="assets/hero-icon-riyal.svg" alt="SAR">35</span>
-  </button>
-  <button class="dock-item" data-target="#rides">
-    <img class="ic" src="assets/hero-icon-rocket.svg" alt="">
-    <span class="t">Rides Package</span>
-    <span class="p"><img src="assets/hero-icon-riyal.svg" alt="SAR">70</span>
-  </button>
-  <button class="dock-item" data-target="#experiences">
-    <img class="ic tilted" src="assets/hero-icon-ticket.svg" alt="">
-    <span class="t">Experiences</span>
-    <span class="p"><img src="assets/hero-icon-riyal.svg" alt="SAR">99</span>
-  </button>
-  <button class="dock-item" data-target="#restaurants">
-    <img class="ic" src="assets/hero-icon-dining.svg" alt="">
-    <span class="t">Restaurants</span>
-    <span class="p"><img src="assets/hero-icon-riyal.svg" alt="SAR">100</span>
-  </button>
+  <button class="dock-item" data-target="#zones">Zones</button>
+  <button class="dock-item" data-target="#experiences">Experiences</button>
+  <button class="dock-item" data-target="#rides">Rides</button>
+  <button class="dock-item" data-target="#restaurants">Restaurants</button>
+  <button class="dock-item" data-target="#gallery">Gallery</button>
+  <button class="dock-item" data-target="#rules">Rules</button>
+  <button class="dock-item" data-target="#faq">FAQ</button>
 </nav>
 
 <!-- ================= HERO ================= -->
@@ -2016,6 +2094,7 @@
   <div class="section-head">
     <h2>Explore rides</h2>
     <p>Get ready for an exciting adventure with rides. including Sky-loop, Trubo 360, The wheel, Rollover, and more.</p>
+    <a class="pill cta" href="rides.html" style="margin-top:16px;display:inline-block">Rides package &mdash; from 70 SAR</a>
   </div>
 
   <div class="rail-wrap" data-rail>
@@ -2637,13 +2716,117 @@
   var FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
   function zoomFactor() { return parseFloat(document.body.style.zoom) || 1; }
 
+  /* ---------- night sky: twinkling stars + shooting stars in every navy section ---------- */
+  var SKIES = [];
+  (function () {
+    var sections = document.querySelectorAll('.navy-bg, .info-strip');
+    sections.forEach(function (sec) {
+      var sky = document.createElement('div');
+      sky.className = 'sky';
+      var h = sec.offsetHeight || 600;
+      var count = Math.max(14, Math.min(40, Math.round(h / 26)));
+      var html = '';
+      for (var i = 0; i < count; i++) {
+        var size = (Math.random() * 2.4 + 1.2).toFixed(1);
+        html += '<span class="st" style="left:' + (Math.random() * 100).toFixed(2) + '%;top:' +
+          (Math.random() * 100).toFixed(2) + '%;width:' + size + 'px;height:' + size + 'px;animation-delay:' +
+          (Math.random() * 3.4).toFixed(2) + 's"></span>';
+      }
+      sky.innerHTML = html;
+      sec.insertBefore(sky, sec.firstChild);
+      SKIES.push(sky);
+    });
+
+    if (REDUCED || !SKIES.length) return;
+
+    // only fire streaks in skies that are actually on screen
+    var visible = new Set();
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { e.isIntersecting ? visible.add(e.target) : visible.delete(e.target); });
+    }, { threshold: 0.08 });
+    SKIES.forEach(function (s) { io.observe(s); });
+
+    function shoot() {
+      var pool = Array.from(visible);
+      if (pool.length) {
+        var sky = pool[Math.floor(Math.random() * pool.length)];
+        var el = document.createElement('span');
+        el.className = 'shoot';
+        var ang = 14 + Math.random() * 16;                    // travel angle, degrees
+        var dist = 48 + Math.random() * 34;                   // in vw
+        el.style.left = (Math.random() * 55 - 10).toFixed(1) + '%';
+        el.style.top = (Math.random() * 45).toFixed(1) + '%';
+        el.style.setProperty('--ang', ang + 'deg');
+        el.style.setProperty('--dx', dist + 'vw');
+        el.style.setProperty('--dy', (dist * Math.tan(ang * Math.PI / 180)).toFixed(1) + 'vw');
+        sky.appendChild(el);
+        requestAnimationFrame(function () { el.classList.add('go'); });
+        setTimeout(function () { el.remove(); }, 1500);
+      }
+      setTimeout(shoot, 2600 + Math.random() * 4200);
+    }
+    setTimeout(shoot, 1800);
+  })();
+
   // ---------- preloader ----------
   (function () {
     var loader = document.getElementById('loader');
+    var intro = document.getElementById('intro');
     if (!loader) return;
+    if (intro) document.documentElement.appendChild(intro);
+
+    /* Brand intro between the loader tearing away and the hero animating in.
+       Skippable, and skipped entirely for returning visits / reduced motion. */
+    function runIntro(next) {
+      if (!intro || REDUCED) { if (intro) intro.remove(); return next(); }
+      intro.classList.add('run');
+
+      var L1 = 'Twenty-four worlds.', L2 = 'One night.';
+      var e1 = intro.querySelector('.t1'), e2 = intro.querySelector('.t2');
+      var done = false, timers = [];
+
+      function finish() {
+        if (done) return;
+        done = true;
+        timers.forEach(clearTimeout);
+        window.removeEventListener('pointerdown', finish);
+        window.removeEventListener('keydown', finish);
+        intro.classList.add('out');
+        next();                                   // hero animates in behind the dissolve
+        timers.push(setTimeout(function () { intro.remove(); }, 820));
+      }
+
+      // type character by character, second line in brand pink
+      function type(el, text, speed, after) {
+        var i = 0;
+        (function step() {
+          if (done) return;
+          el.textContent = text.slice(0, ++i);
+          if (i < text.length) timers.push(setTimeout(step, speed));
+          else if (after) timers.push(setTimeout(after, 260));
+        })();
+      }
+      intro.classList.add('p1');
+      type(e1, L1, 52, function () {
+        intro.classList.remove('p1');
+        intro.classList.add('p2');
+        type(e2, L2, 62, function () {
+          intro.classList.add('typed');           // reveal the Riyadh Season line
+          timers.push(setTimeout(finish, 1150));
+        });
+      });
+
+      window.addEventListener('pointerdown', finish);
+      window.addEventListener('keydown', finish);
+      intro.addEventListener('click', finish);
+      // watchdog: never let the intro strand the page
+      timers.push(setTimeout(function () { if (intro.parentNode) { intro.remove(); next(); } }, 8000));
+      // watchdog: never let the intro strand the page
+      
+    }
     // escape the body zoom so the panel always covers the real viewport
     document.documentElement.appendChild(loader);
-    if (REDUCED) { loader.remove(); return; }
+    if (REDUCED) { loader.remove(); if (intro) intro.remove(); return; }
 
     // Arriving back from another page on this site (browser back, or a link
     // from the shows page): open straight into the content — no preloader, no
@@ -2653,6 +2836,7 @@
     var fromThisSite = document.referrer && document.referrer.indexOf(location.origin) === 0;
     if (navType === 'back_forward' || fromThisSite) {
       loader.remove();
+      if (intro) intro.remove();
       return;
     }
 
@@ -2679,7 +2863,7 @@
       finished = true;
       function reveal() {
         document.documentElement.style.overflow = '';
-        if (window.playHeroIntro) window.playHeroIntro();
+        runIntro(function () { if (window.playHeroIntro) window.playHeroIntro(); });
       }
       // decode the hero art off the animation frame, so the intro doesn't
       // share a frame with six full-size PNG decodes
