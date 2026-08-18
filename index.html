@@ -1011,32 +1011,13 @@
     to   { transform: translate3d(var(--dx), var(--dy), 0) scale(0.2); opacity: 0; }
   }
 
-  /* the recommended tier carries the brand accent */
-  .pkg.best { box-shadow: 0 0 0 1.5px var(--pink), 0 20px 50px rgba(255, 44, 121, 0.22); }
-  .pkg-grid .pkg.best:hover { box-shadow: 0 0 0 1.5px var(--pink), 0 34px 74px rgba(255, 44, 121, 0.34); }
+  /* the recommended tier reads through its chip and button, nothing louder */
   .pkg.best .tier { background: var(--pink); box-shadow: none; }
-  .pkg.best .tier::before {
-    content: ""; width: 6px; height: 6px; border-radius: 50%; background: #fff;
-    animation: pkgBlink 1.8s ease-in-out infinite;
-  }
-  @keyframes pkgBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
   .pkg.best .book { background: var(--pink); color: #fff; }
   .pkg.best .book:hover { filter: brightness(1.08); }
-  /* a slow sheen so the recommended card catches the eye */
-  .pkg.best::before {
-    content: "";
-    position: absolute; inset: 0; z-index: 1;
-    background: linear-gradient(110deg, transparent 38%, rgba(255, 255, 255, 0.13) 50%, transparent 62%);
-    transform: translateX(-120%);
-    animation: pkgSheen 5.5s ease-in-out infinite;
-    pointer-events: none;
-  }
-  @keyframes pkgSheen { 0%, 62% { transform: translateX(-120%); } 88%, 100% { transform: translateX(120%); } }
 
   @media (prefers-reduced-motion: reduce) {
-    .pkg.best::before, .pkg .per::before,
-    .pkg.best .tier::before, .pkg:hover .spec { animation: none; }
-    .pkg.best::before { opacity: 0; }
+    .pkg .per::before, .pkg:hover .spec { animation: none; }
     .pkg::after, .pkg:hover::after { transition: none; }
     .pkg-grid:hover .pkg, .pkg-grid .pkg:hover { flex-grow: 1; height: var(--h); }
     .pkg .perk { grid-template-rows: 1fr; opacity: 1; }
