@@ -2343,6 +2343,7 @@
     .exp-tile .shot { height: 100px; border-radius: 14px; }
     .exp-tile .nm { font-size: 13px; }
 
+
     /* --- shared section rhythm (kept compact so the layout doesn't read as
        a zoomed-in desktop design) --- */
     .section-pad { padding: 44px 18px; gap: 20px; }
@@ -2410,8 +2411,40 @@
     .hero-art { transform: scale(0.4); }
     /* stays a 2-up grid on phones — no horizontal scrolling.
        With three tiles the last one spans the row instead of leaving a gap. */
-    .bk-row { padding: 14px; }
+    /* ---- mobile hero (Figma node 214:3941, 390px frame) ----
+       Card 342 wide with 24px margins; rows 90 / 91 / 260 tall, driven by a
+       50x50 icon tile; experience thumbs 92px. The Experiences row drops its
+       price line there, so the header is just the title. Everything is sized
+       to keep the whole card above the fold on a phone. */
+    /* the whole hero has to fit one screen, so it is budgeted against dvh:
+       tighter padding, a smaller logo, and the scroll cue lifted out of flow */
+    .hero {
+      min-height: 100dvh;
+      justify-content: center;
+      padding-top: max(20px, env(safe-area-inset-top));
+      padding-bottom: max(56px, calc(env(safe-area-inset-bottom) + 44px));
+      gap: 18px;
+    }
+    .hero-logo .mark { width: 62px; height: 62px; }
+    .hero-logo .word { width: 64px; height: auto; }
+    .hero .scroll-cue {
+      position: absolute;
+      left: 50%; transform: translateX(-50%);
+      bottom: max(12px, env(safe-area-inset-bottom));
+      gap: 6px;
+    }
+    .hero .scroll-cue .line { height: 22px; }
+    .booking-card { width: 100%; max-width: 342px; border-radius: 20px; }
+    .bk-row { padding: 20px; gap: 12px; }
+    .bk-ic { padding: 12px; border-radius: 14px; }
+    .bk-ic img { width: 24px; height: 24px; }
     .bk-body h3 { font-size: 17px; }
+    .bk-book { padding: 11px 18px; font-size: 15px; }
+    .bk-exp .bk-price { display: none; }
+    .bk-row.bk-exp { gap: 14px; }
+    .exp-tile, .exp-tile .shot { width: 92px; }
+    .exp-tile .shot { height: 92px; border-radius: 14px; }
+    .exp-tile .nm { font-size: 13px; }
     .ticket-card { width: 88vw; }
     .rule-card { flex-basis: 100%; }
     .gal-set img { height: 140px; }
@@ -2440,6 +2473,28 @@
     #dock .mobile-menu-button { display: flex; }
     #dock .mobile-menu-popover { display: block; }
   }
+
+  /* Short phones, or a phone whose browser chrome eats the viewport: keep the
+     whole card on one screen by tightening the stack rather than letting the
+     Experiences row drop below the fold. */
+  @media (max-width: 560px) and (max-height: 730px) {
+    .hero { gap: 12px; padding-bottom: max(40px, calc(env(safe-area-inset-bottom) + 32px)); }
+    .hero-logo { gap: 8px; }
+    .hero-logo .mark { width: 46px; height: 46px; }
+    .hero-logo .word { width: 52px; }
+    .hero-headline { width: min(1024px, 84vw); gap: 0; }
+    .bk-row { padding: 14px 16px; }
+    .bk-ic { padding: 10px; }
+    .bk-ic img { width: 20px; height: 20px; }
+    .bk-body h3 { font-size: 16px; }
+    .bk-book { padding: 10px 16px; font-size: 14px; }
+    .bk-row.bk-exp { gap: 10px; }
+    .exp-tile, .exp-tile .shot { width: 82px; }
+    .exp-tile .shot { height: 82px; }
+    .exp-tile .nm { font-size: 12px; }
+    .hero .scroll-cue { display: none; }
+  }
+
 </style>
 </head>
 <body>
