@@ -195,55 +195,94 @@
     clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
   }
 
-  .pricing-row {
-    display: flex;
-    align-items: flex-start;
-    width: 1120px;
-    max-width: 100%;
+  /* ============ hero booking card (Figma node 214:3192) ============
+     Three stacked rows in one white card: two bookable tiers, then an
+     Experiences row that opens into a rail of the individual experiences. */
+  .booking-card {
+    display: flex; flex-direction: column; align-items: center;
+    width: 664px; max-width: 100%;
     background: #fff;
     border-radius: 24px;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    box-shadow: 0 30px 70px rgba(2, 0, 40, 0.35);
   }
-  .price-card {
-    flex: 1 0 0;
-    min-width: 1px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+  .bk-row {
+    display: flex; align-items: center; gap: 16px;
+    width: 100%;
     padding: 24px;
-    text-align: left;
+    border-bottom: 1px solid var(--border);
   }
-  .price-card + .price-card { border-left: 1px solid var(--border); }
-  .price-card .tile {
-    width: 52px; height: 52px;
-    border: 1px solid var(--border);
-    border-radius: 15px;
+  .bk-row:last-child { border-bottom: 0; }
+  .bk-ic {
     display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    padding: 16px;
+    border: 1px solid #e4e4e7;
+    border-radius: 15px;
+    transition: background 0.3s, border-color 0.3s;
   }
-  .price-card .tile img { width: 24px; height: 24px; }
-  .price-card .tile img.tilted { transform: rotate(-30deg); }
-  .price-card .body { display: flex; flex-direction: column; gap: 8px; }
-  .price-card .title-row { display: flex; align-items: center; gap: 4px; }
-  .price-card .title-row h3 {
-    font-weight: 700;
-    font-size: 22px;
-    color: var(--navy-text);
-    white-space: nowrap;
-  }
-  .price-card .title-row img { width: 5.5px; height: 9.5px; margin-left: 6px; }
-  .price-card .desc {
-    font-family: 'Figtree', sans-serif;
-    font-size: 14px;
+  .bk-ic img { width: 24px; height: 24px; display: block; transition: filter 0.3s; }
+  .bk-body { display: flex; flex-direction: column; gap: 4px; flex: 1 1 0; min-width: 0; }
+  .bk-body h3 { font-weight: 700; font-size: 22px; color: var(--navy-text); }
+  .bk-price { display: flex; align-items: baseline; gap: 2px; font-family: 'Figtree', sans-serif; }
+  .bk-price .from {
+    font-size: 15px; line-height: 22px; letter-spacing: 0.15px;
     color: var(--content-secondary);
+    margin-right: 2px;
   }
-  .price-card .price {
-    display: flex; align-items: baseline; gap: 4px;
+  .bk-price img { width: 9px; height: 9px; align-self: center; }
+  .bk-price b {
+    font-weight: 600; font-size: 15px; line-height: 22px; letter-spacing: 0.1875px;
+    color: var(--navy-text);
+  }
+  .bk-book {
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    padding: 16px 20px;
+    border-radius: 9999px;
+    background: var(--pink);
     font-family: 'Figtree', sans-serif;
+    font-weight: 600; font-size: 17px; line-height: 24px;
+    color: #fff;
+    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
   }
-  .price-card .price .from { font-size: 14px; line-height: 20px; color: var(--content-secondary); }
-  .price-card .price .amount { display: flex; align-items: center; gap: 4px; }
-  .price-card .price .amount img { width: 13px; height: 13px; }
-  .price-card .price .amount span { font-weight: 500; font-size: 18px; line-height: 24px; color: var(--navy-text); }
+  .bk-book:hover { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 10px 24px rgba(255, 44, 121, 0.4); }
+  .bk-book:active { transform: translateY(0) scale(0.97); }
+
+  /* the Experiences row stacks its own header above the rail */
+  .bk-row.bk-exp { flex-direction: column; align-items: stretch; gap: 16px; }
+  .bk-exp .bk-head { display: flex; align-items: center; gap: 16px; }
+  .bk-rail {
+    display: flex; gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+    /* the rail sits inside the row padding and overflows to the right, which
+       is what the Figma row clips — bleeding it left knocked the first tile
+       out of line with the header above it */
+    padding-bottom: 2px;
+  }
+  .bk-rail::-webkit-scrollbar { display: none; }
+  .exp-tile {
+    display: flex; flex-direction: column; gap: 8px;
+    flex-shrink: 0; width: 112px;
+    scroll-snap-align: start;
+  }
+  .exp-tile .shot {
+    width: 112px; height: 112px;
+    border-radius: 16px;
+    object-fit: cover;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .exp-tile:hover .shot { transform: scale(1.04); }
+  .exp-tile .nm { font-weight: 600; font-size: 14px; line-height: 1.25; color: var(--navy-text); }
+  .exp-tile .pr {
+    display: flex; align-items: center; gap: 2px;
+    font-family: 'Figtree', sans-serif;
+    font-weight: 600; font-size: 13px; line-height: 20px; letter-spacing: 0.1625px;
+    color: var(--navy-text);
+  }
+  .exp-tile .pr img { width: 9px; height: 9px; }
 
   .scroll-cue { display: flex; flex-direction: column; gap: 10px; align-items: center; }
   .scroll-cue span { font-weight: 700; font-size: 22px; color: #fff; letter-spacing: 0.04em; }
@@ -1226,13 +1265,8 @@
     100% { transform: scaleY(0); transform-origin: bottom; }
   }
 
-  .price-card { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
-  .price-card:hover { transform: translateY(-6px); }
-  .price-card .tile { transition: background 0.3s, border-color 0.3s; }
-  .price-card:hover .tile { background: var(--navy-text); border-color: var(--navy-text); }
-  .price-card:hover .tile img { filter: brightness(0) invert(1); }
-  .price-card .title-row img { transition: transform 0.3s; }
-  .price-card:hover .title-row img { transform: translateX(4px); }
+  .bk-row:hover .bk-ic { background: var(--navy-text); border-color: var(--navy-text); }
+  .bk-row:hover .bk-ic img { filter: brightness(0) invert(1); }
 
   .story .ring { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s; }
   .story:hover .ring { transform: scale(1.06); box-shadow: 0 10px 30px rgba(255, 44, 121, 0.35); }
@@ -2299,15 +2333,15 @@
     .scroll-cue span { font-size: 17px; }
 
     /* pricing tiles: 2-up grid, titles allowed to wrap */
-    .pricing-row { display: grid; grid-template-columns: repeat(2, 1fr); width: 100%; }
-    .price-card { padding: 18px 16px; gap: 16px; }
-    .price-card + .price-card { border-left: none; }
-    .price-card:nth-child(even) { border-left: 1px solid var(--border); }
-    .price-card:nth-child(n + 3) { border-top: 1px solid var(--border); }
-    .price-card .title-row h3 { font-size: 18px; white-space: normal; }
-    .price-card .tile { width: 44px; height: 44px; border-radius: 13px; }
-    .price-card .tile img { width: 20px; height: 20px; }
-    .price-card .desc { font-size: 13px; }
+    .booking-card { width: 100%; border-radius: 20px; }
+    .bk-row { padding: 16px; gap: 12px; }
+    .bk-ic { padding: 12px; border-radius: 13px; }
+    .bk-ic img { width: 20px; height: 20px; }
+    .bk-body h3 { font-size: 18px; }
+    .bk-book { padding: 12px 18px; font-size: 15px; }
+    .exp-tile, .exp-tile .shot { width: 100px; }
+    .exp-tile .shot { height: 100px; border-radius: 14px; }
+    .exp-tile .nm { font-size: 13px; }
 
     /* --- shared section rhythm (kept compact so the layout doesn't read as
        a zoomed-in desktop design) --- */
@@ -2317,9 +2351,7 @@
     /* --- mobile typography: body sits at 15–16px (readable, not oversized),
        nothing under 12px, headings kept in proportion to the viewport --- */
     .section-head p { font-size: 15px; line-height: 1.5; }
-    .price-card .desc { font-size: 13.5px; line-height: 1.45; }
-    .price-card .price .from { font-size: 14px; }
-    .price-card .price .amount span { font-size: 17px; }
+    .bk-price .from, .bk-price b { font-size: 14px; }
     .ticket-card .meta span, .ticket-card .desc { font-size: 15px; line-height: 1.45; }
     .rule-card p { font-size: 13.5px; line-height: 1.45; }
     .facts span { font-size: 12px; letter-spacing: 1px; }
@@ -2378,9 +2410,8 @@
     .hero-art { transform: scale(0.4); }
     /* stays a 2-up grid on phones — no horizontal scrolling.
        With three tiles the last one spans the row instead of leaving a gap. */
-    .price-card { padding: 16px 14px; gap: 14px; }
-    .price-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
-    .price-card .title-row h3 { font-size: 17px; }
+    .bk-row { padding: 14px; }
+    .bk-body h3 { font-size: 17px; }
     .ticket-card { width: 88vw; }
     .rule-card { flex-basis: 100%; }
     .gal-set img { height: 140px; }
@@ -2513,65 +2544,55 @@
     </svg>
   </h1>
 
-  <div class="pricing-row">
-    <div class="price-card">
-      <div class="tile"><img class="tilted" src="assets/hero-icon-ticket.svg" alt=""></div>
-      <div class="body">
-        <div class="title-row">
-          <h3>Entry ticket</h3>
-          <img src="assets/hero-icon-chevron.svg" alt="">
-        </div>
-        <p class="desc">Access to 20 spectacular country zones.</p>
+  <div class="booking-card">
+    <div class="bk-row">
+      <span class="bk-ic"><img src="assets/hero-icon-ticket.svg" alt=""></span>
+      <div class="bk-body">
+        <h3>General zone entry</h3>
+        <p class="bk-price"><span class="from">From</span><img src="assets/hero-icon-riyal.svg" alt="SAR"><b>210.75</b></p>
       </div>
-      <div class="price">
-        <span class="from">From</span>
-        <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>35</span></span>
-      </div>
+      <a class="bk-book" href="#zones">Book</a>
     </div>
-    <a class="price-card" href="rides.html">
-      <div class="tile"><img src="assets/hero-icon-rocket.svg" alt=""></div>
-      <div class="body">
-        <div class="title-row">
-          <h3>Rides Package</h3>
-          <img src="assets/hero-icon-chevron.svg" alt="">
-        </div>
-        <p class="desc">Includes General Zone Entry + Rides access.</p>
+    <div class="bk-row">
+      <span class="bk-ic"><img src="assets/hero-icon-rocket.svg" alt=""></span>
+      <div class="bk-body">
+        <h3>Rides package</h3>
+        <p class="bk-price"><span class="from">From</span><img src="assets/hero-icon-riyal.svg" alt="SAR"><b>210.75</b></p>
       </div>
-      <div class="price">
-        <span class="from">From</span>
-        <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>89</span></span>
-      </div>
-    </a>
-    <div class="price-card">
-      <div class="tile"><img class="tilted" src="assets/hero-icon-ticket.svg" alt=""></div>
-      <div class="body">
-        <div class="title-row">
+      <a class="bk-book" href="rides.html">Book</a>
+    </div>
+    <div class="bk-row bk-exp">
+      <div class="bk-head">
+        <span class="bk-ic"><img src="assets/hero-icon-experiences.svg" alt=""></span>
+        <div class="bk-body">
           <h3>Experiences</h3>
-          <img src="assets/hero-icon-chevron.svg" alt="">
+          <p class="bk-price"><span class="from">From</span><img src="assets/hero-icon-riyal.svg" alt="SAR"><b>210.75</b></p>
         </div>
-        <p class="desc">Includes General Zone Entry + Premium pavilion access</p>
       </div>
-      <div class="price">
-        <span class="from">From</span>
-        <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>99</span></span>
-      </div>
-    </div>
-    <div class="price-card">
-      <div class="tile"><img src="assets/hero-icon-dining.svg" alt=""></div>
-      <div class="body">
-        <div class="title-row">
-          <h3>Restaurants</h3>
-          <img src="assets/hero-icon-chevron.svg" alt="">
-        </div>
-        <p class="desc">Includes General Zone Entry + Premium dining access</p>
-      </div>
-      <div class="price">
-        <span class="from">From</span>
-        <span class="amount"><img src="assets/hero-icon-riyal.svg" alt="SAR"><span>100</span></span>
+      <div class="bk-rail" data-rail>
+        <a class="exp-tile" href="#experiences">
+          <img class="shot" src="assets/exp-pyramids-mystery.png" alt="" loading="lazy" decoding="async">
+          <span class="nm">Pyramids mystery</span>
+          <span class="pr"><img src="assets/hero-icon-riyal.svg" alt="SAR">210.75</span>
+        </a>
+        <a class="exp-tile" href="#experiences">
+          <img class="shot" src="assets/exp-lost-museum.png" alt="" loading="lazy" decoding="async">
+          <span class="nm">The lost museum</span>
+          <span class="pr"><img src="assets/hero-icon-riyal.svg" alt="SAR">210.75</span>
+        </a>
+        <a class="exp-tile" href="#experiences">
+          <img class="shot" src="assets/exp-tomb-pharaoh.png" alt="" loading="lazy" decoding="async">
+          <span class="nm">The tomb of pharaoh</span>
+          <span class="pr"><img src="assets/hero-icon-riyal.svg" alt="SAR">210.75</span>
+        </a>
+        <a class="exp-tile" href="#experiences">
+          <img class="shot" src="assets/exp-escape-room.png" alt="" loading="lazy" decoding="async">
+          <span class="nm">Escape room</span>
+          <span class="pr"><img src="assets/hero-icon-riyal.svg" alt="SAR">210.75</span>
+        </a>
       </div>
     </div>
   </div>
-
 
   <div class="scroll-cue">
     <span>SCROLL</span>
@@ -4641,8 +4662,8 @@
       .from('.hero-headline .arc-1 textPath', { attr: { startOffset: '34%' }, duration: 0.9, ease: 'power3.out' }, '<')
       .from('.hero-headline .arc-2', { opacity: 0, y: 60, duration: 0.8 }, '-=0.5')
       .from('.hero-headline .arc-2 textPath', { attr: { startOffset: '68%' }, duration: 1, ease: 'power3.out' }, '<')
-      .from('.pricing-row', { opacity: 0, y: 60, duration: 0.9 }, '-=0.55')
-      .from('.price-card', { opacity: 0, y: 26, duration: 0.55, stagger: 0.08, clearProps: 'all' }, '-=0.75')
+      .from('.booking-card', { opacity: 0, y: 60, duration: 0.9 }, '-=0.55')
+      .from('.bk-row', { opacity: 0, y: 26, duration: 0.55, stagger: 0.08, clearProps: 'all' }, '-=0.75')
       .from('.scroll-cue', { opacity: 0, duration: 0.6 }, '-=0.3');
 
     // scroll-triggered reveals
@@ -4798,7 +4819,7 @@
       var overMap = t.closest && t.closest('#view-map');
       gsap.to([cDot, cRing], { autoAlpha: overMap ? 0 : 1, duration: 0.2, overwrite: 'auto' });
       if (overMap) return;
-      var inter = t.closest && t.closest('a, button, .price-card, .story, .faq-q, .zones-map');
+      var inter = t.closest && t.closest('a, button, .bk-row, .story, .faq-q, .zones-map');
       var drag = !inter && t.closest && t.closest('[data-rail]');
       cRing.classList.toggle('is-hover', !!inter);
       cRing.classList.toggle('is-drag', !!drag);
