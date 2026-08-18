@@ -134,13 +134,21 @@
   }
   .hero > * { position: relative; z-index: 3; }
   .hero > .tear { position: absolute; z-index: 6; }
-  /* fade the landmark collage into the info strip's navy so the band reads as one */
+  /* Each landmark ends at its own height, 70-170px short of the hero's bottom
+     edge, so the scrim below was still half transparent where they stopped and
+     every one showed a straight cut. Masking each layer dissolves its own foot
+     into the sky, wherever that foot happens to be. */
+  .hero-decor {
+    -webkit-mask-image: linear-gradient(to bottom, #000 80%, rgba(0, 0, 0, 0.45) 92%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 80%, rgba(0, 0, 0, 0.45) 92%, transparent 100%);
+  }
+  /* and the scrim still carries the collage as a whole into the info strip's navy */
   .hero::after {
     content: "";
     position: absolute;
     left: 0; right: 0; bottom: 0;
-    height: 200px;
-    background: linear-gradient(to bottom, rgba(33, 40, 89, 0) 0%, rgba(33, 40, 89, 0.75) 62%, #212859 100%);
+    height: 280px;
+    background: linear-gradient(to bottom, rgba(33, 40, 89, 0) 0%, rgba(33, 40, 89, 0.45) 45%, rgba(33, 40, 89, 0.88) 78%, #212859 100%);
     z-index: 2;
     pointer-events: none;
   }
@@ -2327,7 +2335,7 @@
       transform: scale(0.52);
       transform-origin: 50% 100%;
     }
-    .hero::after { height: 150px; }
+    .hero::after { height: 190px; }
     .hero-logo .mark { width: 74px; height: 73px; }
     .hero-logo .word { width: 82px; height: 13.6px; }
     .scroll-cue span { font-size: 17px; }
@@ -4720,6 +4728,19 @@
       .from('.booking-card', { opacity: 0, y: 60, duration: 0.9 }, '-=0.55')
       .from('.bk-row', { opacity: 0, y: 26, duration: 0.55, stagger: 0.08, clearProps: 'all' }, '-=0.75')
       .from('.scroll-cue', { opacity: 0, duration: 0.6 }, '-=0.3');
+
+    /* A small scroll parallax on the hero: the collage drifts down a touch so it
+       reads as further away, the stars go a little further, and the copy lifts.
+       Desktop only — on phones the collage is already scaled into a thin strip
+       and gsap writing transforms there would drop its CSS scale. */
+    gsap.matchMedia().add('(min-width: 901px)', function () {
+      var band = { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.5 };
+      gsap.to('.hero-art',      { yPercent: 5,  ease: 'none', scrollTrigger: band });
+      gsap.to('.hero-stars',    { yPercent: 13, ease: 'none', scrollTrigger: band });
+      gsap.to('.hero-logo',     { y: -46, ease: 'none', scrollTrigger: band });
+      gsap.to('.hero-headline', { y: -30, ease: 'none', scrollTrigger: band });
+      gsap.to('.booking-card',  { y: -12, ease: 'none', scrollTrigger: band });
+    });
 
     // scroll-triggered reveals
     function revealGroup(containerSel, childSel, vars) {
