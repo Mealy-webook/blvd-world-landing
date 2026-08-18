@@ -121,6 +121,15 @@
   .tear-top-white img { position: absolute; width: 100%; height: 135.83%; top: -17.92%; left: 0; }
   .tear-top-white .bar { bottom: -1px; }
 
+  /* A torn divider overlaps its own section: .tear-top reaches 62px inside it
+     (top:-50 plus 112 tall), .tear-top-white 30px, .tear-bottom covers the last
+     80px. Without a floor the first heading sits under the paper edge — it was
+     cutting into three sections by 18px on phones. These floors are all at or
+     above the design's own padding, so nothing loses spacing. */
+  section:has(> .tear-top) { padding-top: 86px; }
+  section:has(> .tear-top-white) { padding-top: 72px; }
+  section:has(> .tear-bottom) { padding-bottom: 104px; }
+
   /* ============ HERO ============ */
   .hero {
     /* --vfit is the viewport height in the hero's own units — fitScale() divides
@@ -1411,7 +1420,7 @@
   [data-rail].dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
 
   /* overlays attached to <html> don't inherit body's font — set it explicitly */
-  #view-map, #story-viewer, #loader, #intro, #ask-fab, #ask-panel, #dock {
+  #view-map, #story-viewer, #intro, #ask-fab, #ask-panel, #dock {
     font-family: 'Bricolage Grotesque', sans-serif;
     font-variation-settings: "opsz" 14, "wdth" 100;
   }
@@ -1834,7 +1843,7 @@
     .vm-detail-img { width: 68px; height: 68px; }
   }
 
-  /* ============ brand intro (plays once the loader tears away) ============ */
+  /* ============ brand intro (opens the page, hands over to the hero) ============ */
   #intro {
     position: fixed; inset: 0;
     z-index: 250;
@@ -1879,7 +1888,7 @@
     animation: inFade 0.5s ease 1.2s forwards;
   }
   @keyframes inFade { to { opacity: 1; } }
-  /* the panel rises into focus as the loader tears off above it */
+  /* the panel rises into focus as the page opens */
   #intro.run { animation: introIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
   @keyframes introIn {
     from { opacity: 0; transform: scale(0.94); filter: blur(12px); }
@@ -1892,106 +1901,6 @@
   }
   @media (prefers-reduced-motion: reduce) {
     #intro.run { animation: none; }
-  }
-
-  /* ============ preloader — the park powering up ============
-     A ring fills around the logo mark while three motes orbit it and the
-     status line reports what is warming up. When it is done the panel tears
-     upward on the site's own torn-paper edge and hands over to the intro. */
-  #loader {
-    position: fixed; inset: 0;
-    z-index: 300;
-    background:
-      radial-gradient(120% 80% at 50% 30%, rgba(255, 44, 121, 0.16) 0%, transparent 58%),
-      linear-gradient(180deg, #03003c 0%, #001d5f 55%, #212859 100%);
-    display: flex; align-items: center; justify-content: center;
-    overflow: visible;
-    will-change: transform;
-  }
-  #loader.ld-done { transition: transform 0.85s cubic-bezier(0.76, 0, 0.24, 1); transform: translateY(-104%); }
-  #loader.ld-done .ld-inner { opacity: 0; transform: translateY(-24px); transition: opacity 0.3s ease-in, transform 0.35s ease-in; }
-  .gal-track { will-change: transform; }
-
-  .ld-inner { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-
-  .ld-ring { position: relative; width: 132px; height: 132px; display: grid; place-items: center; }
-  .ld-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
-  .ld-ring circle { fill: none; stroke-width: 2.5; stroke-linecap: round; }
-  .ld-ring-bg { stroke: rgba(255, 255, 255, 0.12); }
-  .ld-ring-fill {
-    stroke: var(--pink);
-    stroke-dasharray: 339.29;
-    stroke-dashoffset: 339.29;
-    filter: drop-shadow(0 0 6px rgba(255, 44, 121, 0.7));
-    transition: stroke-dashoffset 0.25s linear;
-  }
-  /* three motes riding the ring, each a little behind the last */
-  .ld-orbit { position: absolute; inset: 0; animation: ldOrbit 3.4s linear infinite; }
-  .ld-orbit i {
-    position: absolute; top: -2px; left: 50%;
-    width: 5px; height: 5px; margin-left: -2.5px;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
-  }
-  .ld-orbit i:nth-child(2) { transform: rotate(120deg); transform-origin: 50% 68px; opacity: 0.55; }
-  .ld-orbit i:nth-child(3) { transform: rotate(240deg); transform-origin: 50% 68px; opacity: 0.3; }
-  @keyframes ldOrbit { to { transform: rotate(360deg); } }
-
-  .ld-mark { width: 74px; height: 74px; animation: ldBreathe 2.6s ease-in-out infinite; }
-  @keyframes ldBreathe {
-    0%, 100% { transform: scale(1) rotate(0deg); }
-    50%      { transform: scale(1.08) rotate(8deg); }
-  }
-  .ld-word { width: 110px; margin-top: 2px; }
-  .ld-count {
-    font-weight: 700; font-size: 13px;
-    letter-spacing: 2px;
-    color: #9fb0d8;
-    font-variant-numeric: tabular-nums;
-  }
-  /* the status line swaps as the ring crosses each quarter */
-  .ld-say {
-    height: 18px;
-    font-family: 'Figtree', sans-serif;
-    font-size: 13px; letter-spacing: 0.4px;
-    color: rgba(255, 255, 255, 0.6);
-  }
-  .ld-say .cur { display: inline-block; transition: opacity 0.28s ease, transform 0.28s ease; }
-  .ld-say.swap .cur { opacity: 0; transform: translateY(-6px); }
-
-  /* embers drifting up through the panel */
-  .ld-spark {
-    position: absolute;
-    width: 3px; height: 3px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.75);
-    animation: ldRise 7s linear infinite;
-  }
-  .ld-spark.s1 { left: 16%; bottom: -6px; animation-duration: 8s; }
-  .ld-spark.s2 { left: 31%; bottom: -6px; animation-duration: 6.2s; animation-delay: -2s; background: rgba(255, 44, 121, 0.8); }
-  .ld-spark.s3 { left: 47%; bottom: -6px; animation-duration: 9s;   animation-delay: -4s; }
-  .ld-spark.s4 { left: 63%; bottom: -6px; animation-duration: 7s;   animation-delay: -1s; background: rgba(255, 44, 121, 0.8); }
-  .ld-spark.s5 { left: 78%; bottom: -6px; animation-duration: 8.4s; animation-delay: -5s; }
-  .ld-spark.s6 { left: 90%; bottom: -6px; animation-duration: 6.6s; animation-delay: -3s; }
-  @keyframes ldRise {
-    0%   { transform: translateY(0) scale(0.6);        opacity: 0; }
-    12%  { opacity: 1; }
-    80%  { opacity: 1; }
-    100% { transform: translateY(-102vh) scale(1.1);   opacity: 0; }
-  }
-
-  .ld-tear {
-    position: absolute;
-    bottom: -58px; left: -1.5%;
-    width: 103%; height: 60px;
-    transform: rotate(180deg);
-    pointer-events: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .ld-orbit, .ld-mark, .ld-spark { animation: none; }
-    .ld-spark { opacity: 0; }
   }
 
   /* story viewer (appended to <html> so body zoom doesn't shrink it) */
@@ -2401,6 +2310,49 @@
     .sp-tier h3 { font-size: 11px; margin-bottom: 12px; }
     .sp-tier-split { grid-template-columns: 1fr; gap: 26px; }
 
+    /* --- venue rules: two per row on phones (five is the desktop design) --- */
+    /* --- rides packages: one scrollable line instead of a 2-up grid --- */
+    .pkg-grid {
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x proximity;
+      padding-bottom: 4px;
+    }
+    .pkg-grid::-webkit-scrollbar { display: none; }
+    .pkg {
+      flex: 0 0 232px;
+      scroll-snap-align: start;
+      min-height: 360px;
+    }
+
+    /* --- what's included: one scrollable line of ride photos --- */
+    .inc-grid, .inc-grid.narrow {
+      display: flex;
+      grid-template-columns: none;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x proximity;
+      padding-bottom: 4px;
+    }
+    .inc-grid::-webkit-scrollbar { display: none; }
+    .inc-cell { flex: 0 0 232px; scroll-snap-align: start; }
+
+        /* a full-size torn edge eats too much of a phone screen — shrink the paper
+       and bring the clearance floors down with it */
+    .tear-top { top: -34px; height: 74px; }
+    .tear-top-white { top: -34px; height: 56px; }
+    .tear-bottom { height: 56px; }
+    section:has(> .tear-top) { padding-top: 62px; }
+    section:has(> .tear-top-white) { padding-top: 46px; }
+    section:has(> .tear-bottom) { padding-bottom: 78px; }
+
     /* --- zones --- */
     .facts { gap: 18px; row-gap: 10px; }
     .facts li { gap: 18px; }
@@ -2478,7 +2430,13 @@
     .exp-tile .shot { height: 92px; border-radius: 14px; }
     .exp-tile .nm { font-size: 13px; }
     .ticket-card { width: 88vw; }
-    .rule-card { flex-basis: 100%; }
+    /* venue rules go two per row on phones (five is the desktop design) */
+    .rules-grid { gap: 12px; }
+    .rule-card { flex: 0 0 calc((100% - 12px) / 2); max-width: none; padding: 16px 12px; gap: 6px; }
+    .rule-card b { font-size: 19px; }
+    .rule-card p { font-size: 11.5px; text-align: center; }
+    .rule-card .ic { width: 44px; height: 44px; }
+    .rule-card .ic img { max-width: 22px; max-height: 22px; }
     .gal-set img { height: 140px; }
   }
   /* tablet/phone rules that pair with the mobile block above
@@ -2508,13 +2466,43 @@
     .story .avatar { width: 60px; height: 60px; }
     .story .label { font-size: 12px; font-weight: 600; max-width: 74px; text-align: center; line-height: 1.25; }
     .facts { flex-wrap: wrap; }
-    /* the pill row collapses into a hamburger popover below 900px */
-    #dock { left: 0; right: 0; transform: translate(0, -160%); }
+    /* Phones keep the pill row rather than hiding it behind a hamburger: six
+       short labels scroll in one swipe, and jumping to a section stays a single
+       tap. The shell is inset from the edges instead of running full bleed with
+       a void between the logo and a menu button. */
+    #dock {
+      --nav-h: 40px;
+      --pill-pad-x: 14px;
+      left: 12px; right: 12px;
+      transform: translate(0, -160%);
+      max-width: none;
+    }
     #dock.show { transform: translate(0, 0); }
-    #dock .pill-nav { width: 100%; justify-content: space-between; padding: 0 12px; }
-    #dock .pill-nav-items { display: none; }
-    #dock .mobile-menu-button { display: flex; }
-    #dock .mobile-menu-popover { display: block; }
+    #dock .pill-nav {
+      width: 100%;
+      padding: 4px;
+      gap: 4px;
+      /* the logo stays put while the labels scroll past it */
+      align-items: center;
+    }
+    #dock .pill-logo { flex-shrink: 0; padding: 6px; }
+    #dock .pill-nav-items {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x proximity;
+      /* fade the labels out at the scroll edge instead of clipping them dead */
+      -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent 100%);
+              mask-image: linear-gradient(90deg, #000 88%, transparent 100%);
+    }
+    #dock .pill-nav-items::-webkit-scrollbar { display: none; }
+    #dock .pill-list { padding-right: 8px; }
+    #dock .pill { font-size: 13px; scroll-snap-align: start; }
+    #dock .pill.is-active::after { bottom: 5px; width: 14px; }
+    /* no hamburger, so no popover either */
+    #dock .mobile-menu-button, #dock .mobile-menu-popover { display: none; }
   }
 
   /* Short phones, or a phone whose browser chrome eats the viewport: keep the
@@ -2551,24 +2539,6 @@
   <p class="in-skip">Tap to skip</p>
 </div>
 
-<div id="loader" aria-hidden="true">
-  <span class="ld-spark s1"></span><span class="ld-spark s2"></span><span class="ld-spark s3"></span>
-  <span class="ld-spark s4"></span><span class="ld-spark s5"></span><span class="ld-spark s6"></span>
-  <div class="ld-inner">
-    <div class="ld-ring">
-      <svg viewBox="0 0 120 120" aria-hidden="true">
-        <circle class="ld-ring-bg" cx="60" cy="60" r="54"></circle>
-        <circle class="ld-ring-fill" cx="60" cy="60" r="54"></circle>
-      </svg>
-      <span class="ld-orbit"><i></i><i></i><i></i></span>
-      <img class="ld-mark" src="assets/hero-logo-mark.svg" alt="">
-    </div>
-    <img class="ld-word" src="assets/hero-logo-wordmark.svg" alt="">
-    <div class="ld-count">0%</div>
-    <p class="ld-say"><span class="cur">Lighting up the zones</span></p>
-  </div>
-  <img class="ld-tear" src="assets/hero-torn-paper.png" alt="">
-</div>
 
 <div id="scroll-progress"></div>
 
@@ -3492,14 +3462,14 @@
     setTimeout(shoot, 1800);
   })();
 
-  // ---------- preloader ----------
+  // ---------- brand intro ----------
   (function () {
-    var loader = document.getElementById('loader');
     var intro = document.getElementById('intro');
-    if (!loader) return;
-    if (intro) document.documentElement.appendChild(intro);
+    if (!intro) return;
+    // escape the body zoom so the panel always covers the real viewport
+    document.documentElement.appendChild(intro);
 
-    /* Brand intro between the loader tearing away and the hero animating in.
+    /* The intro opens the page and hands over to the hero entrance behind it.
        Skippable, and skipped entirely for returning visits / reduced motion. */
     function runIntro(next) {
       if (!intro || REDUCED) { if (intro) intro.remove(); return next(); }
@@ -3564,14 +3534,12 @@
       // watchdog: never let the intro strand the page
       timers.push(setTimeout(function () { if (intro.parentNode) { intro.remove(); next(); } }, 8000));
     }
-    // escape the body zoom so the panel always covers the real viewport
-    document.documentElement.appendChild(loader);
-    if (REDUCED) { loader.remove(); if (intro) intro.remove(); return; }
+    if (REDUCED) { intro.remove(); return; }
 
     // Arriving back from another page on this site (browser back, or a link
-    // from the shows page): open straight into the content — no preloader, no
-    // intro replay, and leave scroll restoration alone so the browser returns
-    // you to where you were. A first visit or an explicit reload still gets it.
+    // from the shows page): open straight into the content — no intro replay,
+    // and leave scroll restoration alone so the browser returns you to where
+    // you were. A first visit or an explicit reload still gets it.
     var navType = (performance.getEntriesByType('navigation')[0] || {}).type;
     var fromThisSite = document.referrer && document.referrer.indexOf(location.origin) === 0;
     // A reload is the one case where you are asking to see it again, so it
@@ -3582,8 +3550,7 @@
     var seen = false;
     try { seen = sessionStorage.getItem('blvd-intro') === '1'; } catch (e) {}
     if (!forced && !reloaded && (seen || navType === 'back_forward' || fromThisSite)) {
-      loader.remove();
-      if (intro) intro.remove();
+      intro.remove();
       return;
     }
     try { sessionStorage.setItem('blvd-intro', '1'); } catch (e) {}
@@ -3592,78 +3559,20 @@
     window.scrollTo(0, 0);
     document.documentElement.style.overflow = 'hidden';
 
-    var ring = loader.querySelector('.ld-ring-fill');
-    var count = loader.querySelector('.ld-count');
-    var say = loader.querySelector('.ld-say');
-    var sayNow = say.querySelector('.cur');
-    var CIRC = 339.29;
-    // the status line reports what is warming up as the ring crosses each quarter
-    var LINES = ['Lighting up the zones', 'Warming up the rides', 'Setting the tables', 'Opening the gates'];
-    var lineAt = 0;
-    function setLine(i) {
-      if (i === lineAt || !LINES[i]) return;
-      lineAt = i;
-      say.classList.add('swap');
-      setTimeout(function () {
-        sayNow.textContent = LINES[i];
-        say.classList.remove('swap');
-      }, 280);
-    }
-    // only wait on what the first screen actually paints — everything else is lazy
-    var critical = Array.prototype.slice.call(document.querySelectorAll('#loader img, .hero img'));
-    var total = critical.length || 1;
-    var loadedCount = critical.filter(function (im) { return im.complete; }).length;
-    critical.forEach(function (im) {
-      if (im.complete) return;
-      im.addEventListener('load', function () { loadedCount++; }, { once: true });
-      im.addEventListener('error', function () { loadedCount++; }, { once: true });
+    /* Decode the hero art before the intro plays, so the entrance never shares
+       a frame with six full-size PNG decodes. Capped, and it starts anyway if
+       the images are slow. */
+    var critical = Array.prototype.slice.call(document.querySelectorAll('.hero img'));
+    var decodes = critical.map(function (im) {
+      return im.decode ? im.decode().catch(function () {}) : Promise.resolve();
     });
-
-    var MIN_TIME = 1400, MAX_TIME = 6000, start = performance.now(), finished = false;
-
-    function done() {
-      if (finished) return;
-      finished = true;
-      function reveal() {
-        document.documentElement.style.overflow = '';
-        runIntro(function () { if (window.playHeroIntro) window.playHeroIntro(); });
-      }
-      // decode the hero art off the animation frame, so the intro doesn't
-      // share a frame with six full-size PNG decodes
-      var decodes = critical.map(function (im) {
-        return im.decode ? im.decode().catch(function () {}) : Promise.resolve();
-      });
-      Promise.race([
-        Promise.all(decodes),
-        new Promise(function (r) { setTimeout(r, 1200); })
-      ]).then(function () { tearAway(reveal); });
-    }
-
-    // the tear is a CSS transition (compositor-driven, and it still runs when
-    // rAF is throttled) so the reveal can never be left hanging
-    function tearAway(reveal) {
-      loader.classList.add('ld-done');
-      reveal();
-      setTimeout(function () { loader.style.display = 'none'; }, 950);
-    }
-
-    function tick() {
-      if (finished) return;
-      var elapsed = performance.now() - start;
-      var timeP = Math.min(elapsed / MIN_TIME, 1);
-      var loadP = elapsed > MAX_TIME ? 1 : loadedCount / total;
-      var p = Math.min(timeP, loadP);
-      ring.style.strokeDashoffset = (CIRC * (1 - p)).toFixed(1);
-      count.textContent = Math.round(p * 100) + '%';
-      setLine(Math.min(3, Math.floor(p * 4)));
-      if (p >= 1) { clearInterval(poll); setTimeout(done, 150); return; }
-      requestAnimationFrame(tick);
-    }
-    // rAF is throttled or paused in background tabs, so a timer keeps the
-    // progress honest and guarantees the loader can never stall
-    var poll = setInterval(tick, 250);
-    tick();
-    setTimeout(function () { clearInterval(poll); done(); }, MAX_TIME + 800);
+    Promise.race([
+      Promise.all(decodes),
+      new Promise(function (r) { setTimeout(r, 1000); })
+    ]).then(function () {
+      document.documentElement.style.overflow = '';
+      runIntro(function () { if (window.playHeroIntro) window.playHeroIntro(); });
+    });
   })();
 
   // FAQ accordion
@@ -3896,6 +3805,14 @@
         t.pill.classList.toggle('is-active', on);
         if (t.link) t.link.classList.toggle('is-active', on);
       });
+      // on phones the row scrolls, so walk the active pill into view
+      if (active && navItems && navItems.scrollWidth > navItems.clientWidth + 4) {
+        var p = active.pill, want = p.offsetLeft - (navItems.clientWidth - p.offsetWidth) / 2;
+        want = Math.max(0, Math.min(want, navItems.scrollWidth - navItems.clientWidth));
+        if (Math.abs(navItems.scrollLeft - want) > 6) {
+          navItems.scrollTo({ left: want, behavior: calm ? 'auto' : 'smooth' });
+        }
+      }
     }
 
     layout();
@@ -4745,7 +4662,7 @@
       scrollTrigger: { start: 0, end: 'max', scrub: 0.3 }
     });
 
-    // hero entrance (paused: the preloader plays it as it tears away)
+    // hero entrance (paused: the intro plays it as it dissolves)
     var intro = gsap.timeline({
       paused: true,
       // immediateRender:false keeps the hero at its natural state until the
