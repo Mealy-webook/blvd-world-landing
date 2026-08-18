@@ -4391,24 +4391,108 @@
       if (vm.classList.contains('open')) { hideDetail(); applyMap(false); }
     });
 
-    // drag to pan (overlay lives outside the body zoom, so pointer px == layout px)
-    var down = false, sx = 0, sy = 0, ox = 0, oy = 0;
+    /* Gestures on the map: one finger pans, two pinch to zoom, and a trackpad
+       pinch (ctrl+wheel) does the same on desktop.
+
+       The stage scales about its own centre, so to keep the point between the
+       fingers pinned under them while scaling by k, the translation only needs
+       t += d * (1 - k), where d is that point's offset from the stage's current
+       centre. Writes land through gsap.set rather than a tween — a gesture has
+       to track the fingers exactly, with no easing lag. */
+    var MIN_SCALE = 0.6, MAX_SCALE = 2.6;
+    var pointers = new Map(), panFrom = null, pinchFrom = null;
+
+    function applyMapLive() {
+      stage.style.setProperty('--pinscale', 1 / scale);
+      // an open/zone tween may still be easing; it would fight the gesture
+      if (window.gsap) gsap.killTweensOf(stage);
+      if (window.gsap) gsap.set(stage, { x: tx, y: ty, scale: scale });
+      else stage.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+    }
+    function stageCentre() {
+      var r = stage.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    }
+    function bothPointers() {
+      var it = pointers.values();
+      return [it.next().value, it.next().value];
+    }
+    function beginGesture() {
+      if (pointers.size >= 2) {
+        var ab = bothPointers();
+        pinchFrom = { dist: Math.hypot(ab[0].x - ab[1].x, ab[0].y - ab[1].y) };
+        panFrom = null;
+      } else if (pointers.size === 1) {
+        var p = pointers.values().next().value;
+        panFrom = { x: p.x, y: p.y, tx: tx, ty: ty };
+        pinchFrom = null;
+      }
+    }
+    // zoom by k about a screen point, keeping that point where it is
+    function zoomAbout(next, px, py) {
+      next = Math.max(MIN_SCALE, Math.min(MAX_SCALE, next));
+      var k = next / scale;
+      if (k === 1) return false;
+      var c = stageCentre();
+      tx += (px - c.x) * (1 - k);
+      ty += (py - c.y) * (1 - k);
+      scale = next;
+      return true;
+    }
+
     mapWrap.addEventListener('pointerdown', function (e) {
       if (e.target.closest('.vm-dot, .vm-pin')) return;
-      down = true; sx = e.clientX; sy = e.clientY; ox = tx; oy = ty;
-      mapWrap.classList.add('dragging');
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       try { mapWrap.setPointerCapture(e.pointerId); } catch (err) {}
+      mapWrap.classList.add('dragging');
       hideDetail();
+      beginGesture();
     });
-    window.addEventListener('pointermove', function (e) {
-      if (!down) return;
-      tx = ox + (e.clientX - sx);
-      ty = oy + (e.clientY - sy);
-      applyMap(false);
+    mapWrap.addEventListener('pointermove', function (e) {
+      if (!pointers.has(e.pointerId)) return;
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+      if (pointers.size >= 2 && pinchFrom) {
+        var ab = bothPointers();
+        var dist = Math.hypot(ab[0].x - ab[1].x, ab[0].y - ab[1].y);
+        if (dist < 1 || pinchFrom.dist < 1) return;
+        var mx = (ab[0].x + ab[1].x) / 2, my = (ab[0].y + ab[1].y) / 2;
+        if (zoomAbout(scale * (dist / pinchFrom.dist), mx, my)) applyMapLive();
+        pinchFrom.dist = dist;
+      } else if (panFrom) {
+        var p = pointers.get(e.pointerId);
+        tx = panFrom.tx + (p.x - panFrom.x);
+        ty = panFrom.ty + (p.y - panFrom.y);
+        applyMapLive();
+      }
     });
-    function endPan() { down = false; mapWrap.classList.remove('dragging'); }
-    window.addEventListener('pointerup', endPan);
-    window.addEventListener('pointercancel', endPan);
+    function liftPointer(e) {
+      if (!pointers.delete(e.pointerId)) return;
+      if (pointers.size === 0) {
+        panFrom = pinchFrom = null;
+        mapWrap.classList.remove('dragging');
+      } else {
+        beginGesture();   // carry on panning with whichever finger is still down
+      }
+    }
+    mapWrap.addEventListener('pointerup', liftPointer);
+    mapWrap.addEventListener('pointercancel', liftPointer);
+
+    // a trackpad pinch arrives as ctrl+wheel
+    mapWrap.addEventListener('wheel', function (e) {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      hideDetail();
+      if (zoomAbout(scale * Math.exp(-e.deltaY * 0.01), e.clientX, e.clientY)) applyMapLive();
+    }, { passive: false });
+
+    // double-tap / double-click steps in, and back out once it is at the top
+    mapWrap.addEventListener('dblclick', function (e) {
+      if (e.target.closest('.vm-dot, .vm-pin')) return;
+      var next = scale >= MAX_SCALE - 0.01 ? 1 : Math.min(scale * 1.6, MAX_SCALE);
+      if (next === 1) { tx = 0; ty = 0; scale = 1; hideDetail(); applyMap(true); return; }
+      if (zoomAbout(next, e.clientX, e.clientY)) { hideDetail(); applyMap(true); }
+    });
 
     // ---- zones & POIs on the map ----
     var ICONS = { ride: 'map2-pin-ic-rides.svg', experience: 'map2-pin-ic-experience.svg', dining: 'map2-pin-ic-dining.svg', shopping: 'map2-pin-ic-shopping.svg', facilities: 'map2-pin-ic-info.svg' };
