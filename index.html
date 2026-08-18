@@ -723,42 +723,21 @@
     animation: fabHalo 2.8s ease-out infinite;
     pointer-events: none;
   }
-  #ask-fab .fab-spark { position: relative; z-index: 2; width: 26px; height: 26px; overflow: visible; }
-  #ask-fab .fab-spark path {
-    fill: oklch(32% 0.14 300);
-    transform-box: fill-box; transform-origin: center;
-  }
-  /* the four-point star turns and breathes; the two motes twinkle off-beat */
-  #ask-fab .fab-spark .s-main { animation: fabStar 7s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
-  #ask-fab .fab-spark .s-a { animation: fabTwinkle 2.6s ease-in-out infinite; }
-  #ask-fab .fab-spark .s-b { animation: fabTwinkle 2.6s ease-in-out 1.3s infinite; }
 
   @keyframes fabHalo {
     0%   { transform: scale(1);    opacity: 0.7; }
     70%  { transform: scale(1.45); opacity: 0; }
     100% { transform: scale(1.45); opacity: 0; }
   }
-  @keyframes fabStar {
-    0%   { transform: rotate(0deg)   scale(1); }
-    50%  { transform: rotate(180deg) scale(0.86); }
-    100% { transform: rotate(360deg) scale(1); }
-  }
-  @keyframes fabTwinkle {
-    0%, 100% { opacity: 0.25; transform: scale(0.6); }
-    50%      { opacity: 1;    transform: scale(1.15); }
-  }
 
   /* hovering spins the swirl up */
   #ask-fab:hover { transform: translateY(-3px) scale(1.06); box-shadow: 0 18px 44px rgba(176, 44, 255, 0.5); }
   #ask-fab:hover::before { animation-duration: 5s; }
-  #ask-fab:hover .fab-spark .s-main { animation-duration: 2.4s; }
   #ask-fab.hidden { opacity: 0; pointer-events: none; transform: translateY(12px) scale(0.9); }
 
   @media (prefers-reduced-motion: reduce) {
-    #ask-fab::before, #ask-fab .fab-halo,
-    #ask-fab .fab-spark path { animation: none; }
+    #ask-fab::before, #ask-fab .fab-halo { animation: none; }
     #ask-fab .fab-halo { opacity: 0.35; }
-    #ask-fab .fab-spark .s-a, #ask-fab .fab-spark .s-b { opacity: 0.7; }
   }
 
   #ask-panel {
@@ -895,7 +874,6 @@
 
   @media (max-width: 560px) {
     #ask-fab { right: 16px; width: 54px; height: 54px; }
-    #ask-fab .fab-spark { width: 27px; height: 27px; }
     #ask-panel {
       right: 0; left: 0; bottom: 0;
       width: 100%; max-width: 100%;
@@ -1843,23 +1821,13 @@
     from { opacity: 0; transform: scale(0.94); filter: blur(12px); }
     to   { opacity: 1; transform: none;        filter: blur(0); }
   }
-  /* a light sweeps across the copy once it has finished typing */
-  #intro .in-glint {
-    position: absolute; inset: 0;
-    background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.16) 50%, transparent 60%);
-    transform: translateX(-110%);
-    pointer-events: none;
-    opacity: 0;
-  }
-  #intro.typed .in-glint { opacity: 1; animation: inGlint 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-  @keyframes inGlint { to { transform: translateX(110%); } }
   /* the whole panel pushes forward and dissolves into the hero */
   #intro.out { animation: inOut 0.9s cubic-bezier(0.76, 0, 0.24, 1) forwards; }
   @keyframes inOut {
     to { opacity: 0; transform: scale(1.18); filter: blur(8px); }
   }
   @media (prefers-reduced-motion: reduce) {
-    #intro.run, #intro.typed .in-glint { animation: none; }
+    #intro.run { animation: none; }
   }
 
   /* ============ preloader — the park powering up ============
@@ -2452,7 +2420,6 @@
   </p>
   <p class="in-sub">Riyadh Season</p>
   <p class="in-skip">Tap to skip</p>
-  <span class="in-glint" aria-hidden="true"></span>
 </div>
 
 <div id="loader" aria-hidden="true">
@@ -3080,11 +3047,6 @@
 <!-- ================= ASK BLVD (chat assistant) ================= -->
 <button id="ask-fab" aria-label="Ask BLVD World a question" aria-expanded="false">
   <span class="fab-halo"></span>
-  <svg class="fab-spark" viewBox="0 0 32 32" aria-hidden="true">
-    <path class="s-main" d="M16 4c1 6.2 2.8 8 9 9-6.2 1-8 2.8-9 9-1-6.2-2.8-8-9-9 6.2-1 8-2.8 9-9Z"></path>
-    <path class="s-a" d="M26.5 5c.42 2.6 1.18 3.36 3.78 3.78-2.6.42-3.36 1.18-3.78 3.78-.42-2.6-1.18-3.36-3.78-3.78 2.6-.42 3.36-1.18 3.78-3.78Z"></path>
-    <path class="s-b" d="M6 20.5c.34 2.1.95 2.71 3.05 3.05-2.1.34-2.71.95-3.05 3.05-.34-2.1-.95-2.71-3.05-3.05 2.1-.34 2.71-.95 3.05-3.05Z"></path>
-  </svg>
 </button>
 
 <section id="ask-panel" aria-hidden="true" aria-label="Ask BLVD World">
@@ -3466,7 +3428,7 @@
         intro.classList.remove('p1');
         intro.classList.add('p2');
         type(e2, L2, 45, function () {
-          intro.classList.add('typed');           // reveal the Riyadh Season line and glint
+          intro.classList.add('typed');           // reveal the Riyadh Season line
           timers.push(setTimeout(finish, 900));
         });
       }
