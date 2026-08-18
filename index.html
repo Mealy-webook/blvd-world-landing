@@ -333,6 +333,7 @@
   .ctrl-btn.dim { opacity: 0.6; }
   .ctrl-btn:hover { background: rgba(0, 0, 0, 0.05); }
   .on-navy .ctrl-btn { border-color: #fff; }
+  .on-navy .ctrl-btn img { filter: brightness(0) invert(1); }
   .on-navy .ctrl-btn:hover { background: rgba(255, 255, 255, 0.08); }
   .progress {
     height: 2px;
@@ -552,7 +553,8 @@
     font-weight: 600; font-size: 17px; line-height: 24px;
     color: var(--ink);
   }
-  .on-navy .product-card .price { color: #e4e4e7; }
+  .on-navy .product-card .price { color: #fff; }
+  .on-navy .product-card .price img { filter: brightness(0) invert(1); }
   .product-card .price img { width: 11px; height: 12px; }
 
   /* ============ VENUE RULES ============ */
@@ -1085,13 +1087,50 @@
     width: 100%; max-width: 1400px;
   }
   .inc-grid.narrow { grid-template-columns: repeat(3, 1fr); max-width: 1060px; }
-  .inc-grid img {
+  /* each photo drifts inside its own clipped cell, so the grid is never still */
+  .inc-cell {
+    display: block;
     width: 100%; aspect-ratio: 16 / 10;
-    object-fit: cover;
     border-radius: 18px;
+    overflow: hidden;
     transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .inc-grid img:hover { transform: scale(1.03); }
+  .inc-cell:hover { transform: scale(1.03); }
+  .inc-cell img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    animation: incDrift 20s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  /* alternating directions and speeds keep the two rows from pulsing in unison */
+  .inc-cell:nth-child(2) img { animation-duration: 24s; animation-delay: -6s;  animation-name: incDriftB; }
+  .inc-cell:nth-child(3) img { animation-duration: 18s; animation-delay: -11s; }
+  .inc-cell:nth-child(4) img { animation-duration: 26s; animation-delay: -3s;  animation-name: incDriftB; }
+  .inc-grid.narrow .inc-cell:nth-child(1) img { animation-duration: 22s; animation-delay: -8s; animation-name: incDriftB; }
+  .inc-grid.narrow .inc-cell:nth-child(3) img { animation-duration: 19s; animation-delay: -14s; animation-name: incDriftB; }
+  .inc-cell:hover img { animation-play-state: paused; }
+  @keyframes incDrift {
+    from { transform: scale(1.06) translate3d(-1.6%, -1.2%, 0); }
+    to   { transform: scale(1.16) translate3d(1.6%, 1.4%, 0); }
+  }
+  @keyframes incDriftB {
+    from { transform: scale(1.14) translate3d(1.8%, 1%, 0); }
+    to   { transform: scale(1.05) translate3d(-1.4%, -1.4%, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .inc-cell img { animation: none; transform: scale(1.06); }
+  }
+
+  /* section titles are split into masked words for the scroll reveal */
+  section:not(.hero) h2 .w {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
+  }
+  section:not(.hero) h2 .i { display: inline-block; will-change: transform; }
 
   /* ============ FAQ on white (per the design) ============ */
   .faq-section h2 { color: var(--ink); }
@@ -1126,7 +1165,7 @@
     .pkg .spec .v { font-size: 14px; }
     .pkg .book { padding: 13px 16px; font-size: 15px; }
     .inc-grid, .inc-grid.narrow { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .inc-grid img { border-radius: 14px; }
+    .inc-cell { border-radius: 14px; }
   }
 
   /* ============ delight layer ============ */
@@ -1746,54 +1785,129 @@
     animation: inFade 0.5s ease 1.2s forwards;
   }
   @keyframes inFade { to { opacity: 1; } }
-  /* the whole panel lifts and dissolves into the hero */
-  #intro.out { animation: inOut 0.8s cubic-bezier(0.76, 0, 0.24, 1) forwards; }
-  @keyframes inOut { to { opacity: 0; transform: scale(1.12); } }
+  /* the panel rises into focus as the loader tears off above it */
+  #intro.run { animation: introIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  @keyframes introIn {
+    from { opacity: 0; transform: scale(0.94); filter: blur(12px); }
+    to   { opacity: 1; transform: none;        filter: blur(0); }
+  }
+  /* a light sweeps across the copy once it has finished typing */
+  #intro .in-glint {
+    position: absolute; inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.16) 50%, transparent 60%);
+    transform: translateX(-110%);
+    pointer-events: none;
+    opacity: 0;
+  }
+  #intro.typed .in-glint { opacity: 1; animation: inGlint 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+  @keyframes inGlint { to { transform: translateX(110%); } }
+  /* the whole panel pushes forward and dissolves into the hero */
+  #intro.out { animation: inOut 0.9s cubic-bezier(0.76, 0, 0.24, 1) forwards; }
+  @keyframes inOut {
+    to { opacity: 0; transform: scale(1.18); filter: blur(8px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #intro.run, #intro.typed .in-glint { animation: none; }
+  }
 
-  /* preloader */
+  /* ============ preloader — the park powering up ============
+     A ring fills around the logo mark while three motes orbit it and the
+     status line reports what is warming up. When it is done the panel tears
+     upward on the site's own torn-paper edge and hands over to the intro. */
   #loader {
     position: fixed; inset: 0;
     z-index: 300;
-    background: linear-gradient(180deg, #03003c 0%, #001d5f 55%, #212859 100%);
+    background:
+      radial-gradient(120% 80% at 50% 30%, rgba(255, 44, 121, 0.16) 0%, transparent 58%),
+      linear-gradient(180deg, #03003c 0%, #001d5f 55%, #212859 100%);
     display: flex; align-items: center; justify-content: center;
     overflow: visible;
+    will-change: transform;
   }
   #loader.ld-done { transition: transform 0.85s cubic-bezier(0.76, 0, 0.24, 1); transform: translateY(-104%); }
   #loader.ld-done .ld-inner { opacity: 0; transform: translateY(-24px); transition: opacity 0.3s ease-in, transform 0.35s ease-in; }
-  #loader { will-change: transform; }
-  .ld-fill { will-change: transform; }
   .gal-track { will-change: transform; }
-  .ld-inner { display: flex; flex-direction: column; align-items: center; gap: 16px; }
-  .ld-mark { width: 84px; height: 84px; animation: ldSpin 2.4s ease-in-out infinite; }
-  @keyframes ldSpin {
-    50% { transform: rotate(180deg) scale(1.1); }
-    100% { transform: rotate(360deg) scale(1); }
+
+  .ld-inner { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+
+  .ld-ring { position: relative; width: 132px; height: 132px; display: grid; place-items: center; }
+  .ld-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ld-ring circle { fill: none; stroke-width: 2.5; stroke-linecap: round; }
+  .ld-ring-bg { stroke: rgba(255, 255, 255, 0.12); }
+  .ld-ring-fill {
+    stroke: var(--pink);
+    stroke-dasharray: 339.29;
+    stroke-dashoffset: 339.29;
+    filter: drop-shadow(0 0 6px rgba(255, 44, 121, 0.7));
+    transition: stroke-dashoffset 0.25s linear;
   }
-  .ld-word { width: 110px; }
-  .ld-track {
-    width: 220px; height: 2px;
-    margin-top: 12px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 99px;
-    overflow: hidden;
+  /* three motes riding the ring, each a little behind the last */
+  .ld-orbit { position: absolute; inset: 0; animation: ldOrbit 3.4s linear infinite; }
+  .ld-orbit i {
+    position: absolute; top: -2px; left: 50%;
+    width: 5px; height: 5px; margin-left: -2.5px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
   }
-  .ld-fill {
-    width: 100%; height: 100%;
-    background: var(--pink);
-    transform: scaleX(0); transform-origin: 0 50%;
+  .ld-orbit i:nth-child(2) { transform: rotate(120deg); transform-origin: 50% 68px; opacity: 0.55; }
+  .ld-orbit i:nth-child(3) { transform: rotate(240deg); transform-origin: 50% 68px; opacity: 0.3; }
+  @keyframes ldOrbit { to { transform: rotate(360deg); } }
+
+  .ld-mark { width: 74px; height: 74px; animation: ldBreathe 2.6s ease-in-out infinite; }
+  @keyframes ldBreathe {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50%      { transform: scale(1.08) rotate(8deg); }
   }
+  .ld-word { width: 110px; margin-top: 2px; }
   .ld-count {
-    font-weight: 700; font-size: 14px;
-    letter-spacing: 1.5px;
+    font-weight: 700; font-size: 13px;
+    letter-spacing: 2px;
     color: #9fb0d8;
     font-variant-numeric: tabular-nums;
   }
+  /* the status line swaps as the ring crosses each quarter */
+  .ld-say {
+    height: 18px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px; letter-spacing: 0.4px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .ld-say .cur { display: inline-block; transition: opacity 0.28s ease, transform 0.28s ease; }
+  .ld-say.swap .cur { opacity: 0; transform: translateY(-6px); }
+
+  /* embers drifting up through the panel */
+  .ld-spark {
+    position: absolute;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.75);
+    animation: ldRise 7s linear infinite;
+  }
+  .ld-spark.s1 { left: 16%; bottom: -6px; animation-duration: 8s; }
+  .ld-spark.s2 { left: 31%; bottom: -6px; animation-duration: 6.2s; animation-delay: -2s; background: rgba(255, 44, 121, 0.8); }
+  .ld-spark.s3 { left: 47%; bottom: -6px; animation-duration: 9s;   animation-delay: -4s; }
+  .ld-spark.s4 { left: 63%; bottom: -6px; animation-duration: 7s;   animation-delay: -1s; background: rgba(255, 44, 121, 0.8); }
+  .ld-spark.s5 { left: 78%; bottom: -6px; animation-duration: 8.4s; animation-delay: -5s; }
+  .ld-spark.s6 { left: 90%; bottom: -6px; animation-duration: 6.6s; animation-delay: -3s; }
+  @keyframes ldRise {
+    0%   { transform: translateY(0) scale(0.6);        opacity: 0; }
+    12%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: translateY(-102vh) scale(1.1);   opacity: 0; }
+  }
+
   .ld-tear {
     position: absolute;
     bottom: -58px; left: -1.5%;
     width: 103%; height: 60px;
     transform: rotate(180deg);
     pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ld-orbit, .ld-mark, .ld-spark { animation: none; }
+    .ld-spark { opacity: 0; }
   }
 
   /* story viewer (appended to <html> so body zoom doesn't shrink it) */
@@ -2015,6 +2129,7 @@
     transform-origin: center;
   }
   #dock .mobile-menu-popover {
+    display: none;
     position: absolute;
     top: calc(var(--nav-h) + 16px); left: 12px; right: 12px;
     padding: 6px;
@@ -2219,6 +2334,7 @@
     #dock .pill-nav { width: 100%; justify-content: space-between; padding: 0 12px; }
     #dock .pill-nav-items { display: none; }
     #dock .mobile-menu-button { display: flex; }
+    #dock .mobile-menu-popover { display: block; }
   }
 </style>
 </head>
@@ -2231,14 +2347,24 @@
   </p>
   <p class="in-sub">Riyadh Season</p>
   <p class="in-skip">Tap to skip</p>
+  <span class="in-glint" aria-hidden="true"></span>
 </div>
 
 <div id="loader" aria-hidden="true">
+  <span class="ld-spark s1"></span><span class="ld-spark s2"></span><span class="ld-spark s3"></span>
+  <span class="ld-spark s4"></span><span class="ld-spark s5"></span><span class="ld-spark s6"></span>
   <div class="ld-inner">
-    <img class="ld-mark" src="assets/hero-logo-mark.svg" alt="">
+    <div class="ld-ring">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="ld-ring-bg" cx="60" cy="60" r="54"></circle>
+        <circle class="ld-ring-fill" cx="60" cy="60" r="54"></circle>
+      </svg>
+      <span class="ld-orbit"><i></i><i></i><i></i></span>
+      <img class="ld-mark" src="assets/hero-logo-mark.svg" alt="">
+    </div>
     <img class="ld-word" src="assets/hero-logo-wordmark.svg" alt="">
-    <div class="ld-track"><div class="ld-fill"></div></div>
     <div class="ld-count">0%</div>
+    <p class="ld-say"><span class="cur">Lighting up the zones</span></p>
   </div>
   <img class="ld-tear" src="assets/hero-torn-paper.png" alt="">
 </div>
@@ -2582,15 +2708,15 @@
   </div>
 
   <div class="inc-grid">
-    <img src="assets/rides-photo-1.png" alt="Wave Swinger" loading="lazy" decoding="async">
-    <img src="assets/rides-photo-2.png" alt="Sky Loop" loading="lazy" decoding="async">
-    <img src="assets/exp-pyramids-mystery.png" alt="Pyramid&rsquo;s mystery" loading="lazy" decoding="async">
-    <img src="assets/rides-photo-3.png" alt="Fuji River Rapids" loading="lazy" decoding="async">
+    <span class="inc-cell"><img src="assets/rides-photo-1.png" alt="Wave Swinger" loading="lazy" decoding="async"></span>
+    <span class="inc-cell"><img src="assets/rides-photo-2.png" alt="Sky Loop" loading="lazy" decoding="async"></span>
+    <span class="inc-cell"><img src="assets/exp-pyramids-mystery.png" alt="Pyramid&rsquo;s mystery" loading="lazy" decoding="async"></span>
+    <span class="inc-cell"><img src="assets/rides-photo-3.png" alt="Fuji River Rapids" loading="lazy" decoding="async"></span>
   </div>
   <div class="inc-grid narrow">
-    <img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async">
-    <img src="assets/exp-escape-room.png" alt="Escape room" loading="lazy" decoding="async">
-    <img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async">
+    <span class="inc-cell"><img src="assets/exp-lost-museum.png" alt="The lost muesem" loading="lazy" decoding="async"></span>
+    <span class="inc-cell"><img src="assets/exp-escape-room.png" alt="Escape room" loading="lazy" decoding="async"></span>
+    <span class="inc-cell"><img src="assets/exp-tomb-pharaoh.png" alt="The tomb of pharoh" loading="lazy" decoding="async"></span>
   </div>
 </section>
 
@@ -3199,7 +3325,7 @@
         window.removeEventListener('keydown', finish);
         intro.classList.add('out');
         next();                                   // hero animates in behind the dissolve
-        timers.push(setTimeout(function () { intro.remove(); }, 820));
+        timers.push(setTimeout(function () { intro.remove(); }, 920));
       }
 
       // type character by character, second line in brand pink
@@ -3212,23 +3338,27 @@
           else if (after) timers.push(setTimeout(after, 260));
         })();
       }
-      intro.classList.add('p1');
-      type(e1, L1, 52, function () {
+      // let the panel settle in before the words start
+      timers.push(setTimeout(startTyping, 420));
+      function startTyping() {
+        if (done) return;
+        intro.classList.add('p1');
+        type(e1, L1, 52, afterL1);
+      }
+      function afterL1() {
         intro.classList.remove('p1');
         intro.classList.add('p2');
         type(e2, L2, 62, function () {
-          intro.classList.add('typed');           // reveal the Riyadh Season line
+          intro.classList.add('typed');           // reveal the Riyadh Season line and glint
           timers.push(setTimeout(finish, 1150));
         });
-      });
+      }
 
       window.addEventListener('pointerdown', finish);
       window.addEventListener('keydown', finish);
       intro.addEventListener('click', finish);
       // watchdog: never let the intro strand the page
       timers.push(setTimeout(function () { if (intro.parentNode) { intro.remove(); next(); } }, 8000));
-      // watchdog: never let the intro strand the page
-      
     }
     // escape the body zoom so the panel always covers the real viewport
     document.documentElement.appendChild(loader);
@@ -3240,18 +3370,38 @@
     // you to where you were. A first visit or an explicit reload still gets it.
     var navType = (performance.getEntriesByType('navigation')[0] || {}).type;
     var fromThisSite = document.referrer && document.referrer.indexOf(location.origin) === 0;
-    if (navType === 'back_forward' || fromThisSite) {
+    // ...and once it has played, it stays played for the rest of the browsing
+    // session, so a reload or a fresh hit on another page never replays it.
+    var seen = false;
+    try { seen = sessionStorage.getItem('blvd-intro') === '1'; } catch (e) {}
+    if (seen || navType === 'back_forward' || fromThisSite) {
       loader.remove();
       if (intro) intro.remove();
       return;
     }
+    try { sessionStorage.setItem('blvd-intro', '1'); } catch (e) {}
 
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
     document.documentElement.style.overflow = 'hidden';
 
-    var fill = loader.querySelector('.ld-fill');
+    var ring = loader.querySelector('.ld-ring-fill');
     var count = loader.querySelector('.ld-count');
+    var say = loader.querySelector('.ld-say');
+    var sayNow = say.querySelector('.cur');
+    var CIRC = 339.29;
+    // the status line reports what is warming up as the ring crosses each quarter
+    var LINES = ['Lighting up the zones', 'Warming up the rides', 'Setting the tables', 'Opening the gates'];
+    var lineAt = 0;
+    function setLine(i) {
+      if (i === lineAt || !LINES[i]) return;
+      lineAt = i;
+      say.classList.add('swap');
+      setTimeout(function () {
+        sayNow.textContent = LINES[i];
+        say.classList.remove('swap');
+      }, 280);
+    }
     // only wait on what the first screen actually paints — everything else is lazy
     var critical = Array.prototype.slice.call(document.querySelectorAll('#loader img, .hero img'));
     var total = critical.length || 1;
@@ -3296,8 +3446,9 @@
       var timeP = Math.min(elapsed / MIN_TIME, 1);
       var loadP = elapsed > MAX_TIME ? 1 : loadedCount / total;
       var p = Math.min(timeP, loadP);
-      fill.style.transform = 'scaleX(' + p + ')';
+      ring.style.strokeDashoffset = (CIRC * (1 - p)).toFixed(1);
       count.textContent = Math.round(p * 100) + '%';
+      setLine(Math.min(3, Math.floor(p * 4)));
       if (p >= 1) { clearInterval(poll); setTimeout(done, 150); return; }
       requestAnimationFrame(tick);
     }
@@ -4386,17 +4537,51 @@
         }, vars || {}));
       });
     }
-    revealGroup('section:not(.hero) .section-head', null, { y: 34 });
+    /* Section titles rise word by word out of a mask, then the subtitle follows.
+       Splitting happens once per heading and the words are plain spans, so the
+       copy stays selectable and readable to assistive tech. */
+    function splitTitle(h) {
+      if (h.dataset.split) return true;
+      if (h.childNodes.length !== 1 || h.firstChild.nodeType !== 3) return false;
+      h.dataset.split = '1';
+      var words = h.textContent.trim().split(/\s+/);
+      h.textContent = '';
+      words.forEach(function (word, i) {
+        var outer = document.createElement('span');
+        outer.className = 'w';
+        var inner = document.createElement('span');
+        inner.className = 'i';
+        inner.textContent = word;
+        outer.appendChild(inner);
+        h.appendChild(outer);
+        if (i < words.length - 1) h.appendChild(document.createTextNode(' '));
+      });
+      return true;
+    }
+    gsap.utils.toArray('section:not(.hero) h2').forEach(function (h) {
+      var head = h.closest('.section-head') || h;
+      var sub = head === h ? null : head.querySelector('p');
+      var tl = gsap.timeline({ scrollTrigger: { trigger: head, start: 'top 85%' } });
+      if (splitTitle(h)) {
+        tl.from(h.querySelectorAll('.i'), {
+          yPercent: 115, opacity: 0, duration: 0.85, ease: 'power3.out',
+          stagger: 0.055, clearProps: 'all'
+        }, 0);
+      } else {
+        tl.from(h, { opacity: 0, y: 34, duration: 0.9, ease: 'power3.out', clearProps: 'all' }, 0);
+      }
+      if (sub) tl.from(sub, { opacity: 0, y: 18, duration: 0.7, ease: 'power3.out', clearProps: 'all' }, 0.22);
+    });
     revealGroup('.info-strip', '.info-col', { y: 30, stagger: 0.12 });
     revealGroup('.stories-row', '.story', { y: 30, scale: 0.6, ease: 'back.out(1.5)', stagger: 0.08 });
     revealGroup('.pkg-grid', '.pkg', { y: 30, stagger: 0.08 });
-    revealGroup('.inc-grid', 'img', { y: 26, scale: 0.96, stagger: 0.06 });
+    revealGroup('.inc-grid', '.inc-cell', { y: 26, scale: 0.96, stagger: 0.06 });
     revealGroup('#experiences .cards-row', '.product-card', {});
     revealGroup('#restaurants .cards-row', '.product-card', {});
     revealGroup('.rules-grid', '.rule-card', { y: 36, scale: 0.94, stagger: 0.06 });
-    revealGroup('.faq-section h2', null, { y: 34 });
     revealGroup('.faq-list', '.faq-item', { y: 26, stagger: 0.08 });
     revealGroup('.sp-row', '.sp-item', { y: 22, stagger: 0.06 });
+    revealGroup('.facts', 'li', { y: 24, stagger: 0.09 });
     revealGroup('.zones-buttons', null, {});
     revealGroup('.controls', null, { y: 20 });
 
