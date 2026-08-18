@@ -632,26 +632,63 @@
     position: fixed;
     right: 24px; bottom: max(24px, calc(env(safe-area-inset-bottom) + 12px));
     z-index: 120;
-    display: flex; align-items: center; gap: 10px;
-    height: 56px; padding: 0 22px 0 18px;
-    border-radius: 9999px;
+    display: grid; place-items: center;
+    width: 60px; height: 60px;
+    border-radius: 50%;
     background: var(--pink);
     color: #fff;
     box-shadow: 0 12px 30px rgba(255, 44, 121, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s, opacity 0.3s;
   }
-  #ask-fab:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 18px 40px rgba(255, 44, 121, 0.5); }
-  #ask-fab .fab-ic { display: flex; }
-  #ask-fab svg { width: 24px; height: 24px; }
-  #ask-fab .fab-label { font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 16px; white-space: nowrap; }
-  #ask-fab .fab-dot {
-    position: absolute; top: 12px; right: 16px;
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #fff;
-    animation: askPing 2.4s ease-out infinite;
+  /* a slowly turning conic sweep under the mark, so the orb never sits still */
+  #ask-fab::before {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, rgba(255, 255, 255, 0) 0deg, rgba(255, 255, 255, 0.38) 70deg, rgba(124, 58, 237, 0.55) 150deg, rgba(255, 255, 255, 0) 260deg);
+    animation: fabSweep 6s linear infinite;
   }
-  @keyframes askPing { 0%,100% { opacity: 0.25; transform: scale(1); } 50% { opacity: 1; transform: scale(1.35); } }
+  /* the ping that radiates outward, like the orb is listening */
+  #ask-fab .fab-halo {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.55);
+    animation: fabHalo 2.8s ease-out infinite;
+    pointer-events: none;
+  }
+  #ask-fab .fab-spark { position: relative; width: 30px; height: 30px; overflow: visible; }
+  #ask-fab .fab-spark path { fill: #fff; transform-box: fill-box; transform-origin: center; }
+  /* the four-point star turns and breathes; the two motes twinkle off-beat */
+  #ask-fab .fab-spark .s-main { animation: fabStar 7s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+  #ask-fab .fab-spark .s-a { animation: fabTwinkle 2.6s ease-in-out infinite; }
+  #ask-fab .fab-spark .s-b { animation: fabTwinkle 2.6s ease-in-out 1.3s infinite; }
+
+  @keyframes fabSweep { to { transform: rotate(360deg); } }
+  @keyframes fabHalo {
+    0%   { transform: scale(1);    opacity: 0.7; }
+    70%  { transform: scale(1.45); opacity: 0; }
+    100% { transform: scale(1.45); opacity: 0; }
+  }
+  @keyframes fabStar {
+    0%   { transform: rotate(0deg)   scale(1); }
+    50%  { transform: rotate(180deg) scale(0.86); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+  @keyframes fabTwinkle {
+    0%, 100% { opacity: 0.25; transform: scale(0.6); }
+    50%      { opacity: 1;    transform: scale(1.15); }
+  }
+
+  #ask-fab:hover { transform: translateY(-3px) scale(1.06); box-shadow: 0 18px 40px rgba(255, 44, 121, 0.5); }
+  #ask-fab:hover .fab-spark .s-main { animation-duration: 2.4s; }
   #ask-fab.hidden { opacity: 0; pointer-events: none; transform: translateY(12px) scale(0.9); }
+
+  @media (prefers-reduced-motion: reduce) {
+    #ask-fab::before, #ask-fab .fab-halo,
+    #ask-fab .fab-spark path { animation: none; }
+    #ask-fab .fab-halo { opacity: 0.35; }
+    #ask-fab .fab-spark .s-a, #ask-fab .fab-spark .s-b { opacity: 0.7; }
+  }
 
   #ask-panel {
     position: fixed;
@@ -786,8 +823,8 @@
   .ask-send:hover { filter: brightness(1.08); }
 
   @media (max-width: 560px) {
-    #ask-fab { right: 16px; padding: 0 18px 0 16px; height: 52px; }
-    #ask-fab .fab-label { font-size: 15px; }
+    #ask-fab { right: 16px; width: 54px; height: 54px; }
+    #ask-fab .fab-spark { width: 27px; height: 27px; }
     #ask-panel {
       right: 0; left: 0; bottom: 0;
       width: 100%; max-width: 100%;
@@ -2643,14 +2680,12 @@
 
 <!-- ================= ASK BLVD (chat assistant) ================= -->
 <button id="ask-fab" aria-label="Ask BLVD World a question" aria-expanded="false">
-  <span class="fab-ic">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H8l-4 3v-4.2A8.5 8.5 0 1 1 21 11.5Z"></path>
-      <path d="M8.5 10.5h7M8.5 14h4.5"></path>
-    </svg>
-  </span>
-  <span class="fab-label">Ask BLVD</span>
-  <span class="fab-dot"></span>
+  <span class="fab-halo"></span>
+  <svg class="fab-spark" viewBox="0 0 32 32" aria-hidden="true">
+    <path class="s-main" d="M16 4c1 6.2 2.8 8 9 9-6.2 1-8 2.8-9 9-1-6.2-2.8-8-9-9 6.2-1 8-2.8 9-9Z"></path>
+    <path class="s-a" d="M26.5 5c.42 2.6 1.18 3.36 3.78 3.78-2.6.42-3.36 1.18-3.78 3.78-.42-2.6-1.18-3.36-3.78-3.78 2.6-.42 3.36-1.18 3.78-3.78Z"></path>
+    <path class="s-b" d="M6 20.5c.34 2.1.95 2.71 3.05 3.05-2.1.34-2.71.95-3.05 3.05-.34-2.1-.95-2.71-3.05-3.05 2.1-.34 2.71-.95 3.05-3.05Z"></path>
+  </svg>
 </button>
 
 <section id="ask-panel" aria-hidden="true" aria-label="Ask BLVD World">
