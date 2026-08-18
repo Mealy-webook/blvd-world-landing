@@ -123,17 +123,25 @@
 
   /* ============ HERO ============ */
   .hero {
-    min-height: 1100px;
+    /* --vfit is the viewport height in the hero's own units — fitScale() divides
+       by the body zoom, since a zoomed 100dvh would render short. The hero fills
+       exactly one screen and spends whatever is left over on padding and gaps,
+       so the logo, headline, card and cue all stay above the fold. */
+    --slack: calc(var(--vfit, 1200px) - 940px);
+    min-height: var(--vfit, 100dvh);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 48px;
-    padding: 80px 32px;
+    gap: clamp(18px, calc(var(--slack) / 9), 48px);
+    padding: clamp(22px, calc(var(--slack) / 6), 80px) 32px;
     overflow: hidden;
   }
   .hero > * { position: relative; z-index: 3; }
   .hero > .tear { position: absolute; z-index: 6; }
+  /* the star field is a backdrop, not a flow child — without this the generic
+     rule above drops it into the column and it adds a phantom gap */
+  .hero > .sky { position: absolute; z-index: 0; }
   /* Each landmark ends at its own height, 70-170px short of the hero's bottom
      edge, so the scrim below was still half transparent where they stopped and
      every one showed a straight cut. Masking each layer dissolves its own foot
@@ -173,8 +181,13 @@
   .hero-decor.crop img { position: absolute; max-width: none; }
 
   .hero-logo { display: flex; flex-direction: column; gap: 12px; align-items: center; }
-  .hero-logo .mark { width: 100.7px; height: 99.6px; }
-  .hero-logo .word { width: 104px; height: 17.3px; }
+  /* the logo and headline give ground first when the window is short, so the
+     booking card — the part with the actions — never leaves the screen */
+  .hero-logo .mark {
+    width: clamp(70px, calc(var(--vfit, 1200px) / 11.9), 100.7px);
+    height: auto; aspect-ratio: 100.7 / 99.6;
+  }
+  .hero-logo .word { width: clamp(72px, calc(var(--vfit, 1200px) / 11.54), 104px); height: auto; }
 
   /* the headline arches over the skyline (Figma node 167:8949) — each line is
      real text riding a quadratic path, so it stays selectable and scales cleanly.
@@ -182,7 +195,7 @@
   .hero-headline {
     display: flex; flex-direction: column; align-items: center;
     gap: 4px;
-    width: min(1024px, 94vw);
+    width: min(1024px, 94vw, calc(var(--vfit, 1200px) * 0.87));
     font-family: 'Inter', sans-serif;
     font-weight: 900;
   }
@@ -292,10 +305,19 @@
   }
   .exp-tile .pr img { width: 9px; height: 9px; }
 
-  .scroll-cue { display: flex; flex-direction: column; gap: 10px; align-items: center; }
-  .scroll-cue span { font-weight: 700; font-size: 22px; color: #fff; letter-spacing: 0.04em; }
+  /* the cue shrinks with the room available rather than dropping out — it is
+     part of the hero and has to stay on the first screen with everything else */
+  .scroll-cue {
+    display: flex; flex-direction: column; align-items: center;
+    gap: clamp(5px, calc(var(--vfit, 1200px) / 120), 10px);
+  }
+  .scroll-cue span {
+    font-weight: 700; letter-spacing: 0.04em; color: #fff;
+    font-size: clamp(14px, calc(var(--vfit, 1200px) / 54.5), 22px);
+  }
   .scroll-cue .line {
-    width: 1.5px; height: 34px;
+    width: 1.5px;
+    height: clamp(18px, calc(var(--vfit, 1200px) / 35), 34px);
     background: linear-gradient(to bottom, rgba(207, 228, 255, 0.8), rgba(207, 228, 255, 0));
   }
 
@@ -2383,9 +2405,11 @@
     .facts { gap: 18px; row-gap: 10px; }
     .facts li { gap: 18px; }
     .zones-buttons { flex-wrap: wrap; justify-content: center; gap: 12px; }
-    .story .ring { padding: 8px; border-width: 4px; }
-    .story .avatar { width: 96px; height: 96px; }
-    .story .label { font-size: 16px; }
+    .stories-row { gap: 18px; }
+    .story { gap: 10px; }
+    .story .ring { padding: 5px; border-width: 3px; }
+    .story .avatar { width: 76px; height: 76px; }
+    .story .label { font-size: 14px; }
 
     /* --- rides: fluid ticket cards, photo in flow --- */
     .ticket-card { width: min(456px, 84vw); }
@@ -2472,6 +2496,17 @@
     }
     .stories-row::-webkit-scrollbar { display: none; }
     .stories-row .ctrl-btn { display: none; }
+    /* phone tray sized like Instagram's: a ~60px avatar in a thin ring, tight
+       gaps, small label — about five zones in view instead of two and a half */
+    .stories-row {
+      gap: 14px;
+      scroll-snap-type: x proximity;
+      padding-bottom: 2px;
+    }
+    .story { gap: 8px; scroll-snap-align: start; flex-shrink: 0; }
+    .story .ring { padding: 3px; border-width: 2.5px; }
+    .story .avatar { width: 60px; height: 60px; }
+    .story .label { font-size: 12px; font-weight: 600; max-width: 74px; text-align: center; line-height: 1.25; }
     .facts { flex-wrap: wrap; }
     /* the pill row collapses into a hamburger popover below 900px */
     #dock { left: 0; right: 0; transform: translate(0, -160%); }
@@ -3284,7 +3319,13 @@
   // (like Figma's fit view). Below 900px real width the responsive layout takes over.
   function fitScale() {
     var w = window.innerWidth;
-    document.body.style.zoom = (w >= 900 && w < 1920) ? (w / 1920) : '';
+    var z = (w >= 900 && w < 1920) ? (w / 1920) : 1;
+    document.body.style.zoom = z === 1 ? '' : z;
+    // the hero measures itself in pre-zoom units, so undo the zoom here
+    var vfit = window.innerHeight / z;
+    document.documentElement.style.setProperty('--vfit', vfit + 'px');
+    // 1060 is where the hero stops fitting with the scroll cue in the column
+
     if (window.ScrollTrigger) ScrollTrigger.refresh();
   }
   window.addEventListener('resize', fitScale);
