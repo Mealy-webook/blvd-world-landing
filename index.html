@@ -1822,8 +1822,14 @@
       align-self: center;
       flex-shrink: 0;
     }
-    .vm-panel.collapsed { height: auto; }
-    .vm-panel.collapsed .vm-list { display: none; }
+    .vm-panel { overflow: hidden; touch-action: pan-y; }
+    /* a bigger grab target than the 4px bar it draws */
+    .vm-grab { padding: 10px 0; height: 4px; box-sizing: content-box; touch-action: none; cursor: grab; }
+    .vm-grab:active { cursor: grabbing; }
+    .vm-panel.peeked .vm-searchbar,
+    .vm-panel.peeked .vm-chips,
+    .vm-panel.peeked .vm-results-label,
+    .vm-panel.peeked .vm-list { opacity: 0; pointer-events: none; }
     .vm-title { font-size: 20px; line-height: 26px; }
     .vm-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
     .vm-chips::-webkit-scrollbar { display: none; }
@@ -3575,6 +3581,50 @@
     });
   })();
 
+  /* Clicking an experience opens its page on webook.com. EXP_URLS is the place
+     to drop the real detail-page slugs; anything not listed falls back to a
+     webook search on the title, so a missing entry lands somewhere useful
+     instead of a 404. Opens in a new tab — this page is the campaign site. */
+  (function () {
+    var EXP_URLS = {
+      // 'The lost muesem': 'https://webook.com/en/events/<slug>',
+    };
+    function urlFor(name) {
+      return EXP_URLS[name] || 'https://webook.com/en/search?q=' + encodeURIComponent(name);
+    }
+    function go(name) {
+      window.open(urlFor(name), '_blank', 'noopener');
+    }
+
+    // the experience cards in the Experiences section
+    document.querySelectorAll('#experiences .product-card').forEach(function (card) {
+      var h = card.querySelector('h3');
+      if (!h) return;
+      var name = h.textContent.trim();
+      card.setAttribute('role', 'link');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', name + ' — book on webook.com');
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', function (e) {
+        if (e.target.closest('.heart, button')) return;   // the heart toggle is its own control
+        go(name);
+      });
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(name); }
+      });
+    });
+
+    // and the thumbnails in the hero booking card
+    document.querySelectorAll('.bk-rail .exp-tile').forEach(function (tile) {
+      var n = tile.querySelector('.nm');
+      if (!n) return;
+      var name = n.textContent.trim();
+      tile.setAttribute('href', urlFor(name));
+      tile.setAttribute('target', '_blank');
+      tile.setAttribute('rel', 'noopener');
+    });
+  })();
+
   // FAQ accordion
   document.querySelectorAll('.faq-item').forEach(function (item) {
     item.querySelector('.faq-q').addEventListener('click', function () {
@@ -4551,10 +4601,78 @@
     function hideDetail() { detail.hidden = true; clearSelection(); }
     detail.querySelector('.vm-detail-close').addEventListener('click', hideDetail);
 
-    // bottom-sheet handle (small screens): collapse/expand the list
-    vm.querySelector('.vm-grab').addEventListener('click', function () {
-      panel.classList.toggle('collapsed');
-    });
+    /* Bottom sheet (small screens): drag the handle to trade list space for map.
+       Three detents — peek (map almost full screen), half, and full — with a
+       flick carrying you to the next one and a tap cycling through them. */
+    (function () {
+      var handle = vm.querySelector('.vm-grab');
+      if (!handle) return;
+      var PEEK = 92;
+      function detents() {
+        var h = window.innerHeight;
+        return [PEEK, Math.round(h * 0.52), Math.round(h * 0.88)];
+      }
+      var dragging = false, startY = 0, startH = 0, lastY = 0, lastT = 0, v = 0, moved = 0;
+
+      function setH(px, animate) {
+        panel.style.transition = animate ? 'height 0.32s cubic-bezier(0.22, 1, 0.36, 1)' : 'none';
+        panel.style.height = px + 'px';
+        panel.classList.toggle('peeked', px <= PEEK + 8);
+      }
+      function snap(px) {
+        var ds = detents();
+        var target = ds.reduce(function (best, d) {
+          return Math.abs(d - px) < Math.abs(best - px) ? d : best;
+        }, ds[0]);
+        // a deliberate flick goes to the next detent in that direction
+        if (Math.abs(v) > 0.5) {
+          var up = v < 0;
+          var ordered = up ? ds : ds.slice().reverse();
+          for (var i = 0; i < ordered.length; i++) {
+            if (up ? ordered[i] > px + 8 : ordered[i] < px - 8) { target = ordered[i]; break; }
+          }
+        }
+        setH(target, true);
+      }
+
+      handle.addEventListener('pointerdown', function (e) {
+        dragging = true; moved = 0; v = 0;
+        startY = lastY = e.clientY; lastT = performance.now();
+        startH = panel.getBoundingClientRect().height;
+        panel.style.transition = 'none';
+        try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+      });
+      handle.addEventListener('pointermove', function (e) {
+        if (!dragging) return;
+        e.preventDefault();
+        var now = performance.now();
+        if (now > lastT) { v = (e.clientY - lastY) / (now - lastT); lastY = e.clientY; lastT = now; }
+        moved = Math.max(moved, Math.abs(e.clientY - startY));
+        setH(Math.max(PEEK, Math.min(window.innerHeight * 0.92, startH - (e.clientY - startY))), false);
+      });
+      function end() {
+        if (!dragging) return;
+        dragging = false;
+        snap(panel.getBoundingClientRect().height);
+      }
+      handle.addEventListener('pointerup', end);
+      handle.addEventListener('pointercancel', end);
+
+      handle.addEventListener('click', function () {
+        if (moved > 6) return;                 // that was a drag, not a tap
+        var ds = detents(), h = panel.getBoundingClientRect().height, at = 0;
+        for (var i = 0; i < ds.length; i++) if (Math.abs(ds[i] - h) < 28) at = i;
+        setH(ds[(at + 1) % ds.length], true);
+      });
+
+      // the sheet only exists on small screens — drop the inline height above it
+      window.addEventListener('resize', function () {
+        if (getComputedStyle(handle).display === 'none') {
+          panel.style.height = ''; panel.style.transition = '';
+          panel.classList.remove('peeked');
+        }
+      });
+    })();
 
     vm.addEventListener('click', function (e) {
       var dot = e.target.closest && e.target.closest('.vm-dot');
