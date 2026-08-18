@@ -1864,20 +1864,21 @@
   .sv-arrow.prev img { transform: scaleX(-1); }
   @media (max-width: 600px) { .sv-arrow { display: none; } }
 
-  /* floating quick-actions dock */
-  /* pinned to the top of the viewport once the hero is scrolled past */
+  /* ============ section nav — PillNav (reactbits.dev), ported to vanilla ============
+     Each pill hides a circle tucked under its bottom edge. On hover the circle
+     scales up until it fills the pill while the label slides out of the top and
+     its inverted twin slides in behind it. Pinned once the hero scrolls past. */
   #dock {
+    --nav-h: 44px;
+    --pill-pad-x: 18px;
+    --pill-gap: 3px;
+    --base: #0b0a3c;        /* track, logo disc and the hover circle */
+    --pill-bg: #ffffff;
+    --pill-text: #18181b;
+    --hover-text: #ffffff;
     position: fixed;
     left: 50%; top: 16px;
     transform: translate(-50%, -160%);
-    display: flex; align-items: center; gap: 4px;
-    padding: 10px;
-    background: linear-gradient(180deg, rgba(26, 22, 88, 0.97), rgba(8, 6, 48, 0.98));
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 9999px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     z-index: 90;
     opacity: 0;
     pointer-events: none;
@@ -1886,19 +1887,125 @@
   #dock.show { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
   /* keep clear of the scroll-progress bar at the very top */
   #scroll-progress { z-index: 122; }
-  .dock-logo { width: 30px; height: 30px; margin: 0 10px 0 8px; }
-  .dock-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 16px;
-    border-radius: 9999px;
-    color: #fff;
-    transition: background 0.25s;
+
+  #dock .pill-nav {
+    display: flex; align-items: center; gap: 6px;
+    width: max-content;
+    box-sizing: border-box;
   }
-  .dock-item:hover { background: rgba(255, 255, 255, 0.1); }
-  .dock-item.active { background: rgba(255, 255, 255, 0.14); }
-  .dock-item .ic { width: 20px; height: 20px; filter: brightness(0) invert(1); }
-  .dock-item .ic.tilted { transform: rotate(-30deg); }
-  .dock-item { font-weight: 700; font-size: 15px; white-space: nowrap; }
+  #dock .pill-logo {
+    width: var(--nav-h); height: var(--nav-h);
+    border-radius: 50%;
+    background: var(--base);
+    padding: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
+  }
+  #dock .pill-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+  #dock .pill-nav-items {
+    position: relative;
+    display: flex; align-items: center;
+    height: var(--nav-h);
+    background: var(--base);
+    border-radius: 9999px;
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.38);
+  }
+  #dock .pill-list {
+    list-style: none;
+    display: flex; align-items: stretch; gap: var(--pill-gap);
+    margin: 0; padding: 3px; height: 100%;
+  }
+  #dock .pill-list > li { display: flex; height: 100%; }
+  #dock .pill {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 100%;
+    padding: 0 var(--pill-pad-x);
+    background: var(--pill-bg);
+    color: var(--pill-text);
+    border-radius: 9999px;
+    box-sizing: border-box;
+    font-family: 'Figtree', sans-serif;
+    font-weight: 700; font-size: 13px; line-height: 0;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+  }
+  #dock .pill .hover-circle {
+    position: absolute; left: 50%; bottom: 0;
+    border-radius: 50%;
+    background: var(--base);
+    z-index: 1;
+    display: block;
+    pointer-events: none;
+    will-change: transform;
+  }
+  #dock .pill .label-stack { position: relative; display: inline-block; line-height: 1; z-index: 2; }
+  #dock .pill .pill-label { position: relative; z-index: 2; display: inline-block; line-height: 1; will-change: transform; }
+  #dock .pill .pill-label-hover {
+    position: absolute; left: 0; top: 0;
+    color: var(--hover-text);
+    z-index: 3; display: inline-block;
+    will-change: transform, opacity;
+  }
+  /* the active section is marked by a nub at the foot of its pill */
+  #dock .pill.is-active::after {
+    content: "";
+    position: absolute; bottom: -6px; left: 50%;
+    transform: translateX(-50%);
+    width: 12px; height: 12px;
+    border-radius: 50px;
+    background: var(--pink);
+    z-index: 4;
+  }
+  /* without gsap (or with motion turned down) the pills just tint on hover */
+  #dock .pill:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
+
+  #dock .mobile-menu-button {
+    width: var(--nav-h); height: var(--nav-h);
+    border-radius: 50%;
+    background: var(--base);
+    display: none;
+    flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    padding: 0;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
+  }
+  #dock .hamburger-line {
+    width: 16px; height: 2px;
+    background: var(--pill-bg);
+    border-radius: 1px;
+    transform-origin: center;
+  }
+  #dock .mobile-menu-popover {
+    position: absolute;
+    top: calc(var(--nav-h) + 12px); left: 12px; right: 12px;
+    background: var(--base);
+    border-radius: 27px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transform-origin: top center;
+  }
+  #dock .mobile-menu-list {
+    list-style: none; margin: 0; padding: 3px;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  #dock .mobile-menu-link {
+    display: block; width: 100%;
+    padding: 12px 16px;
+    text-align: left;
+    background: var(--pill-bg);
+    color: var(--pill-text);
+    font-family: 'Figtree', sans-serif;
+    font-size: 15px; font-weight: 600;
+    border-radius: 50px;
+    transition: background 0.2s, color 0.2s;
+  }
+  #dock .mobile-menu-link:hover,
+  #dock .mobile-menu-link.is-active { background: var(--pink); color: #fff; }
 
   /* custom cursor (enabled via .has-cursor on <html> for fine pointers) */
   html.has-cursor, html.has-cursor * { cursor: none !important; }
@@ -2063,16 +2170,12 @@
     .stories-row::-webkit-scrollbar { display: none; }
     .stories-row .ctrl-btn { display: none; }
     .facts { flex-wrap: wrap; }
-    #dock {
-      max-width: calc(100vw - 20px);
-      padding: 7px 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      justify-content: flex-start;
-    }
-    #dock::-webkit-scrollbar { display: none; }
-    .dock-item { padding: 8px 12px; font-size: 14px; flex-shrink: 0; }
-    .dock-logo { margin: 0 6px 0 4px; flex-shrink: 0; }
+    /* the pill row collapses into a hamburger popover below 900px */
+    #dock { left: 0; right: 0; transform: translate(0, -160%); }
+    #dock.show { transform: translate(0, 0); }
+    #dock .pill-nav { width: 100%; justify-content: space-between; padding: 0 12px; }
+    #dock .pill-nav-items { display: none; }
+    #dock .mobile-menu-button { display: flex; }
   }
 </style>
 </head>
@@ -2099,15 +2202,30 @@
 
 <div id="scroll-progress"></div>
 
-<nav id="dock" aria-label="Jump to a section">
-  <img class="dock-logo" src="assets/hero-logo-mark.svg" alt="">
-  <button class="dock-item" data-target="#zones">Zones</button>
-  <button class="dock-item" data-target="#experiences">Experiences</button>
-  <button class="dock-item" data-target="#packages">Packages</button>
-  <button class="dock-item" data-target="#restaurants">Restaurants</button>
-  <button class="dock-item" data-target="#rules">Rules</button>
-  <button class="dock-item" data-target="#faq">FAQ</button>
-</nav>
+<div id="dock">
+  <nav class="pill-nav" aria-label="Jump to a section">
+    <a class="pill-logo" href="#street" aria-label="Back to the top">
+      <img src="assets/hero-logo-mark.svg" alt="">
+    </a>
+    <div class="pill-nav-items">
+      <ul class="pill-list" role="menubar">
+      <li role="none"><button class="pill" role="menuitem" data-target="#zones"><span class="hover-circle" aria-hidden="true"></span><span class="label-stack"><span class="pill-label">Zones</span><span class="pill-label-hover" aria-hidden="true">Zones</span></span></button></li>
+      <li role="none"><button class="pill" role="menuitem" data-target="#experiences"><span class="hover-circle" aria-hidden="true"></span><span class="label-stack"><span class="pill-label">Experiences</span><span class="pill-label-hover" aria-hidden="true">Experiences</span></span></button></li>
+      <li role="none"><button class="pill" role="menuitem" data-target="#packages"><span class="hover-circle" aria-hidden="true"></span><span class="label-stack"><span class="pill-label">Packages</span><span class="pill-label-hover" aria-hidden="true">Packages</span></span></button></li>
+      <li role="none"><button class="pill" role="menuitem" data-target="#restaurants"><span class="hover-circle" aria-hidden="true"></span><span class="label-stack"><span class="pill-label">Restaurants</span><span class="pill-label-hover" aria-hidden="true">Restaurants</span></span></button></li>
+      <li role="none"><button class="pill" role="menuitem" data-target="#rules"><span class="hover-circle" aria-hidden="true"></span><span class="label-stack"><span class="pill-label">Rules</span><span class="pill-label-hover" aria-hidden="true">Rules</span></span></button></li>
+      <li role="none"><button class="pill" role="menuitem" data-target="#faq"><span class="hover-circle" aria-hidden="true"></span><span class="label-stack"><span class="pill-label">FAQ</span><span class="pill-label-hover" aria-hidden="true">FAQ</span></span></button></li>
+      </ul>
+    </div>
+    <button class="mobile-menu-button" aria-label="Toggle the section menu" aria-expanded="false">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </nav>
+  <div class="mobile-menu-popover">
+    <ul class="mobile-menu-list"></ul>
+  </div>
+</div>
 
 <!-- ================= HERO ================= -->
 <section class="hero navy-bg" id="street">
@@ -3202,32 +3320,181 @@
     }, true);
   });
 
-  // Floating quick-actions dock: appears once the hero is scrolled past
+  /* Section nav — PillNav from reactbits.dev, ported to vanilla JS + GSAP.
+     Geometry per pill: a circle wide enough that its top arc clears the pill's
+     top edge when scaled, parked just below the bottom edge. Hover tweens a
+     paused timeline that raises the circle and swaps the two label copies.
+     Measured with offsetWidth/offsetHeight — the body zoom would skew rects. */
   (function () {
     var dock = document.getElementById('dock');
     var hero = document.querySelector('.hero');
     if (!dock || !hero) return;
-    var spy = Array.prototype.map.call(dock.querySelectorAll('.dock-item'), function (btn) {
-      return { btn: btn, sec: document.querySelector(btn.dataset.target) };
+
+    var EASE = 'power3.out';
+    var hasGsap = typeof gsap !== 'undefined';
+    var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var animate = hasGsap && !calm;
+
+    var pills = Array.prototype.slice.call(dock.querySelectorAll('.pill'));
+    var navItems = dock.querySelector('.pill-nav-items');
+    var logo = dock.querySelector('.pill-logo');
+    var logoImg = logo && logo.querySelector('img');
+    var burger = dock.querySelector('.mobile-menu-button');
+    var popover = dock.querySelector('.mobile-menu-popover');
+    var menuList = dock.querySelector('.mobile-menu-list');
+    var tls = [], tweens = [], logoTween = null;
+
+    /* the mobile popover mirrors the same items */
+    pills.forEach(function (pill) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.className = 'mobile-menu-link';
+      b.dataset.target = pill.dataset.target;
+      b.textContent = pill.querySelector('.pill-label').textContent;
+      li.appendChild(b);
+      menuList.appendChild(li);
     });
-    function dockToggle() {
-      dock.classList.toggle('show', hero.getBoundingClientRect().bottom < 0);
+
+    function layout() {
+      if (!animate) return;
+      pills.forEach(function (pill, i) {
+        var circle = pill.querySelector('.hover-circle');
+        var w = pill.offsetWidth, h = pill.offsetHeight;
+        if (!circle || !w || !h) return;
+
+        var R = ((w * w) / 4 + h * h) / (2 * h);
+        var D = Math.ceil(2 * R) + 2;
+        var delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - (w * w) / 4))) + 1;
+
+        circle.style.width = D + 'px';
+        circle.style.height = D + 'px';
+        circle.style.bottom = -delta + 'px';
+        gsap.set(circle, { xPercent: -50, scale: 0, transformOrigin: '50% ' + (D - delta) + 'px' });
+
+        var label = pill.querySelector('.pill-label');
+        var hoverLabel = pill.querySelector('.pill-label-hover');
+        if (label) gsap.set(label, { y: 0 });
+        if (hoverLabel) gsap.set(hoverLabel, { y: Math.ceil(h + 100), opacity: 0 });
+
+        if (tls[i]) tls[i].kill();
+        var tl = gsap.timeline({ paused: true });
+        tl.to(circle, { scale: 1.2, xPercent: -50, duration: 2, ease: EASE, overwrite: 'auto' }, 0);
+        if (label) tl.to(label, { y: -(h + 8), duration: 2, ease: EASE, overwrite: 'auto' }, 0);
+        if (hoverLabel) tl.to(hoverLabel, { y: 0, opacity: 1, duration: 2, ease: EASE, overwrite: 'auto' }, 0);
+        tls[i] = tl;
+      });
+    }
+
+    function tweenTo(i, pos, duration) {
+      var tl = tls[i];
+      if (!tl) return;
+      if (tweens[i]) tweens[i].kill();
+      tweens[i] = tl.tweenTo(pos, { duration: duration, ease: EASE, overwrite: 'auto' });
+    }
+    pills.forEach(function (pill, i) {
+      var on = function () { if (tls[i]) tweenTo(i, tls[i].duration(), 0.3); };
+      var off = function () { tweenTo(i, 0, 0.2); };
+      pill.addEventListener('mouseenter', on);
+      pill.addEventListener('mouseleave', off);
+      pill.addEventListener('focus', on);
+      pill.addEventListener('blur', off);
+    });
+
+    if (logo && logoImg && animate) {
+      logo.addEventListener('mouseenter', function () {
+        if (logoTween) logoTween.kill();
+        gsap.set(logoImg, { rotate: 0 });
+        logoTween = gsap.to(logoImg, { rotate: 360, duration: 0.4, ease: EASE, overwrite: 'auto' });
+      });
+    }
+    if (logo) {
+      logo.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    var menuOpen = false;
+    function setMenu(open) {
+      menuOpen = open;
+      burger.setAttribute('aria-expanded', String(open));
+      var lines = burger.querySelectorAll('.hamburger-line');
+      if (!animate) {
+        popover.style.visibility = open ? 'visible' : 'hidden';
+        popover.style.opacity = open ? '1' : '0';
+        return;
+      }
+      gsap.to(lines[0], { rotation: open ? 45 : 0, y: open ? 3 : 0, duration: 0.3, ease: EASE });
+      gsap.to(lines[1], { rotation: open ? -45 : 0, y: open ? -3 : 0, duration: 0.3, ease: EASE });
+      if (open) {
+        gsap.set(popover, { visibility: 'visible' });
+        gsap.fromTo(popover, { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.3, ease: EASE, transformOrigin: 'top center' });
+      } else {
+        gsap.to(popover, {
+          opacity: 0, y: 10, duration: 0.2, ease: EASE, transformOrigin: 'top center',
+          onComplete: function () { gsap.set(popover, { visibility: 'hidden' }); }
+        });
+      }
+    }
+    if (animate) gsap.set(popover, { visibility: 'hidden', opacity: 0 });
+    burger.addEventListener('click', function () { setMenu(!menuOpen); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menuOpen) setMenu(false); });
+
+    dock.addEventListener('click', function (e) {
+      var btn = e.target.closest('.pill, .mobile-menu-link');
+      if (!btn) return;
+      var sec = document.querySelector(btn.dataset.target);
+      if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+      if (menuOpen) setMenu(false);
+    });
+
+    /* The component's initial-load animation, played the first time the bar
+       arrives. The width unfurl leaves the nav unusable if it never finishes,
+       so it only runs on a visible page and a timer clears it either way. */
+    var revealed = false;
+    function playIn() {
+      if (!animate || document.visibilityState !== 'visible') return;
+      if (logo) gsap.fromTo(logo, { scale: 0 }, { scale: 1, duration: 0.6, ease: EASE });
+      if (navItems) {
+        navItems.style.overflow = 'hidden';
+        gsap.fromTo(navItems, { width: 0 },
+          { width: 'auto', duration: 0.6, ease: EASE, clearProps: 'width,overflow' });
+        setTimeout(function () {
+          navItems.style.removeProperty('width');
+          navItems.style.removeProperty('overflow');
+        }, 1200);
+      }
+    }
+
+    var spy = pills.map(function (p) {
+      return { pill: p, sec: document.querySelector(p.dataset.target),
+               link: menuList.querySelector('[data-target="' + p.dataset.target + '"]') };
+    });
+    function update() {
+      var show = hero.getBoundingClientRect().bottom < 0;
+      dock.classList.toggle('show', show);
+      if (show && !revealed) { revealed = true; playIn(); }
+      if (!show && menuOpen) setMenu(false);
+
       var mid = window.innerHeight / 2, active = null;
       spy.forEach(function (t) {
         if (!t.sec) return;
         var r = t.sec.getBoundingClientRect();
         if (r.top <= mid && r.bottom > mid) active = t;
       });
-      spy.forEach(function (t) { t.btn.classList.toggle('active', t === active); });
-    }
-    window.addEventListener('scroll', dockToggle, { passive: true });
-    dockToggle();
-    dock.querySelectorAll('.dock-item').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var target = document.querySelector(btn.dataset.target);
-        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      spy.forEach(function (t) {
+        var on = t === active;
+        t.pill.classList.toggle('is-active', on);
+        if (t.link) t.link.classList.toggle('is-active', on);
       });
-    });
+    }
+
+    layout();
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', layout);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout).catch(function () {});
   })();
 
   // Story viewer: multi-slide stories per zone (images + videos), auto-advance
