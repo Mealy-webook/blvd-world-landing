@@ -1437,7 +1437,9 @@
   /* map page uses native cursors (the custom dot/ring is hidden over it):
      hand on the map itself, pointer on every interactive control */
   html.has-cursor #view-map, html.has-cursor #view-map * { cursor: default !important; }
-  .vm-map-wrap { position: absolute; inset: 0; }
+  /* touch-action:none hands the gesture to the drag handler instead of the
+     browser's own panning, which is what stopped the map moving on a phone */
+  .vm-map-wrap { position: absolute; inset: 0; touch-action: none; }
   #view-map .vm-map-wrap,
   html.has-cursor #view-map .vm-map-wrap,
   html.has-cursor #view-map .vm-map-wrap * { cursor: grab !important; }
@@ -1839,7 +1841,8 @@
     .vm-card .meta, .vm-card .price, .vm-card .book { font-size: 14px; }
     .vm-detail-body .desc, .vm-detail-body .meta, .vm-detail-body .book { font-size: 14px; }
     .vm-title { font-size: 20px; }
-    .vm-zoom { top: 16px; right: 12px; bottom: auto; }
+    /* zoom sits directly above the sheet and follows it as it is dragged */
+    .vm-zoom { top: auto; right: 12px; bottom: calc(var(--sheet-h, 52vh) + 12px); transition: bottom 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
     .vm-detail { width: min(340px, calc(100vw - 24px)); }
   }
   @media (max-width: 480px) {
@@ -4343,6 +4346,7 @@
       hideDetail();
       vm.classList.add('open');
       document.documentElement.style.overflow = 'hidden';
+      if (window.blvdSyncSheet) window.blvdSyncSheet();
       if (window.gsap && !REDUCED) {
         gsap.set(stage, { x: 0, y: 0, scale: 1 });
         gsap.fromTo(vm, { opacity: 0 }, { opacity: 1, duration: 0.35 });
@@ -4393,6 +4397,7 @@
       if (e.target.closest('.vm-dot, .vm-pin')) return;
       down = true; sx = e.clientX; sy = e.clientY; ox = tx; oy = ty;
       mapWrap.classList.add('dragging');
+      try { mapWrap.setPointerCapture(e.pointerId); } catch (err) {}
       hideDetail();
     });
     window.addEventListener('pointermove', function (e) {
@@ -4401,10 +4406,9 @@
       ty = oy + (e.clientY - sy);
       applyMap(false);
     });
-    window.addEventListener('pointerup', function () {
-      down = false;
-      mapWrap.classList.remove('dragging');
-    });
+    function endPan() { down = false; mapWrap.classList.remove('dragging'); }
+    window.addEventListener('pointerup', endPan);
+    window.addEventListener('pointercancel', endPan);
 
     // ---- zones & POIs on the map ----
     var ICONS = { ride: 'map2-pin-ic-rides.svg', experience: 'map2-pin-ic-experience.svg', dining: 'map2-pin-ic-dining.svg', shopping: 'map2-pin-ic-shopping.svg', facilities: 'map2-pin-ic-info.svg' };
@@ -4618,7 +4622,19 @@
         panel.style.transition = animate ? 'height 0.32s cubic-bezier(0.22, 1, 0.36, 1)' : 'none';
         panel.style.height = px + 'px';
         panel.classList.toggle('peeked', px <= PEEK + 8);
+        // the zoom buttons sit on top of the sheet, so they track its height
+        vm.style.setProperty('--sheet-h', px + 'px');
+        vm.style.setProperty('--sheet-anim', animate ? '0.32s' : '0s');
       }
+      // seed it from the sheet's resting height, and keep it honest on resize
+      function syncSheetVar() {
+        if (getComputedStyle(handle).display === 'none') { vm.style.removeProperty('--sheet-h'); return; }
+        var h = Math.round(panel.getBoundingClientRect().height);
+        if (h > 0) vm.style.setProperty('--sheet-h', h + 'px');
+      }
+      // the panel has no height until the map opens, so seed it there too
+      window.addEventListener('resize', syncSheetVar);
+      window.blvdSyncSheet = syncSheetVar;
       function snap(px) {
         var ds = detents();
         var target = ds.reduce(function (best, d) {
