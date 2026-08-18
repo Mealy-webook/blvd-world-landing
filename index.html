@@ -1913,19 +1913,62 @@
   /* story viewer (appended to <html> so body zoom doesn't shrink it) */
   .story { cursor: pointer; }
   #story-viewer {
+    --cw: min(420px, 92vw);
     position: fixed; inset: 0;
     z-index: 200;
     display: none;
     align-items: center; justify-content: center;
-    gap: 20px;
-    background: rgba(2, 0, 40, 0.88);
+    background: rgba(2, 0, 40, 0.92);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
   #story-viewer.open { display: flex; }
+  /* the rail carries the two neighbouring zones on each side, Instagram-style */
+  .sv-rail {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    gap: clamp(10px, 2.4vw, 34px);
+    width: 100%;
+  }
+  .sv-side {
+    position: relative;
+    flex-shrink: 0;
+    aspect-ratio: 1085 / 1450;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0a0840;
+    opacity: 0.55;
+    transition: opacity 0.3s, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sv-side:hover { opacity: 0.85; transform: scale(1.03); }
+  .sv-side.near { width: calc(var(--cw) * 0.56); max-height: 52vh; }
+  .sv-side.far  { width: calc(var(--cw) * 0.46); max-height: 43vh; }
+  .sv-side img.shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .sv-side::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(2, 0, 40, 0.25), rgba(2, 0, 40, 0.55));
+  }
+  .sv-side .cap {
+    position: absolute; inset: 0; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; padding: 10px;
+    color: #fff; text-align: center;
+  }
+  .sv-side .cap img {
+    width: 34%; aspect-ratio: 1; border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+  }
+  .sv-side .cap b { font-weight: 700; font-size: 14px; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6); }
+  .sv-side .cap span { font-family: 'Figtree', sans-serif; font-size: 12px; opacity: 0.75; }
+  /* shed the outer pair, then the rail entirely, as the window narrows */
+  @media (max-width: 1320px) { .sv-side.far { display: none; } }
+  @media (max-width: 900px) { .sv-side { display: none; } }
+
   .sv-card {
     position: relative;
-    width: min(420px, 92vw);
+    flex-shrink: 0;
+    width: var(--cw);
     aspect-ratio: 1085 / 1450;
     max-height: 88vh;
     border-radius: 20px;
@@ -1954,14 +1997,6 @@
   }
   .sv-ava { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--pink); object-fit: cover; }
   .sv-name { font-weight: 700; font-size: 15px; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
-  .sv-close {
-    margin-left: auto;
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.45);
-    color: #fff; font-size: 15px;
-    display: flex; align-items: center; justify-content: center;
-  }
   .sv-foot {
     position: absolute; left: 0; right: 0; bottom: 0;
     padding: 56px 16px 16px;
@@ -1982,18 +2017,36 @@
   /* press-and-hold pauses and clears the chrome away from the image */
   .sv-card .sv-bars, .sv-card .sv-head, .sv-card .sv-foot { transition: opacity 0.25s ease; }
   .sv-card.held .sv-bars, .sv-card.held .sv-head, .sv-card.held .sv-foot { opacity: 0; }
+  /* the chevrons ride in the gap either side of the active card */
   .sv-arrow {
-    width: 44px; height: 44px;
+    position: absolute; top: 50%;
+    z-index: 4;
+    width: 34px; height: 34px;
+    margin-top: -17px;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.9);
     display: flex; align-items: center; justify-content: center;
-    transition: background 0.25s;
-    flex-shrink: 0;
+    transition: background 0.25s, transform 0.25s;
   }
-  .sv-arrow:hover { background: rgba(255, 255, 255, 0.12); }
-  .sv-arrow img { width: 8px; height: 13px; filter: brightness(0) invert(1); }
+  .sv-arrow:hover { background: #fff; transform: scale(1.08); }
+  .sv-arrow.prev { right: calc(50% + var(--cw) / 2 + 8px); }
+  .sv-arrow.next { left:  calc(50% + var(--cw) / 2 + 8px); }
+  .sv-arrow img { width: 7px; height: 12px; filter: none; }
   .sv-arrow.prev img { transform: scaleX(-1); }
-  @media (max-width: 600px) { .sv-arrow { display: none; } }
+  /* a floating close button, out at the corner like Instagram's */
+  .sv-x {
+    position: absolute; top: 18px; right: 22px;
+    z-index: 5;
+    width: 34px; height: 34px;
+    color: #fff; font-size: 22px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.85; transition: opacity 0.2s;
+  }
+  .sv-x:hover { opacity: 1; }
+  @media (max-width: 900px) {
+    .sv-arrow { display: none; }
+    .sv-x { top: max(14px, env(safe-area-inset-top)); right: 14px; }
+  }
 
   /* ============ section nav — PillNav (reactbits.dev), ported to vanilla ============
      Each pill hides a circle tucked under its bottom edge. On hover the circle
@@ -3723,17 +3776,28 @@
 
     var viewer = document.createElement('div');
     viewer.id = 'story-viewer';
+    function sideCard(off, cls) {
+      return '<button class="sv-side ' + cls + '" data-off="' + off + '" aria-label="Go to story">' +
+               '<img class="shot" alt="">' +
+               '<span class="cap"><img alt=""><b></b><span></span></span>' +
+             '</button>';
+    }
     viewer.innerHTML =
-      '<button class="sv-arrow prev" aria-label="Previous story"><img src="assets/zones-arrow-chevron.svg" alt=""></button>' +
-      '<div class="sv-card">' +
-        '<img class="sv-img" alt="">' +
-        '<video class="sv-vid" muted playsinline preload="auto"></video>' +
-        '<div class="sv-bars"></div>' +
-        '<div class="sv-head"><img class="sv-ava" alt=""><span class="sv-name"></span><button class="sv-close" aria-label="Close">&#10005;</button></div>' +
-        '<div class="sv-tap"><span data-dir="-1"></span><span data-dir="1"></span></div>' +
-        '<div class="sv-foot"><span class="sv-tag">Now in BLVD World</span><button class="sv-cta">Explore zone</button></div>' +
+      '<div class="sv-rail">' +
+        sideCard(-2, 'far') + sideCard(-1, 'near') +
+        '<div class="sv-card">' +
+          '<img class="sv-img" alt="">' +
+          '<video class="sv-vid" muted playsinline preload="auto"></video>' +
+          '<div class="sv-bars"></div>' +
+          '<div class="sv-head"><img class="sv-ava" alt=""><span class="sv-name"></span></div>' +
+          '<div class="sv-tap"><span data-dir="-1"></span><span data-dir="1"></span></div>' +
+          '<div class="sv-foot"><span class="sv-tag">Now in BLVD World</span><button class="sv-cta">Explore zone</button></div>' +
+        '</div>' +
+        sideCard(1, 'near') + sideCard(2, 'far') +
+        '<button class="sv-arrow prev" aria-label="Previous story"><img src="assets/zones-arrow-chevron.svg" alt=""></button>' +
+        '<button class="sv-arrow next" aria-label="Next story"><img src="assets/zones-arrow-chevron.svg" alt=""></button>' +
       '</div>' +
-      '<button class="sv-arrow next" aria-label="Next story"><img src="assets/zones-arrow-chevron.svg" alt=""></button>';
+      '<button class="sv-x" aria-label="Close">&#10005;</button>';
     // attach to <html> so the fit-to-width body zoom doesn't shrink the overlay
     document.documentElement.appendChild(viewer);
 
@@ -3756,6 +3820,25 @@
       vid.pause();
     }
 
+    /* the neighbours either side of the active zone, wrapping around the set */
+    var sides = null;
+    function renderRail() {
+      if (!sides) sides = viewer.querySelectorAll('.sv-side');
+      sides.forEach(function (el) {
+        var off = +el.dataset.off;
+        // with fewer zones than rail slots, drop the ones that would repeat
+        if (zones.length <= Math.abs(off)) { el.style.display = 'none'; return; }
+        el.style.display = '';
+        var z = zones[(zi + off + zones.length * 2) % zones.length];
+        el.dataset.zone = (zi + off + zones.length * 2) % zones.length;
+        el.querySelector('.shot').src = z.avatar;
+        el.querySelector('.cap img').src = z.avatar;
+        el.querySelector('.cap b').textContent = z.name;
+        el.querySelector('.cap span').textContent =
+          z.slides.length + (z.slides.length === 1 ? ' story' : ' stories');
+      });
+    }
+
     function show(z, s) {
       zi = (z + zones.length) % zones.length;
       var zone = zones[zi];
@@ -3766,6 +3849,7 @@
 
       ava.src = zone.avatar;
       name.textContent = zone.name;
+      renderRail();
       if (barsWrap.children.length !== zone.slides.length) {
         barsWrap.innerHTML = zone.slides.map(function () { return '<i><b></b></i>'; }).join('');
       }
@@ -3852,7 +3936,10 @@
       el.addEventListener('click', function () { open(i); });
       el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i); } });
     });
-    viewer.querySelector('.sv-close').addEventListener('click', close);
+    viewer.querySelector('.sv-x').addEventListener('click', close);
+    viewer.querySelectorAll('.sv-side').forEach(function (el) {
+      el.addEventListener('click', function () { show(+el.dataset.zone, 0); });
+    });
     viewer.querySelector('.sv-arrow.prev').addEventListener('click', prevZone);
     viewer.querySelector('.sv-arrow.next').addEventListener('click', nextZone);
     // keep the card's own transition for the dismiss-drag snap-back
