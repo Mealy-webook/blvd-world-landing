@@ -3423,11 +3423,14 @@
     // you to where you were. A first visit or an explicit reload still gets it.
     var navType = (performance.getEntriesByType('navigation')[0] || {}).type;
     var fromThisSite = document.referrer && document.referrer.indexOf(location.origin) === 0;
-    // ...and once it has played, it stays played for the rest of the browsing
-    // session, so a reload or a fresh hit on another page never replays it.
+    // A reload is the one case where you are asking to see it again, so it
+    // re-arms the session; ?intro=1 forces it on any load.
+    var reloaded = navType === 'reload';
+    var forced = /[?&]intro=1\b/.test(location.search);
+    if (reloaded || forced) { try { sessionStorage.removeItem('blvd-intro'); } catch (e) {} }
     var seen = false;
     try { seen = sessionStorage.getItem('blvd-intro') === '1'; } catch (e) {}
-    if (seen || navType === 'back_forward' || fromThisSite) {
+    if (!forced && !reloaded && (seen || navType === 'back_forward' || fromThisSite)) {
       loader.remove();
       if (intro) intro.remove();
       return;
