@@ -3370,6 +3370,17 @@
       var e1 = intro.querySelector('.t1'), e2 = intro.querySelector('.t2');
       var done = false, timers = [];
 
+      // The hero starts building the moment the copy lands, so the panel
+      // dissolves onto a hero that is already most of the way in rather than
+      // onto a blank stage that then animates — that back-to-back pair is what
+      // read as the page loading twice.
+      var heroStarted = false;
+      function startHero() {
+        if (heroStarted) return;
+        heroStarted = true;
+        next();
+      }
+
       function finish() {
         if (done) return;
         done = true;
@@ -3377,7 +3388,7 @@
         window.removeEventListener('pointerdown', finish);
         window.removeEventListener('keydown', finish);
         intro.classList.add('out');
-        next();                                   // hero animates in behind the dissolve
+        startHero();
         timers.push(setTimeout(function () { intro.remove(); }, 920));
       }
 
@@ -3392,18 +3403,19 @@
         })();
       }
       // let the panel settle in before the words start
-      timers.push(setTimeout(startTyping, 420));
+      timers.push(setTimeout(startTyping, 300));
       function startTyping() {
         if (done) return;
         intro.classList.add('p1');
-        type(e1, L1, 52, afterL1);
+        type(e1, L1, 38, afterL1);
       }
       function afterL1() {
         intro.classList.remove('p1');
         intro.classList.add('p2');
-        type(e2, L2, 62, function () {
+        type(e2, L2, 45, function () {
           intro.classList.add('typed');           // reveal the Riyadh Season line and glint
-          timers.push(setTimeout(finish, 1150));
+          startHero();                            // hero assembles behind the panel
+          timers.push(setTimeout(finish, 550));
         });
       }
 
@@ -3468,7 +3480,7 @@
       im.addEventListener('error', function () { loadedCount++; }, { once: true });
     });
 
-    var MIN_TIME = 2200, MAX_TIME = 6000, start = performance.now(), finished = false;
+    var MIN_TIME = 1400, MAX_TIME = 6000, start = performance.now(), finished = false;
 
     function done() {
       if (finished) return;
@@ -4602,6 +4614,8 @@
       defaults: { ease: 'power3.out', force3D: true, immediateRender: false },
       onComplete: function () { document.querySelector('.hero').classList.add('intro-done'); }
     });
+    // the entrance was 3.6s of visible assembly on its own — brisker reads better
+    intro.timeScale(1.3);
     window.playHeroIntro = function () { intro.play(); };
     intro
       .from('.hero-decor', { opacity: 0, y: 90, duration: 1.2, stagger: 0.07, ease: 'power2.out' }, 0)
